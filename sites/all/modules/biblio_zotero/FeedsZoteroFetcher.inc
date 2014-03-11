@@ -6,6 +6,44 @@
 */
 
 /**
+ * Result of FeedsZoteroHTTPFetcher::fetch().
+ * Overriding FeedsHTTPFetcher so we can import results of multiple HTTP requests
+ * as required by Zotero's API limitations
+ *
+ */
+class FeedsZoteroHTTPFetcherResult extends FeedsHTTPFetcherResult {
+  protected $file_path;
+  protected $timeout;
+  protected $raw = array();
+
+  /** 
+   * Constructor.
+   */
+  public function __construct($url = NULL) {
+    parent::__construct($url);
+  }
+  /**
+   * Overrides FeedsHTTPFetcherResult::getRaw();
+   */
+  public function getRaw() {
+    return $this->raw;
+  }
+  public function fetchURL($url) {
+    feeds_include_library('http_request.inc', 'http_request');
+    $result = http_request_get($url, NULL, NULL, NULL, $this->timeout);
+    if (!in_array($result->code, array(200, 201, 202, 203, 204, 205, 206))) {
+      throw new Exception(t('Download of @url failed with code !code.', array('@url' => $url, '!code' => $result->code)));
+    }
+    $this->raw[] = $this->sanitizeRaw($result->data);
+    
+    return $this->sanitizeRaw($result->data);
+  }
+}
+
+
+
+
+/**
 * Fetches data via HTTP.
 */
 class FeedsZoteroFetcher extends FeedsHTTPFetcher {
@@ -71,7 +109,7 @@ class FeedsZoteroFetcher extends FeedsHTTPFetcher {
       $form['limit'] = array(
          '#type' => 'textfield',
          '#title' => t('Limit'),
-         '#description' => t('How many zotero items to fetch at each import (1-99).'),
+         '#description' => t('How many zotero items to fetch at each import, enter 0 for unlimited'),
          '#default_value' => isset($source_config['limit']) ? $source_config['limit'] : 50,
          '#maxlength' => NULL,
          );
@@ -98,9 +136,9 @@ class FeedsZoteroFetcher extends FeedsHTTPFetcher {
          form_set_error($form_key, t('The zotero id must be numeric.'));
       }
 
-      if (! is_numeric($values['limit']) || $values['limit'] > 99 || $values['limit'] < 1 ) {
+      if (! is_numeric($values['limit']) || $values['limit'] < 1 ) {
          $form_key = 'feeds][' . get_class($this) . '][limit';
-         form_set_error($form_key, t('The value for limit must be a number between 1-99.'));
+         form_set_error($form_key, t('The value for limit must be a number greater than zero.'));
       }
       
       $this->setConfigSourceUrl($values);
@@ -136,35 +174,51 @@ class FeedsZoteroFetcher extends FeedsHTTPFetcher {
    */
   public function fetch(FeedsSource $source) {
     $source_config = $source->getConfigFor($this);
-    $result = new FeedsHTTPFetcherResult($source_config['source']);
-    
-    //alter the config for next fetch before saving new config
-    $feed_raw_xml = $result->getRaw();
-    //dd($feed_raw_xml, "feed_raw_xml");
-    $feed_simple_xml = simplexml_load_string($feed_raw_xml);
-    $next = $feed_simple_xml->xpath("*[@rel='next']"); 
-    $first = $feed_simple_xml->xpath("*[@rel='first']"); 
-    if ( ! empty( $next ) ) {
-       $next_href = (string)$next[0]['href'];
-       $pattern = "/start=\d+/";
-       preg_match($pattern, $next_href, $matches);
-       $next_index = array_pop( explode("=", $matches[0]) );
-       $source_config['next_index'] = $next_index; // we have to save this too so we dont lose our page in case a user resaves the feed source form
+    $items_fetched = 0;
+    $result = new FeedsZoteroHTTPFetcherResult($source_config['source']);
+    $no_limit = ($source_config['limit'] == 0);
+    $count = 0;
+    while ($items_fetched < $source_config['limit'] || $no_limit) {
+      $feed_raw_xml = $result->fetchUrl($source_config['source']);
+      $index = $source_config['next_index'];
+      //alter the config for next fetch before saving new config
+      $source_config['next_index'] = $this->getNextIndex($feed_raw_xml);
+      $items_fetched = $source_config['next_index'] - $index;
+      $this->setConfigSourceUrl($source_config);
+      $source->setConfigFor($this, $source_config);
+      $source->save();
+      if ($source_config['next_index'] == 0) {
+        //No items left to fetch, exit loop
+        break;
+      }
     }
-    else {
-       $source_config['next_index'] = 0;
-    }
-    $this->setConfigSourceUrl($source_config);
-    $source->setConfigFor($this, $source_config);
-    $source->save();
     return $result;
   }
-  
+  /**
+   *  Parses XML response from Zotero to return the numeric index for the next request
+   */
+  private function getNextIndex($xml) {
+    $feed_simple_xml = simplexml_load_string($xml);
+    $next = $feed_simple_xml->xpath("*[@rel='next']"); 
+    $first = $feed_simple_xml->xpath("*[@rel='first']"); 
+    if (!empty($next)) {
+      $next_href = (string)$next[0]['href'];
+      $pattern = "/start=\d+/";
+      preg_match($pattern, $next_href, $matches);
+      $next_index = array_pop( explode("=", $matches[0]) );
+      return $next_index; 
+    }
+    else {
+      return 0; 
+    }
+  }
   private function setConfigSourceUrl(&$values) {
      $zotType = $values['zotero_type'] == 'group' ? 'groups' : 'users';
       $values['source'] = sprintf('https://api.zotero.org/%s/%d/items/top', $zotType, $values['zotero_id']);
       $values['source'] .= '?content=json';
-      $values['source'] .= sprintf('&limit=%d',$values['limit'] );
+      //Limit of 99 is imposed by Zotero's API
+      $api_limit = ($values['limit'] == 0 || $values['limit'] > 99) ? 99 : $values['limit'];
+      $values['source'] .= sprintf('&limit=%d',$api_limit );
       $values['source'] .= sprintf('&start=%d',$values['next_index'] );  // next_index is changed after every fetch
       $values['child_source'] = sprintf('https://api.zotero.org/%s/%d/items/%%s/children', $zotType, $values['zotero_id']); // the last token is replaced during parsing
       $values['child_source'] .= '?content=json&limit=99';

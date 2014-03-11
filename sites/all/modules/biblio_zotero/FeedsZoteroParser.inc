@@ -46,38 +46,39 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
       feeds_include_library('common_syndication_parser.inc', 'common_syndication_parser');
       
       $source_config = $source->getConfig();
-      $feed_raw_xml = $fetcher_result->getRaw();
-      //dd($feed_raw_xml, "feed_raw_xml");
       
-      $feed_simple_xml = simplexml_load_string($feed_raw_xml);
-      $namespaces = $feed_simple_xml->getNameSpaces(true);
       
       $result = new FeedsParserResult();
-      $result->title = (string)$feed_simple_xml->title;
       // $result->link = (string)array_shift($feed_simple_xml->link);
-      foreach ($feed_simple_xml->entry as $entry) {
-         $item = array();
-         
-         $json = (string)$entry->content;
-         $data = json_decode($json);
-         $item = array_merge($item, (array)$data);
-         self::addItemTypePrefixes($item);
-         
-         $item['url'] = (string)$entry->id;
-         $item['guid'] = (string)$entry->id;
-         $item['published'] = (string)$entry->published;
-         $item['updated'] = (string)$entry->updated;
-         $item['description'] = ''; //description gets mapped to Full Text of the biblio node so leave it blank
-         
-         $zapi = $entry->children($namespaces['zapi']); 
-         $item['key'] = (string)$zapi->key;
-         $item['itemType'] = (string)$zapi->itemType;
-         $item['creatorSummary'] = (string)$zapi->creatorSummary;
-         $item['year'] = (string)$zapi->year;
-         $item['numChildren'] = (string)$zapi->numChildren;
-         $item['numTags'] = (string)$zapi->numTags;
-         $this->addZoteroChildren($source, $item);   
-         $result->items[] = $item;
+      
+      foreach ($fetcher_result->getRaw() as $feed_raw_xml) {
+        $result->title = $result->title ? $result->title : (string)$feed_simple_xml->title;
+        $feed_simple_xml = simplexml_load_string($feed_raw_xml);
+        $namespaces = $feed_simple_xml->getNameSpaces(true);
+        foreach ($feed_simple_xml->entry as $entry) {
+           $item = array();
+           
+           $json = (string)$entry->content;
+           $data = json_decode($json);
+           $item = array_merge($item, (array)$data);
+           self::addItemTypePrefixes($item);
+           
+           $item['url'] = (string)$entry->id;
+           $item['guid'] = (string)$entry->id;
+           $item['published'] = (string)$entry->published;
+           $item['updated'] = (string)$entry->updated;
+           $item['description'] = ''; //description gets mapped to Full Text of the biblio node so leave it blank
+           
+           $zapi = $entry->children($namespaces['zapi']); 
+           $item['key'] = (string)$zapi->key;
+           $item['itemType'] = (string)$zapi->itemType;
+           $item['creatorSummary'] = (string)$zapi->creatorSummary;
+           $item['year'] = (string)$zapi->year;
+           $item['numChildren'] = (string)$zapi->numChildren;
+           $item['numTags'] = (string)$zapi->numTags;
+           $this->addZoteroChildren($source, $item);   
+           $result->items[] = $item;
+        }
       }
       return $result;
    }
