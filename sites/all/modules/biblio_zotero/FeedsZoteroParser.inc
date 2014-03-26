@@ -185,7 +185,7 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
    * since they sometimes map to different biblio fields depending on publication type
    */
    function addItemTypePrefixes(&$item) {
-      $no_rename = array('itemType', 'guid','tags','creators');
+      $no_rename = array('itemType', 'guid','tags','creators', 'collection_keys');
       $item = (array)$item;
       $old_keys = array_keys($item);
       foreach( $old_keys as $old_key) {

@@ -365,11 +365,10 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
    protected function createCollectionTerms($collections) {
      global $count;
      $count++;
-     file_put_contents("collection-$count", print_r($collections, TRUE));
      $vocab = taxonomy_vocabulary_machine_name_load($this->config['collections_vocab']);
      if ($vocab) {
        foreach ($collections as $collection) { 
-         if (!biblio_zotero_get_collection_tid($collection['key'])) {
+         if (!biblio_zotero_get_collection_term($collection['key'])) {
            biblio_zotero_create_collection_term($vocab->vid, $collection['title'], $collection['key'], $collection['parent']);
          }    
          //Recursively create terms for children, if any exist
@@ -403,6 +402,18 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
          $target_item->feeds_item->skip = TRUE; // skip saving for notes since they will be brought in as children of their parent item: see FeedsProcessor::process
          return;
       }
+      global $newcount;
+      $newcount++;
+      $collections_vocab = taxonomy_vocabulary_machine_name_load($this->config['collections_vocab']);
+      $collection_keys = $parser->getSourceElement($source, $result, 'collection_keys');
+      $collection_tids = array();
+      foreach ($collection_keys as $collection_key) { 
+        $term = biblio_zotero_get_collection_term($collection_key);
+        $target_item->{$this->config['collections_field']}[LANGUAGE_NONE][] = (array)$term; 
+        file_put_contents("process-term-$mycount", print_r($term, TRUE));
+        $collection_tids[] = $term->tid;
+      }
+      $target_item->taxonomy['tags'][$collections_vocab->vid] = implode(",", $collection_tids);
       
       // map the tags 
       /** @TODO use mappings w/ source and target callbacks for this **/
@@ -428,6 +439,7 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
          }
       }
       $target_item->taxonomy['tags'][$this->config['tags_vocab_id']] = implode(",", $tagStrings);
+      file_put_contents("VOCAB-$mycount", print_r($this->config['tags_vocab_id'], TRUE));
       
 		// map the institution
       /** @TODO test using the biblio_contributors mapping target for this without overwriting the mapped values from the creators field. It should work **/
