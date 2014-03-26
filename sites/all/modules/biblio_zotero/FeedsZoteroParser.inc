@@ -38,6 +38,8 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
    */
    public function configFormValidate(&$values) {
    }
+   public function getCollectionKey($xml_page) {
+   }
    
    /**
    * Implementation of FeedsParser::parse().
@@ -46,40 +48,64 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
       feeds_include_library('common_syndication_parser.inc', 'common_syndication_parser');
       
       $source_config = $source->getConfig();
-      
-      
       $result = new FeedsParserResult();
+      $result->collections = $fetcher_result->getCollectionHierarchy();
+      file_put_contents('fetcherCollections', print_r($fetcher_result->collections, TRUE));
       // $result->link = (string)array_shift($feed_simple_xml->link);
       
-      foreach ($fetcher_result->getRaw() as $feed_raw_xml) {
-        $result->title = $result->title ? $result->title : (string)$feed_simple_xml->title;
+      // Pull collection key from each page below if exists
+      // Use Item Key to ensure only one copy of the items is created
+      // Add the collection key to item so we can tag in Processing phase
+      
+      foreach ($fetcher_result->getItemsPages() as $feed_raw_xml) {
         $feed_simple_xml = simplexml_load_string($feed_raw_xml);
         $namespaces = $feed_simple_xml->getNameSpaces(true);
+
+        //Search for collection key in XML result
+        $self = $feed_simple_xml->xpath("*[@rel='self']"); 
+        $self = (string)$self[0]['href'];
+        file_put_contents('self', print_r($self, TRUE));
+        $matches = array();
+        preg_match('#collections/(.*)/#', $self, $matches);
+        $collection_key = isset($matches[1]) ? $matches[1] : FALSE;
+
         foreach ($feed_simple_xml->entry as $entry) {
+           $zapi = $entry->children($namespaces['zapi']); 
+           $item_key = (string)$zapi->key;
+           if (isset($result->items[$item_key])) {
+             //Item already added in another collection, just add collection key
+             if ($collection_key) {
+               $item['collection_keys'][] = $collection_key;
+             }
+           }
+           file_put_contents('entry-'. $count, print_r($entry, TRUE)); 
+
            $item = array();
-           
            $json = (string)$entry->content;
            $data = json_decode($json);
            $item = array_merge($item, (array)$data);
-           self::addItemTypePrefixes($item);
+           $item['key'] = $item_key;
+           $item['guid'] = $item_key;
            
            $item['url'] = (string)$entry->id;
-           $item['guid'] = (string)$entry->id;
            $item['published'] = (string)$entry->published;
            $item['updated'] = (string)$entry->updated;
            $item['description'] = ''; //description gets mapped to Full Text of the biblio node so leave it blank
+           $item['title'] = (string)$entry->title;
            
-           $zapi = $entry->children($namespaces['zapi']); 
-           $item['key'] = (string)$zapi->key;
            $item['itemType'] = (string)$zapi->itemType;
            $item['creatorSummary'] = (string)$zapi->creatorSummary;
            $item['year'] = (string)$zapi->year;
            $item['numChildren'] = (string)$zapi->numChildren;
            $item['numTags'] = (string)$zapi->numTags;
+           $item['collection_keys'] = $collection_key ? array($collection_key) : array();
+           self::addItemTypePrefixes($item);
            $this->addZoteroChildren($source, $item);   
-           $result->items[] = $item;
+           $result->items[(string)$zapi->key] = $item;
         }
       }
+      $result->title = $result->title ? $result->title : (string)$feed_simple_xml->title;
+      file_put_contents('RESULT', print_r($result, TRUE));
       return $result;
    }
    

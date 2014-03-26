@@ -30,6 +30,8 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
       $config['sync_tags'] = false;
       $config['tags_field'] = null;
       $config['tags_vocab'] = null;
+      $config['collections_field'] = null;
+      $config['collections_vocab'] = null;
       $config['notes_field'] = 'biblio_notes';
       $config['use_feed_owner_as_author'] = FALSE;
       $config['zotero_username_field_name'] = '';
@@ -77,6 +79,22 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
             '#disabled' => TRUE,
             '#default_value' => $this->config['tags_vocab'] ? $this->config['tags_vocab'] : '',
             '#description' => $this->config['tags_vocab'] ? '' : t('<span class="warning">No taxonomy term reference field has been submitted yet</span>'),
+            );
+         #Collections taxonomy field
+         $form['collections_field'] = array(
+            '#type' => 'select',
+            '#title' => t('Select a term reference field in the @type content type to use for collections.', array('@type' => $content_type)),
+            '#description' => $desc,
+            '#options' => $taxo_field_options,
+            '#default_value' => isset($this->config['collections_field']) ? $this->config['collections_field'] : FALSE,
+            );
+         $form['collection_vocab'] = array(
+            '#type' => 'textfield',
+            '#title' => t('Collections Vocab Machine Name [not editable]'),
+            '#size' => 60, 
+            '#disabled' => TRUE,
+            '#default_value' => isset($this->config['collections_vocab']) ? $this->config['collections_vocab'] : '',
+            '#description' => isset($this->config['collections_vocab']) ? '' : t('<span class="warning">No taxonomy term reference field has been submitted yet</span>'),
             );
       }
       else {
@@ -138,6 +156,19 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
          else {
             $warning = t('');
             form_set_error('tags_field', $warning);
+         }
+      }
+      if ( !empty($values['collections_field'])) {
+         // get the taxo machine name from the field info
+         $taxo_field_name = $this->config['collections_field'];
+         $taxo_field_info = field_info_field($values['collections_field']);
+         if ( $taxo_field_info['settings']['allowed_values'][0]['vocabulary'] ) {
+            $vocab_machine_name = $taxo_field_info['settings']['allowed_values'][0]['vocabulary']; 
+            $values['collections_vocab'] = $vocab_machine_name;
+         } 
+         else {
+            $warning = t('');
+            form_set_error('collections_field', $warning);
          }
       }
    }
@@ -316,6 +347,9 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
       }
       dpm($msources, "msources"); 
       */
+
+      //Create taxonomy terms for our Zotero collections
+      $this->createCollectionTerms($parser_result->collections); 
       
       $source->reportFilePath = file_directory_temp() ."/biblio-zotero-mapping-report-" . time() . ".tab.txt"; 
       file_put_contents($source->reportFilePath, "zotero itemtype\tzotero field name\tbiblio field mapping\n"); // this needs to go here since map is called multiple times per import.
@@ -324,6 +358,26 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
       watchdog('FeedsZoteroProcessor', $msg, NULL, WATCHDOG_NOTICE, $link = NULL);
       drupal_set_message( t('Biblio Zotero wrote an import report of mapped and un-mapped fields to drupal\'s temp directory. See the watchdog for details.'));
       /** @TODO look at parent::process to see about UPDATING during import **/
+   }
+   /**
+    * Create hierarchy of taxonomy terms for all Zotero collections
+    */
+   protected function createCollectionTerms($collections) {
+     global $count;
+     $count++;
+     file_put_contents("collection-$count", print_r($collections, TRUE));
+     $vocab = taxonomy_vocabulary_machine_name_load($this->config['collections_vocab']);
+     if ($vocab) {
+       foreach ($collections as $collection) { 
+         if (!biblio_zotero_get_collection_tid($collection['key'])) {
+           biblio_zotero_create_collection_term($vocab->vid, $collection['title'], $collection['key'], $collection['parent']);
+         }    
+         //Recursively create terms for children, if any exist
+         if ($collection['children']) {
+           $this->createCollectionTerms($collection['children']);
+         }
+       }
+     }
    }
    
    /**

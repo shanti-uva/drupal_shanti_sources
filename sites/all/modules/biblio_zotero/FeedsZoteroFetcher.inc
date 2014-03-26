@@ -1,4 +1,5 @@
 <?php
+ ini_set('max_execution_time', -1);
 
 /**
 * @file
@@ -14,7 +15,8 @@
 class FeedsZoteroHTTPFetcherResult extends FeedsHTTPFetcherResult {
   protected $file_path;
   protected $timeout;
-  protected $raw = array();
+  protected $itemsPages = array();
+  protected $collectionsPage;
 
   /** 
    * Constructor.
@@ -22,21 +24,75 @@ class FeedsZoteroHTTPFetcherResult extends FeedsHTTPFetcherResult {
   public function __construct($url = NULL) {
     parent::__construct($url);
   }
-  /**
-   * Overrides FeedsHTTPFetcherResult::getRaw();
-   */
-  public function getRaw() {
-    return $this->raw;
+  public function getItemsPages() {
+    return $this->itemsPages;
   }
-  public function fetchURL($url) {
-    feeds_include_library('http_request.inc', 'http_request');
-    $result = http_request_get($url, NULL, NULL, NULL, $this->timeout);
-    if (!in_array($result->code, array(200, 201, 202, 203, 204, 205, 206))) {
-      throw new Exception(t('Download of @url failed with code !code.', array('@url' => $url, '!code' => $result->code)));
+  /**
+   * Return a simple array of all collection keys
+   */
+  public function getCollectionKeys() {
+    $simple_xml = simplexml_load_string($this->collectionsPage);
+    $namespaces = $simple_xml->getNameSpaces(true);
+    $keys = array();
+    foreach ($simple_xml->entry as $entry) { 
+      $zapi = $entry->children($namespaces['zapi']); 
+      $key  = (string)$zapi->key; 
+      $keys[$key] = $key;
     }
-    $this->raw[] = $this->sanitizeRaw($result->data);
-    
-    return $this->sanitizeRaw($result->data);
+    return $keys;
+  }
+  /**
+   * Return a structured array with sub-collections nested underneath their parents
+   */
+  public function getCollectionHierarchy() {
+    $simple_xml = simplexml_load_string($this->collectionsPage);
+    $namespaces = $simple_xml->getNameSpaces(true);
+    $collections = array();
+    foreach ($simple_xml->entry as $entry) { 
+      $zapi = $entry->children($namespaces['zapi']); 
+      $key  = (string)$zapi->key; 
+      $parent = $this->getCollectionParent($entry);
+      $collections[$key] = array('key' => $key, 'title' => (string)$entry->title, 'parent' => $parent, 'children' => array());
+    }
+    //Sort collections into a hierarchical array matching their Zotero structure
+    foreach ($collections as $collection) { 
+      $parent = $collection['parent'];
+      if ($parent && isset($collections[$parent])) {
+        //Put collection under its parent's entry
+        $collections[$parent]['children'][$collection['key']] = $collection;
+        //Remove collection now that we've copied it under its parent
+        unset($collections[$collection['key']]);
+      }
+    }
+    return $collections;
+  }
+  /**
+   *  Given a Simple XML Element of the collection entry, return the key of collection's parent
+   */
+  public function getCollectionParent(SimpleXMLElement $entry) {
+    //Search for collection key in XML result
+    $link = $entry->xpath("*[@rel='up']"); 
+    if ($link) {
+      $link  = (string)$link[0]['href'];
+      file_put_contents('link', print_r($link, TRUE));
+      $matches = array();
+      preg_match('#collections/(.*)#', $link, $matches);
+      file_put_contents('matches', print_r($matches, TRUE));
+      $collection_key = isset($matches[1]) ? $matches[1] : FALSE;
+      return $collection_key;
+    }
+  }
+  /**
+   *  Add one of the Items pages retrieved from Zotero
+   */
+  public function addItemsPage($page_xml) {
+    $this->itemsPages[] = $this->sanitizeRaw($page_xml);
+  }
+  /**
+   * Set the XML for the collections page retrieve from Zotero
+   */
+  public function setCollectionsPage($page_xml) {
+    $this->collectionsPage = $page_xml;
   }
 }
 
@@ -46,6 +102,7 @@ class FeedsZoteroHTTPFetcherResult extends FeedsHTTPFetcherResult {
 /**
 * Fetches data via HTTP.
 */
+
 class FeedsZoteroFetcher extends FeedsHTTPFetcher {
    
    /**
@@ -72,6 +129,17 @@ class FeedsZoteroFetcher extends FeedsHTTPFetcher {
          '#maxlength' => NULL,
          '#required' => TRUE,
          );
+      $form['fetch_collections'] = array(
+          '#type' => 'checkbox',
+          '#title' => t("Fetch collections"),
+          '#description' => t("If selected a user or group's collections will be fetched instead of their library items"),
+          '#default_value' => isset($source_config['fetch_collections']) ? $source_config['fetch_collections'] : 0,
+         );
+      $form['collection_key'] = array(
+         '#type' => 'textfield',
+         '#title' => t('Collection ID'),
+         '#description' => t("Only applicable if Fetch Collections above is selected. If none is entered, all top level collections for the user or group will be retrieved.")
+       );
       $form['api_key'] = array(
          '#type' => 'textfield',
          '#title' => t('Zotero API key'),
@@ -81,7 +149,6 @@ class FeedsZoteroFetcher extends FeedsHTTPFetcher {
          '#default_value' => isset($source_config['api_key']) ? $source_config['api_key'] : '',
          '#maxlength' => NULL,
          );
-      
       $form['source'] = array(
          '#type' => 'hidden',
          '#title' => t('URL'),
@@ -136,7 +203,7 @@ class FeedsZoteroFetcher extends FeedsHTTPFetcher {
          form_set_error($form_key, t('The zotero id must be numeric.'));
       }
 
-      if (! is_numeric($values['limit']) || $values['limit'] < 1 ) {
+      if (! is_numeric($values['limit']) || $values['limit'] < 0 ) {
          $form_key = 'feeds][' . get_class($this) . '][limit';
          form_set_error($form_key, t('The value for limit must be a number greater than zero.'));
       }
@@ -174,23 +241,91 @@ class FeedsZoteroFetcher extends FeedsHTTPFetcher {
    */
   public function fetch(FeedsSource $source) {
     $source_config = $source->getConfigFor($this);
+    if ($source_config['fetch_collections']) {
+      $result = $this->fetchCollection($source);
+    }
+    else {
+      $result = $this->fetchItems($source);
+    }
+    return $result;
+  }
+  public function fetchURL($url) {
+    feeds_include_library('http_request.inc', 'http_request');
+    $result = http_request_get($url, NULL, NULL, NULL, $this->timeout);
+    if (!in_array($result->code, array(200, 201, 202, 203, 204, 205, 206))) {
+      throw new Exception(t('Download of @url failed with code !code.', array('@url' => $url, '!code' => $result->code)));
+    }
+    
+    return $result->data;
+  }
+  public function fetchItems(FeedsSource $source) {
+    $source_config = $source->getConfigFor($this);
     $items_fetched = 0;
     $result = new FeedsZoteroHTTPFetcherResult($source_config['source']);
     $no_limit = ($source_config['limit'] == 0);
     $count = 0;
     while ($items_fetched < $source_config['limit'] || $no_limit) {
-      $feed_raw_xml = $result->fetchUrl($source_config['source']);
+      $feed_raw_xml = $this->fetchURL($source_config['source']);
+      $result->addItemsPage($feed_raw_xml);
       $index = $source_config['next_index'];
       //alter the config for next fetch before saving new config
-      $source_config['next_index'] = $this->getNextIndex($feed_raw_xml);
+      $source_config['next_index'] = $this->getNextIndex($feed_raw_xml) ? $this->getNextIndex($feed_raw_xml) : 0;
       $items_fetched = $source_config['next_index'] - $index;
       $this->setConfigSourceUrl($source_config);
       $source->setConfigFor($this, $source_config);
       $source->save();
-      if ($source_config['next_index'] == 0) {
+      if (!$source_config['next_index']) {
         //No items left to fetch, exit loop
         break;
       }
+    }
+    return $result;
+  }
+  /**
+   *  Helper function to get all items from a collection, non-recursively
+   *  i.e. Does not get items from a collection's sub-collections
+   *
+   */
+  private function getCollectionItems(FeedsSource $source, FeedsFetcherResult &$result, $collection_key) {
+    $source_config = $source->getConfigFor($this);
+    $zotType = $source_config['zotero_type'] == 'group' ? 'groups' : 'users';
+    $next_index = 0;
+    $xml = '';
+    while ($next_index !== FALSE) {
+      $url = sprintf('https://api.zotero.org/%s/%d/collections/%s/items?content=json&start=%d', 
+        $zotType, $source_config['zotero_id'], $collection_key, $next_index);
+      $xml = $this->fetchURL($url);
+      $result->addItemsPage($xml);
+      $next_index = $this->getNextIndex($xml);
+    }
+    return $xml;
+  }
+
+  public function getCollections(FeedsSource $source, &$result, $collection_key = NULL) {
+    $source_config = $source->getConfigFor($this);
+    $zotType = $source_config['zotero_type'] == 'group' ? 'groups' : 'users';
+    $xml = '';
+    $url = sprintf('https://api.zotero.org/%s/%d/collections', $zotType, $source_config['zotero_id']);
+    //If collection key is specified, get all sub-collections, otherwise get all collections in library
+    if ($collection_key) {
+      $url .= "/$collection_key/collections";
+    }
+    $xml = $this->fetchURL($url);
+    $result->setCollectionsPage($xml); 
+    return $xml;
+  }
+
+  public function fetchCollection(FeedsSource $source, $collection_key = NULL) {
+    $source_config = $source->getConfigFor($this);
+    file_put_contents('sourceConfig', print_r($source_config, TRUE));
+    $result = new FeedsZoteroHTTPFetcherResult($source_config['source']);
+    
+    $this->getCollections($source, $result, $source_config['collection_key']);
+    file_put_contents('fetchCollection', $xml);
+    $collection_keys = $result->getCollectionKeys($xml);
+    file_put_contents('collectionKeys', print_r($collection_keys, TRUE));
+    foreach ($collection_keys as $key) { 
+      $this->getCollectionItems($source, $result, $key);  
     }
     return $result;
   }
@@ -209,7 +344,7 @@ class FeedsZoteroFetcher extends FeedsHTTPFetcher {
       return $next_index; 
     }
     else {
-      return 0; 
+      return FALSE; 
     }
   }
   private function setConfigSourceUrl(&$values) {
