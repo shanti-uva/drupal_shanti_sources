@@ -32,39 +32,46 @@ class FeedsZoteroHTTPFetcherResult extends FeedsHTTPFetcherResult {
    */
   public function getCollectionKeys() {
     $simple_xml = simplexml_load_string($this->collectionsPage);
-    $namespaces = $simple_xml->getNameSpaces(true);
-    $keys = array();
-    foreach ($simple_xml->entry as $entry) { 
-      $zapi = $entry->children($namespaces['zapi']); 
-      $key  = (string)$zapi->key; 
-      $keys[$key] = $key;
+    if (is_object($simple_xml)) {
+      $namespaces = $simple_xml->getNameSpaces(true);
+      $keys = array();
+      foreach ($simple_xml->entry as $entry) { 
+        $zapi = $entry->children($namespaces['zapi']); 
+        $key  = (string)$zapi->key; 
+        $keys[$key] = $key;
+      }
+      return $keys;
     }
-    return $keys;
   }
   /**
    * Return a structured array with sub-collections nested underneath their parents
    */
   public function getCollectionHierarchy() {
     $simple_xml = simplexml_load_string($this->collectionsPage);
-    $namespaces = $simple_xml->getNameSpaces(true);
-    $collections = array();
-    foreach ($simple_xml->entry as $entry) { 
-      $zapi = $entry->children($namespaces['zapi']); 
-      $key  = (string)$zapi->key; 
-      $parent = $this->getCollectionParent($entry);
-      $collections[$key] = array('key' => $key, 'title' => (string)$entry->title, 'parent' => $parent, 'children' => array());
-    }
-    //Sort collections into a hierarchical array matching their Zotero structure
-    foreach ($collections as $collection) { 
-      $parent = $collection['parent'];
-      if ($parent && isset($collections[$parent])) {
-        //Put collection under its parent's entry
-        $collections[$parent]['children'][$collection['key']] = $collection;
-        //Remove collection now that we've copied it under its parent
-        unset($collections[$collection['key']]);
+    if (is_object($simple_xml)) {
+      $namespaces = $simple_xml->getNameSpaces(true);
+      $collections = array();
+      foreach ($simple_xml->entry as $entry) { 
+        $zapi = $entry->children($namespaces['zapi']); 
+        $key  = (string)$zapi->key; 
+        $parent = $this->getCollectionParent($entry);
+        $collections[$key] = array('key' => $key, 'title' => (string)$entry->title, 'parent' => $parent, 'children' => array());
       }
+      //Sort collections into a hierarchical array matching their Zotero structure
+      global $cntr;
+      foreach ($collections as $collection) { 
+        $cntr++;
+        $parent = $collection['parent'];
+        if ($parent && isset($collections[$parent])) {
+          //Put collection under its parent's entry
+          //The - $collections[$collection['key']] - Syntax is important here because '$collection' is not updated by PHP
+          $collections[$parent]['children'][$collection['key']] = $collections[$collection['key']];
+          //Remove collection now that we've copied it under its parent
+          unset($collections[$collection['key']]);
+        }
+      }
+      return $collections;
     }
-    return $collections;
   }
   /**
    *  Given a Simple XML Element of the collection entry, return the key of collection's parent
@@ -74,10 +81,8 @@ class FeedsZoteroHTTPFetcherResult extends FeedsHTTPFetcherResult {
     $link = $entry->xpath("*[@rel='up']"); 
     if ($link) {
       $link  = (string)$link[0]['href'];
-      file_put_contents('link', print_r($link, TRUE));
       $matches = array();
       preg_match('#collections/(.*)#', $link, $matches);
-      file_put_contents('matches', print_r($matches, TRUE));
       $collection_key = isset($matches[1]) ? $matches[1] : FALSE;
       return $collection_key;
     }
@@ -304,26 +309,29 @@ class FeedsZoteroFetcher extends FeedsHTTPFetcher {
   public function getCollections(FeedsSource $source, &$result, $collection_key = NULL) {
     $source_config = $source->getConfigFor($this);
     $zotType = $source_config['zotero_type'] == 'group' ? 'groups' : 'users';
+    $next_index = 0;
     $xml = '';
-    $url = sprintf('https://api.zotero.org/%s/%d/collections', $zotType, $source_config['zotero_id']);
-    //If collection key is specified, get all sub-collections, otherwise get all collections in library
-    if ($collection_key) {
-      $url .= "/$collection_key/collections";
+    if (arg(2) !== 'edit') {
+      while ($next_index !== FALSE) {
+        $url = sprintf('https://api.zotero.org/%s/%d/collections?start=%d', $zotType, $source_config['zotero_id'], $next_index);
+        //If collection key is specified, get all sub-collections, otherwise get all collections in library
+        if ($collection_key) {
+          $url .= "/$collection_key/collections";
+        }
+        $xml .= $this->fetchURL($url);
+        $next_index = $this->getNextIndex($xml);
+      }
+      $result->setCollectionsPage($xml); 
     }
-    $xml = $this->fetchURL($url);
-    $result->setCollectionsPage($xml); 
     return $xml;
   }
 
   public function fetchCollection(FeedsSource $source, $collection_key = NULL) {
     $source_config = $source->getConfigFor($this);
-    file_put_contents('sourceConfig', print_r($source_config, TRUE));
     $result = new FeedsZoteroHTTPFetcherResult($source_config['source']);
     
     $this->getCollections($source, $result, $source_config['collection_key']);
-    file_put_contents('fetchCollection', $xml);
     $collection_keys = $result->getCollectionKeys($xml);
-    file_put_contents('collectionKeys', print_r($collection_keys, TRUE));
     foreach ($collection_keys as $key) { 
       $this->getCollectionItems($source, $result, $key);  
     }
@@ -334,17 +342,19 @@ class FeedsZoteroFetcher extends FeedsHTTPFetcher {
    */
   private function getNextIndex($xml) {
     $feed_simple_xml = simplexml_load_string($xml);
-    $next = $feed_simple_xml->xpath("*[@rel='next']"); 
-    $first = $feed_simple_xml->xpath("*[@rel='first']"); 
-    if (!empty($next)) {
-      $next_href = (string)$next[0]['href'];
-      $pattern = "/start=\d+/";
-      preg_match($pattern, $next_href, $matches);
-      $next_index = array_pop( explode("=", $matches[0]) );
-      return $next_index; 
-    }
-    else {
-      return FALSE; 
+    if (is_object($feed_simple_xml)) {
+      $next = $feed_simple_xml->xpath("*[@rel='next']"); 
+      $first = $feed_simple_xml->xpath("*[@rel='first']"); 
+      if (!empty($next)) {
+        $next_href = (string)$next[0]['href'];
+        $pattern = "/start=\d+/";
+        preg_match($pattern, $next_href, $matches);
+        $next_index = array_pop( explode("=", $matches[0]) );
+        return $next_index; 
+      }
+      else {
+        return FALSE; 
+      }
     }
   }
   private function setConfigSourceUrl(&$values) {

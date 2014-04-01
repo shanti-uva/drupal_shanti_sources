@@ -363,8 +363,6 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
     * Create hierarchy of taxonomy terms for all Zotero collections
     */
    protected function createCollectionTerms($collections) {
-     global $count;
-     $count++;
      $vocab = taxonomy_vocabulary_machine_name_load($this->config['collections_vocab']);
      if ($vocab) {
        foreach ($collections as $collection) { 
@@ -410,7 +408,6 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
       foreach ($collection_keys as $collection_key) { 
         $term = biblio_zotero_get_collection_term($collection_key);
         $target_item->{$this->config['collections_field']}[LANGUAGE_NONE][] = (array)$term; 
-        file_put_contents("process-term-$mycount", print_r($term, TRUE));
         $collection_tids[] = $term->tid;
       }
       $target_item->taxonomy['tags'][$collections_vocab->vid] = implode(",", $collection_tids);
@@ -439,7 +436,6 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
          }
       }
       $target_item->taxonomy['tags'][$this->config['tags_vocab_id']] = implode(",", $tagStrings);
-      file_put_contents("VOCAB-$mycount", print_r($this->config['tags_vocab_id'], TRUE));
       
 		// map the institution
       /** @TODO test using the biblio_contributors mapping target for this without overwriting the mapped values from the creators field. It should work **/

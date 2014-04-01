@@ -50,7 +50,6 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
       $source_config = $source->getConfig();
       $result = new FeedsParserResult();
       $result->collections = $fetcher_result->getCollectionHierarchy();
-      file_put_contents('fetcherCollections', print_r($fetcher_result->collections, TRUE));
       // $result->link = (string)array_shift($feed_simple_xml->link);
       
       // Pull collection key from each page below if exists
@@ -64,7 +63,6 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
         //Search for collection key in XML result
         $self = $feed_simple_xml->xpath("*[@rel='self']"); 
         $self = (string)$self[0]['href'];
-        file_put_contents('self', print_r($self, TRUE));
         $matches = array();
         preg_match('#collections/(.*)/#', $self, $matches);
         $collection_key = isset($matches[1]) ? $matches[1] : FALSE;
@@ -78,7 +76,6 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
                $item['collection_keys'][] = $collection_key;
              }
            }
-           file_put_contents('entry-'. $count, print_r($entry, TRUE)); 
 
            $item = array();
            $json = (string)$entry->content;
@@ -104,8 +101,7 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
            $result->items[(string)$zapi->key] = $item;
         }
       }
-      $result->title = $result->title ? $result->title : (string)$feed_simple_xml->title;
-      file_put_contents('RESULT', print_r($result, TRUE));
+      $result->title = $result->title ? $result->title : 'title';
       return $result;
    }
    
