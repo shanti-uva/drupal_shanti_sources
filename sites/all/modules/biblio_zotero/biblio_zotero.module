@@ -307,9 +307,16 @@ function getBiblioAuthorTypeFromZoteroCreatorType( $creatorType ) {
 }
 
 function biblio_zotero_get_collection_term($collection_key) {
-  $result = db_query('SELECT tid FROM {biblio_zotero_collections} WHERE collection_key = :key', array(':key' => $collection_key));  
-  $term = taxonomy_term_load($result->fetchField());
-  return $term;
+  static $terms = array();
+  if (isset($terms[$collection_key])) {
+    return $terms[$collection_key];
+  }
+  else {
+    $result = db_query('SELECT tid FROM {biblio_zotero_collections} WHERE collection_key = :key', array(':key' => $collection_key));  
+    $term = taxonomy_term_load($result->fetchField());
+    $terms[$collection_key] = $term;
+    return $term;
+  }
 }
 
 function biblio_zotero_create_collection_term($vid, $name, $collection_key, $parent_collection_key=FALSE) {
