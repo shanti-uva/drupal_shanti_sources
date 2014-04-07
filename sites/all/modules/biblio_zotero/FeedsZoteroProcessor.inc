@@ -382,9 +382,16 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
    * The zotero items are all in  $result->current_item
    **/
    protected function map(FeedsSource $source, FeedsParserResult $result, $target_item = NULL) {
+      //Disable biblio_index so search index doesn't get rebuilt on every node insertion
+      if ($biblio_index = variable_get('biblio_index', 0)) {
+        variable_set('biblio_index', 0);
+      }
       
       // log the mapping succeses and failures to a tab-delimited file in the temp direcory
-      $this->logMapping($source,$result);
+      if (variable_get('biblio_zotero_enable_log', FALSE)) {
+        drupal_set_message('Mapping sources', 'notice');
+        $this->logMapping($source,$result);
+      }
       
       // Do the mappings
       // parent::map($source, $result, $target_item); //parent::map IS OVERRIDDEN below in super_map
@@ -400,8 +407,6 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
          $target_item->feeds_item->skip = TRUE; // skip saving for notes since they will be brought in as children of their parent item: see FeedsProcessor::process
          return;
       }
-      global $newcount;
-      $newcount++;
       $collections_vocab = taxonomy_vocabulary_machine_name_load($this->config['collections_vocab']);
       $collection_keys = $parser->getSourceElement($source, $result, 'collection_keys');
       $collection_tids = array();
@@ -474,6 +479,10 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
 		if ( $author_uid ) {
 		   $target_item->uid = $author_uid;
 		}
+    //Restore setting of biblio_index variable
+    if ($biblio_index) {
+      variable_set('biblio_index', 1);
+    }
    }
    
    /**
