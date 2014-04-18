@@ -50,13 +50,14 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
       $source_config = $source->getConfig();
       $result = new FeedsParserResult();
       $result->collections = $fetcher_result->getCollectionHierarchy();
+      file_put_contents('collectionHierarchy', print_r($result->collections, true));
       // $result->link = (string)array_shift($feed_simple_xml->link);
       
       // Pull collection key from each page below if exists
       // Use Item Key to ensure only one copy of the items is created
       // Add the collection key to item so we can tag in Processing phase
-      
-      foreach ($fetcher_result->getItemsPages() as $feed_raw_xml) {
+      $pages = $fetcher_result->getItemsPages();
+      foreach ($pages as $feed_raw_xml) {
         $feed_simple_xml = simplexml_load_string($feed_raw_xml);
         $namespaces = $feed_simple_xml->getNameSpaces(true);
 
@@ -68,16 +69,18 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
         $collection_key = isset($matches[1]) ? $matches[1] : FALSE;
 
         foreach ($feed_simple_xml->entry as $entry) {
+           $count++;
            $zapi = $entry->children($namespaces['zapi']); 
            $item_key = (string)$zapi->key;
            if (isset($result->items[$item_key])) {
              //Item already added in another collection, just add collection key
              if ($collection_key) {
-               $item['collection_keys'][] = $collection_key;
+               $result->items[$item_key]['collection_keys'][$collection_key] = $collection_key;
              }
            }
 
-           $item = array();
+           $item = isset($result->items[$item_key]) ? $result->items[$item_key] : array();
+           
            $json = (string)$entry->content;
            $data = json_decode($json);
            $item = array_merge($item, (array)$data);
@@ -95,15 +98,32 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
            $item['year'] = (string)$zapi->year;
            $item['numChildren'] = (string)$zapi->numChildren;
            $item['numTags'] = (string)$zapi->numTags;
-           $item['collection_keys'] = $collection_key ? array($collection_key) : array();
+
+           //Append collection key if this item was added under a different collection
+           if ($collection_key) {
+             if (isset($result->items[$item_key]['collection_keys'])) {
+               $item['collection_keys'] = array_merge($result->items[$item_key]['collection_keys'], array($collection_key => $collection_key)); 
+             } 
+             else {
+               $item['collections_keys'] = array($collection_key => $collection_key);
+             }
+           }
+
            self::addItemTypePrefixes($item);
            $this->addZoteroChildren($source, $item);   
            $result->items[(string)$zapi->key] = $item;
+      }
+      file_put_contents('ParserResult', print_r($result, true));
+      if (!$entry->title) {
+        $blankcount++;
+        if ($blankcount < 100) {
+          file_put_contents('blank-'.time(), print_r($item, TRUE). print_r($entry, TRUE));
         }
       }
-      $result->title = $result->title ? $result->title : 'title';
-      return $result;
    }
+     $result->title = isset($result->title) ? $result->title : 'Bilbio Zotero Importer';
+     return $result;
+ }
    
    /**
    * Return mapping sources.

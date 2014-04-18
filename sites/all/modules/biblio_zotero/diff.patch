@@ -1,0 +1,158 @@
+commit aca4551d9d0790b92ecb2b81ba1fc8af75527366
+Author: John De Mott <heydemo13@gmail.com>
+Date:   Fri Apr 4 11:52:42 2014 -0500
+
+    ZB-49 - Moving to batch processing
+
+diff --git a/sites/all/modules/biblio_zotero/FeedsZoteroFetcher.inc b/sites/all/modules/biblio_zotero/FeedsZoteroFetcher.inc
+index d386586..8537712 100644
+--- a/sites/all/modules/biblio_zotero/FeedsZoteroFetcher.inc
++++ b/sites/all/modules/biblio_zotero/FeedsZoteroFetcher.inc
+@@ -16,7 +16,7 @@ class FeedsZoteroHTTPFetcherResult extends FeedsHTTPFetcherResult {
+   protected $file_path;
+   protected $timeout;
+   protected $itemsPages = array();
+-  protected $collectionsPage;
++  protected $collectionsPage = array();
+ 
+   /** 
+    * Constructor.
+@@ -31,47 +31,55 @@ class FeedsZoteroHTTPFetcherResult extends FeedsHTTPFetcherResult {
+    * Return a simple array of all collection keys
+    */
+   public function getCollectionKeys() {
+-    $simple_xml = simplexml_load_string($this->collectionsPage);
+-    if (is_object($simple_xml)) {
+-      $namespaces = $simple_xml->getNameSpaces(true);
+-      $keys = array();
+-      foreach ($simple_xml->entry as $entry) { 
+-        $zapi = $entry->children($namespaces['zapi']); 
+-        $key  = (string)$zapi->key; 
+-        $keys[$key] = $key;
++    $keys = array();
++
++    foreach ($this->collectionsPage as $collectionsPage) {      
++      $simple_xml = simplexml_load_string($collectionsPage);
++      
++      if (is_object($simple_xml)) {
++        $namespaces = $simple_xml->getNameSpaces(true);
++        $keys = array();
++        foreach ($simple_xml->entry as $entry) { 
++          $zapi = $entry->children($namespaces['zapi']); 
++          $key  = (string)$zapi->key; 
++          $keys[$key] = $key;
++        }
+       }
+-      return $keys;
+     }
++
++    return $keys;
+   }
+   /**
+    * Return a structured array with sub-collections nested underneath their parents
+    */
+   public function getCollectionHierarchy() {
+-    $simple_xml = simplexml_load_string($this->collectionsPage);
+-    if (is_object($simple_xml)) {
+-      $namespaces = $simple_xml->getNameSpaces(true);
+-      $collections = array();
+-      foreach ($simple_xml->entry as $entry) { 
+-        $zapi = $entry->children($namespaces['zapi']); 
+-        $key  = (string)$zapi->key; 
+-        $parent = $this->getCollectionParent($entry);
+-        $collections[$key] = array('key' => $key, 'title' => (string)$entry->title, 'parent' => $parent, 'children' => array());
+-      }
+-      //Sort collections into a hierarchical array matching their Zotero structure
+-      global $cntr;
+-      foreach ($collections as $collection) { 
+-        $cntr++;
+-        $parent = $collection['parent'];
+-        if ($parent && isset($collections[$parent])) {
+-          //Put collection under its parent's entry
+-          //The - $collections[$collection['key']] - Syntax is important here because '$collection' is not updated by PHP
+-          $collections[$parent]['children'][$collection['key']] = $collections[$collection['key']];
+-          //Remove collection now that we've copied it under its parent
+-          unset($collections[$collection['key']]);
++    $collections = array();
++    foreach ($this->collectionsPage as $collectionsPage) {      
++      $simple_xml = simplexml_load_string($collectionsPage);
++      if (is_object($simple_xml)) {
++        $namespaces = $simple_xml->getNameSpaces(true);        
++        foreach ($simple_xml->entry as $entry) { 
++          $zapi = $entry->children($namespaces['zapi']); 
++          $key  = (string)$zapi->key; 
++          $parent = $this->getCollectionParent($entry);
++          $collections[$key] = array('key' => $key, 'title' => (string)$entry->title, 'parent' => $parent, 'children' => array());
++        }
++        //Sort collections into a hierarchical array matching their Zotero structure
++        global $cntr;
++        foreach ($collections as $collection) { 
++          $cntr++;
++          $parent = $collection['parent'];
++          if ($parent && isset($collections[$parent])) {
++            //Put collection under its parent's entry
++            //The - $collections[$collection['key']] - Syntax is important here because '$collection' is not updated by PHP
++            $collections[$parent]['children'][$collection['key']] = $collections[$collection['key']];
++            //Remove collection now that we've copied it under its parent
++            unset($collections[$collection['key']]);
++          }
+         }
+       }
+-      return $collections;
+     }
++    return $collections;
+   }
+   /**
+    *  Given a Simple XML Element of the collection entry, return the key of collection's parent
+@@ -97,7 +105,7 @@ class FeedsZoteroHTTPFetcherResult extends FeedsHTTPFetcherResult {
+    * Set the XML for the collections page retrieve from Zotero
+    */
+   public function setCollectionsPage($page_xml) {
+-    $this->collectionsPage = $page_xml;
++    $this->collectionsPage[] = $page_xml;
+   }
+ }
+ 
+@@ -244,7 +252,7 @@ class FeedsZoteroFetcher extends FeedsHTTPFetcher {
+    * Implements FeedsFetcher::fetch().
+    * Overrides FeedsHTTPFetcher->fetch
+    */
+-  public function fetch(FeedsSource $source) {
++  public function fetch(FeedsSource $source) {    
+     $source_config = $source->getConfigFor($this);
+     if ($source_config['fetch_collections']) {
+       $result = $this->fetchCollection($source);
+@@ -318,11 +326,11 @@ class FeedsZoteroFetcher extends FeedsHTTPFetcher {
+         if ($collection_key) {
+           $url .= "/$collection_key/collections";
+         }
+-        $xml .= $this->fetchURL($url);
++        $xml = $this->fetchURL($url);
+         $next_index = $this->getNextIndex($xml);
++        $result->setCollectionsPage($xml); 
+       }
+-      $result->setCollectionsPage($xml); 
+-    }
++    }    
+     return $xml;
+   }
+ 
+@@ -331,7 +339,7 @@ class FeedsZoteroFetcher extends FeedsHTTPFetcher {
+     $result = new FeedsZoteroHTTPFetcherResult($source_config['source']);
+     
+     $this->getCollections($source, $result, $source_config['collection_key']);
+-    $collection_keys = $result->getCollectionKeys($xml);
++    $collection_keys = $result->getCollectionKeys();    
+     foreach ($collection_keys as $key) { 
+       $this->getCollectionItems($source, $result, $key);  
+     }
+@@ -341,7 +349,8 @@ class FeedsZoteroFetcher extends FeedsHTTPFetcher {
+    *  Parses XML response from Zotero to return the numeric index for the next request
+    */
+   private function getNextIndex($xml) {
+-    $feed_simple_xml = simplexml_load_string($xml);
++    $feed_simple_xml = simplexml_load_string($xml);    
++
+     if (is_object($feed_simple_xml)) {
+       $next = $feed_simple_xml->xpath("*[@rel='next']"); 
+       $first = $feed_simple_xml->xpath("*[@rel='first']"); 

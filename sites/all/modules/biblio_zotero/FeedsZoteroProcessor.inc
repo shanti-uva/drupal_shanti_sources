@@ -349,20 +349,24 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
       */
 
       //Create taxonomy terms for our Zotero collections
+      
+  //      file_put_contents('pcollections-'. microtime(), print_r($parser_result->collections, TRUE));
       $this->createCollectionTerms($parser_result->collections); 
       
       $source->reportFilePath = file_directory_temp() ."/biblio-zotero-mapping-report-" . time() . ".tab.txt"; 
-      file_put_contents($source->reportFilePath, "zotero itemtype\tzotero field name\tbiblio field mapping\n"); // this needs to go here since map is called multiple times per import.
+  //      file_put_contents($source->reportFilePath, "zotero itemtype\tzotero field name\tbiblio field mapping\n"); // this needs to go here since map is called multiple times per import.
       parent::process($source, $parser_result);
       $msg = t('Biblio Zotero wrote an import report of mapped and un-mapped fields to @filename', array('@filename' => $source->reportFilePath));
       watchdog('FeedsZoteroProcessor', $msg, NULL, WATCHDOG_NOTICE, $link = NULL);
       drupal_set_message( t('Biblio Zotero wrote an import report of mapped and un-mapped fields to drupal\'s temp directory. See the watchdog for details.'));
       /** @TODO look at parent::process to see about UPDATING during import **/
+      biblio_zotero_reindex_search();
    }
    /**
     * Create hierarchy of taxonomy terms for all Zotero collections
     */
    protected function createCollectionTerms($collections) {
+  //     file_put_contents('process$collections-'. microtime(), print_r($collections, TRUE));
      $vocab = taxonomy_vocabulary_machine_name_load($this->config['collections_vocab']);
      if ($vocab) {
        foreach ($collections as $collection) { 
@@ -382,10 +386,6 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
    * The zotero items are all in  $result->current_item
    **/
    protected function map(FeedsSource $source, FeedsParserResult $result, $target_item = NULL) {
-      //Disable biblio_index so search index doesn't get rebuilt on every node insertion
-      if ($biblio_index = variable_get('biblio_index', 0)) {
-        variable_set('biblio_index', 0);
-      }
       
       // log the mapping succeses and failures to a tab-delimited file in the temp direcory
       if (variable_get('biblio_zotero_enable_log', FALSE)) {
@@ -410,11 +410,17 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
       $collections_vocab = taxonomy_vocabulary_machine_name_load($this->config['collections_vocab']);
       $collection_keys = $parser->getSourceElement($source, $result, 'collection_keys');
       $collection_tids = array();
+      $count = 0;
+
+  //      file_put_contents('collection_keys-'. microtime(), print_r($collection_keys, true));
       foreach ($collection_keys as $collection_key) { 
+        $count++;
         $term = biblio_zotero_get_collection_term($collection_key);
+  //        file_put_contents('term--'. $count, $collection_key .' - '. print_r($term, true));
         $target_item->{$this->config['collections_field']}[LANGUAGE_NONE][] = (array)$term; 
         $collection_tids[] = $term->tid;
       }
+  //      file_put_contents('collection_tids-'. microtime(), print_r($collection_tids, true));
       $target_item->taxonomy['tags'][$collections_vocab->vid] = implode(",", $collection_tids);
       
       // map the tags 
@@ -479,10 +485,6 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
 		if ( $author_uid ) {
 		   $target_item->uid = $author_uid;
 		}
-    //Restore setting of biblio_index variable
-    if ($biblio_index) {
-      variable_set('biblio_index', 1);
-    }
    }
    
    /**
