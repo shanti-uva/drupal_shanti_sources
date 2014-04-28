@@ -467,21 +467,26 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
 		$collection_keys = $parser->getSourceElement($source, $result, 'collection_keys');
 		$collection_tids = array();
 		// Reset collection terms so that every update we get the latest only.		
-		$target_item->{$this->config['collections_field']}[LANGUAGE_NONE] = array();
+    if (isset($this->config['collections_field'])) {
+		  $target_item->{$this->config['collections_field']}[LANGUAGE_NONE] = array();
 
-		foreach ($collection_keys as $collection_key) { 
-		  $term = biblio_zotero_get_collection_term($collection_key);
-		  $target_item->{$this->config['collections_field']}[LANGUAGE_NONE][] = (array)$term; 
-		  $collection_tids[] = $term->tid;
-		}		
+      foreach ($collection_keys as $collection_key) { 
+        $term = biblio_zotero_get_collection_term($collection_key);
+        $target_item->{$this->config['collections_field']}[LANGUAGE_NONE][] = (array)$term; 
+        $collection_tids[] = $term->tid;
+      }		
+    }
+    else {
+      drupal_set_message('No taxonomy field set up for collections field in Zotero Feed importer settings, collections won\'t be imported', 'warning', FALSE);
+    }
 
 		$target_item->taxonomy['tags'][$collections_vocab->vid] = implode(",", $collection_tids);
 
 		//Check for custom fields that support longer field length
-		if (isset($target_item->field_biblio_title)) { 
-		  $target_item->field_biblio_title[LANGUAGE_NONE][0]['value'] = $target_item->title;
-		}
-		if (isset($target_item->field_biblio_long_language)) {
+  	if (field_info_field('field_biblio_long_title')) {
+		  $target_item->field_biblio_long_title[LANGUAGE_NONE][0]['value'] = $target_item->title;
+  	}
+		if (field_info_field('field_biblio_long_language')) {
 		  $target_item->field_biblio_long_language[LANGUAGE_NONE][0]['value'] = $target_item->biblio_lang;
 		}
 

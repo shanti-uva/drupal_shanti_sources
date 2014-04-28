@@ -20,8 +20,8 @@ function biblio_long_fields_node_presave($node) {
  */
 function biblio_long_fields_node_load($nodes) {    
   foreach ($nodes as $node) {    
-    if ($node->type == 'biblio' && $node->field_biblio_title) {    
-      $node->title = $node->field_biblio_title[LANGUAGE_NONE][0]['value'];
+    if ($node->type == 'biblio' && $node->field_biblio_long_title) {    
+      $node->title = $node->field_biblio_long_title[LANGUAGE_NONE][0]['value'];
     }
   }
 }

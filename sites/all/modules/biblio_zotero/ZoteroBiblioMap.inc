@@ -1,4 +1,6 @@
 <?php
+print 'ZoteroBiblioMap included!';
+echo "<pre>"; print_r(debug_backtrace()); die();
 /**
 *   Zotero API Client
 */
