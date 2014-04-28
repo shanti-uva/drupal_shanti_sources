@@ -127,16 +127,6 @@ function biblio_zotero_feeds_importer_default() {
    return $export;
 }
 
-function biblio_zotero_node_presave($node) {
-  //dpm($node, "node@hook_node_presave");
-}
-function biblio_zotero_node_view() {
-  //Disable biblio_index so search index doesn't get rebuilt on every node insertion
-  if ($biblio_index = variable_get('biblio_index', 0)) {
-    drupal_set_message('Biblio search indexing is enabled, you should disable for faster import', 'notice');
-    //variable_set('biblio_index', 0);
-  }
-}
 
 /**
 * http://drupalcontrib.org/api/drupal/contributions%21feeds%21feeds.api.php/function/hook_feeds_processor_targets_alter/7

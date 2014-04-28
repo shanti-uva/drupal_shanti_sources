@@ -349,6 +349,12 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
 		*/
 
 		//Create taxonomy terms for our Zotero collections      
+    $enable_search_index = FALSE;
+    //Make sure rebuild biblio search index is disabled on import, or it will re-index everytime we import a node, slowly things down dramatically
+    if (variable_get('biblio_index', 0)) {
+      $enable_search_index = TRUE;
+      variable_set('biblio_index', 0); 
+    } 
 		$this->createCollectionTerms($parser_result->collections); 
 
 		$source->reportFilePath = file_directory_temp() ."/biblio-zotero-mapping-report-" . time() . ".tab.txt"; 
@@ -361,6 +367,9 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
 		$msg = t('Biblio Zotero wrote an import report of mapped and un-mapped fields to @filename', array('@filename' => $source->reportFilePath));
 		watchdog('FeedsZoteroProcessor', $msg, NULL, WATCHDOG_NOTICE, $link = NULL);
 		drupal_set_message( t('Biblio Zotero wrote an import report of mapped and un-mapped fields to drupal\'s temp directory. See the watchdog for details.'));
+    if ($enable_search_index) {
+      variable_set('biblio_index', 1); 
+    } 
 		/** @TODO look at parent::process to see about UPDATING during import **/
 	}
 
