@@ -37,13 +37,13 @@ function biblio_long_fields_field_default_field_bases() {
     'type' => 'text_long',
   );
 
-  // Exported field_base: 'field_biblio_title'
-  $field_bases['field_biblio_title'] = array(
+  // Exported field_base: 'field_biblio_long_title'
+  $field_bases['field_biblio_long_title'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
-    'field_name' => 'field_biblio_title',
+    'field_name' => 'field_biblio_long_title',
     'foreign keys' => array(
       'format' => array(
         'columns' => array(

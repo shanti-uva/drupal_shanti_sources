@@ -6,6 +6,7 @@ version = 7.x-1.0
 project = biblio_long_fields
 dependencies[] = features
 dependencies[] = text
+dependencies[] = biblio
 features[features_api][] = api:2
 features[field_base][] = field_biblio_long_language
 features[field_base][] = field_biblio_title

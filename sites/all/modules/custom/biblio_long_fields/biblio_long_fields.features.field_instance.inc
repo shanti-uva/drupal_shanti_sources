@@ -60,8 +60,8 @@ function biblio_long_fields_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-biblio-field_biblio_title'
-  $field_instances['node-biblio-field_biblio_title'] = array(
+  // Exported field_instance: 'node-biblio-field_biblio_long_title'
+  $field_instances['node-biblio-field_biblio_long_title'] = array(
     'bundle' => 'biblio',
     'default_value' => NULL,
     'deleted' => 0,
@@ -88,8 +88,8 @@ function biblio_long_fields_field_default_field_instances() {
       ),
     ),
     'entity_type' => 'node',
-    'field_name' => 'field_biblio_title',
-    'label' => 'Biblo Title',
+    'field_name' => 'field_biblio_long_title',
+    'label' => 'Biblio Title',
     'required' => 0,
     'settings' => array(
       'linkit' => array(
@@ -112,7 +112,7 @@ function biblio_long_fields_field_default_field_instances() {
 
   // Translatables
   // Included for use with string extractors like potx.
-  t('Biblo Title');
+  t('Biblio Title');
   t('Long Language');
 
   return $field_instances;
