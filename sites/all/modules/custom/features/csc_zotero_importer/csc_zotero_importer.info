@@ -1,6 +1,6 @@
 name = CSC Zotero Importer
 core = 7.x
-package = Features
+package = CSC
 dependencies[] = biblio_zotero
 dependencies[] = ctools
 dependencies[] = features
@@ -19,4 +19,4 @@ features[field_instance][] = node-biblio-field_zotero_tags
 features[taxonomy][] = collections
 features[taxonomy][] = zotero_tags
 features_exclude[dependencies][defaultconfig] = defaultconfig
-project path = sites/all/modules/custom
+project path = sites/all/modules/custom/features
