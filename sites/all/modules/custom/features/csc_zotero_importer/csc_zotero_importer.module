@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the CSC Zotero Importer feature.
+ */
+
+include_once 'csc_zotero_importer.features.inc';
