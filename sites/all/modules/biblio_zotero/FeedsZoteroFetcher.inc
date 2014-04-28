@@ -96,17 +96,10 @@ class FeedsZoteroHTTPFetcherResult extends FeedsHTTPFetcherResult {
   /**
    *  Add one of the Items pages retrieved from Zotero
    */
-  public function addItemsPage($page) {
-    static $count = 0;
-    $count++;
-    if (is_array($page)) {
-      $this->itemsPages = array_merge($this->itemsPages, $page);
-    }
-    else {
-      $this->itemsPages[] = $page;
-    }
-  //    console.log('itemsPages'.microtime(), );
+  public function addItemsPage($page) {    
+    $this->itemsPages[] = $page;
   }
+
   /**
    * Set the XML for the collections page retrieve from Zotero
    */
@@ -271,15 +264,16 @@ class FeedsZoteroFetcher extends FeedsHTTPFetcher {
                                          'start' => $config['next_index'], 'source' => 'collection', 'source_key' => $key));
         $url   = $this->formatUrl(array('account_type' => $config['zotero_type'], 'account_id' => $config['zotero_id'], 
                                          'start' => $config['next_index'], 'source' => 'collection', 'source_key' => $key));
-        $result->addItemsPage($pages);
+        $result->addItemsPage(array('collection_key' => $key, 'page' => $pages));
       }
       //Get top-level items not in any collection
       $pages = $this->fetchPages(array('account_type' => $config['zotero_type'], 'account_id' => $config['zotero_id'], 'start' => $config['next_index'], 'top' => TRUE));
-      $result->addItemsPage($pages);
+      $result->addItemsPage(array('collection_key' => NULL, 'page' => $pages));
+
     }
     else {
       $pages = $this->fetchPages(array('account_type' => $config['zotero_type'], 'account_id' => $config['zotero_id'], 'start' => $config['next_index']));
-      $result->addItemsPage($pages);
+      $result->addItemsPage(array('collection_key' => NULL, 'page' => $pages));
     }
     return $result;
   }
