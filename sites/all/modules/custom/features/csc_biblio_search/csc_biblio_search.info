@@ -1,0 +1,15 @@
+name = CSC Biblio Search
+core = 7.x
+package = CSC
+dependencies[] = defaultconfig
+dependencies[] = page_manager
+dependencies[] = views
+dependencies[] = views_content
+features[ctools][] = page_manager:pages_default:1
+features[ctools][] = views:views_default:3.0
+features[defaultconfig][] = views_default_views:biblio_search_api
+features[features_api][] = api:2
+features[page_manager_pages][] = csc_biblio_search
+features[views_view][] = biblio_search_api
+features_exclude[dependencies][ctools] = ctools
+project path = sites/all/modules/custom/features
