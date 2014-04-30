@@ -43,7 +43,6 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
    * Implementation of FeedsParser::parse().
    */
    public function parse(FeedsSource $source, FeedsFetcherResult $fetcher_result) {
-      file_put_contents('fetcher_result', print_r($fetcher_result, true));
       feeds_include_library('common_syndication_parser.inc', 'common_syndication_parser');
       
       $source_config = $source->getConfig();
@@ -54,7 +53,7 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
       // Pull collection key from each page below if exists
       // Use Item Key to ensure only one copy of the items is created
       // Add the collection key to item so we can tag in Processing phase      
-      foreach ($fetcher_result->getItemsPages() as $page) { 
+      foreach ($fetcher_result->getItemPages() as $page) { 
         $collection_key = $page['collection_key'];
 
         if (!is_array($page['page'])) {
@@ -99,16 +98,44 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
               $item['numChildren'] = (string)$zapi->numChildren;
               $item['numTags'] = (string)$zapi->numTags;             
               self::addItemTypePrefixes($item);
+              $this->addZoteroChildren($item, $fetcher_result->getChildPages($item_key));   
 
             }
-
-            $this->addZoteroChildren($source, $item);   
             $result->items[(string)$zapi->key] = $item;            
           }
         }
       }
       $result->title = $result->title ? $result->title : t('Zotero Feed Importer');
       return $result;
+   }
+   
+   public function addZoteroChildren(&$item, $children) {
+
+     foreach ($children as $child) { 
+       $xml = simplexml_load_string($child);
+       $namespaces = $xml->getNameSpaces(true);
+       
+       foreach ($xml->entry as $entry) {
+         $child = json_decode( (string) $entry->content );
+         $child->author = (string)$entry->author->name;
+         $zapi = $entry->children($namespaces['zapi']); 
+         $child->key = (string)$zapi->key;
+         $child->itemType = (string)$zapi->itemType;
+         // for this to work, go to admin/config/content/biblio/fields and in Common fields set biblio_notes to common
+        
+         switch ($child->itemType) {
+           case 'note':
+             $note = $child->note . PHP_EOL . " - " . $child->author;
+             // Concatenate multiple notes into one value; this 'note' field is exposed as a mapping source
+             $item['note'] .= strip_tags($note) . PHP_EOL; 
+             // This is here so the processor can do something more exciting than concat note text. 
+             //@TODO expose 'notes' this with a proper source callback and target callback
+             $item['notes'][] = $child; 
+             break;
+           default:
+         }
+       }
+     }
    }
    
    /**
@@ -140,47 +167,6 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
       return $sources;
    }
    
-   /**
-   * Fetch children of a top-level item
-   * @TODO handle cases where there are more than 99 CHILD items; look for rel='next' value
-   **/
-   private function addZoteroChildren( FeedsSource $source, &$item ) {
-      // get the child items: notes, attachments, and what else?
-      
-      /** @TODO somehow keep notes metadata, author, tags, etc. **/
-      if ( $item['numChildren'] > 0 ) {
-         $zapiKey = $item['key'];
-         $source_config = $source->getConfig();
-         $child_service_url = sprintf( $source_config['FeedsZoteroFetcher']['child_source'],$zapiKey );  // child items url
-         if ( ! empty( $source_config['FeedsZoteroFetcher']['api_key'] ) ) {
-            $child_service_url .= '&key=' . $source_config['FeedsZoteroFetcher']['api_key'];
-         }
-         $xml_str = file_get_contents($child_service_url); /** @TODO use authentication if in Fetcher **/ 
-         $xml = simplexml_load_string($xml_str);
-         $namespaces = $xml->getNameSpaces(true);
-         
-         foreach ( $xml->entry as $entry ) {
-            $child = json_decode( (string) $entry->content );
-            $child->author = (string)$entry->author->name;
-            $zapi = $entry->children($namespaces['zapi']); 
-            $child->key = (string)$zapi->key;
-            $child->itemType = (string)$zapi->itemType;
-            // for this to work, go to admin/config/content/biblio/fields and in Common fields set biblio_notes to common
-            
-            switch ( $child->itemType ) {
-            case 'note':
-               $note = $child->note . PHP_EOL . " - " . $child->author;
-               // Concatenate multiple notes into one value; this 'note' field is exposed as a mapping source
-               $item['note'] .= strip_tags($note) . PHP_EOL; 
-               // This is here so the processor can do something more exciting than concat note text. 
-               //@TODO expose 'notes' this with a proper source callback and target callback
-               $item['notes'][] = $child; 
-               break;
-            default:
-            }
-         }
-      }
-   }
    
    /**
    * Create unique mapping sources for the different zotero types 
