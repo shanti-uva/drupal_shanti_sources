@@ -43,6 +43,7 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
    * Implementation of FeedsParser::parse().
    */
    public function parse(FeedsSource $source, FeedsFetcherResult $fetcher_result) {
+      file_put_contents('fetcher_result', print_r($fetcher_result, true));
       feeds_include_library('common_syndication_parser.inc', 'common_syndication_parser');
       
       $source_config = $source->getConfig();

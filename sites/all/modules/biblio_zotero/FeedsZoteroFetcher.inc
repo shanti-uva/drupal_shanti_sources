@@ -17,6 +17,8 @@ class FeedsZoteroHTTPFetcherResult extends FeedsHTTPFetcherResult {
   protected $timeout;
   protected $itemsPages = array();
   protected $collectionsPages = array();
+  protected $notes = array();
+  protected $files = array();
 
   /** 
    * Constructor.
@@ -97,9 +99,9 @@ class FeedsZoteroHTTPFetcherResult extends FeedsHTTPFetcherResult {
   }
 
   /**
-   * Set the XML for the collections page retrieve from Zotero
+   * Add XML for the collections pages retrieved from Zotero
    */
-  public function setCollectionsPage($page) {
+  public function addCollectionPages($page) {
     if (is_array($page)) {
       $this->collectionsPages = array_merge($this->collectionsPages, $page);
     }
@@ -213,7 +215,8 @@ class FeedsZoteroFetcher extends FeedsHTTPFetcher {
     $config = $source->getConfigFor($this);
     $result = new FeedsZoteroHTTPFetcherResult($config['source']);
     if ($config['fetch_collections'] && arg(2) != 'edit') {
-      $this->getCollections($source, $result, $config['collection_key']);
+      $pages = $this->getCollections($source, $config['collection_key']);
+      $result->addCollectionPages($pages);
       $collection_keys = $result->getCollectionKeys();    
       foreach ($collection_keys as $key) { 
         $pages = $this->fetchPages(array('account_type' => $config['zotero_type'], 'account_id' => $config['zotero_id'], 
@@ -268,7 +271,7 @@ class FeedsZoteroFetcher extends FeedsHTTPFetcher {
     return $pages;
   }
   
-  public function getCollections(FeedsSource $source, &$result, $collection_key = NULL) {
+  public function getCollections(FeedsSource $source, $collection_key = NULL) {
     $config = $source->getConfigFor($this);
     $account_type = $config['zotero_type'] == 'group' ? 'groups' : 'users';
     $xml = '';
@@ -277,9 +280,12 @@ class FeedsZoteroFetcher extends FeedsHTTPFetcher {
     //TODO: Allow import from specific collection
     $pages = $this->fetchPages(array('account_type' => $account_type, 'account_id' => $config['zotero_id'],  
                                      'target' => 'collections', 'start' => 0, 'source_key' => $collection_key));
-    $result->setCollectionsPage($pages);
 
     return $pages;
+  }
+
+  public function getItemChildren() {
+
   }
 
   /** 
