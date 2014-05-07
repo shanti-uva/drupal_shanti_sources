@@ -11,7 +11,6 @@ function csc_zotero_importer_defaultconfig_features() {
   return array(
     'csc_zotero_importer' => array(
       'feeds_importer_default' => 'feeds_importer_default',
-      'taxonomy_default_vocabularies' => 'taxonomy_default_vocabularies',
     ),
   );
 }
@@ -47,7 +46,7 @@ function csc_zotero_importer_defaultconfig_feeds_importer_default() {
     'processor' => array(
       'plugin_key' => 'FeedsZoteroProcessor',
       'config' => array(
-        'update_existing' => '1',
+        'update_existing' => '2',
         'expire' => '-1',
         'mappings' => array(
           0 => array(
@@ -2285,6 +2284,16 @@ function csc_zotero_importer_defaultconfig_feeds_importer_default() {
             'target' => 'biblio_type_of_work',
             'unique' => FALSE,
           ),
+          447 => array(
+            'source' => 'links',
+            'target' => 'field_zotero_attachment:url',
+            'unique' => FALSE,
+          ),
+          448 => array(
+            'source' => 'files',
+            'target' => 'field_zotero_files:title',
+            'unique' => FALSE,
+          ),
         ),
         'input_format' => 'panopoly_wysiwyg_text',
         'author' => 0,
@@ -2311,28 +2320,4 @@ function csc_zotero_importer_defaultconfig_feeds_importer_default() {
   $export['zotero_feed'] = $feeds_importer;
 
   return $export;
-}
-
-/**
- * Implements hook_defaultconfig_taxonomy_default_vocabularies().
- */
-function csc_zotero_importer_defaultconfig_taxonomy_default_vocabularies() {
-  return array(
-    'collections' => array(
-      'name' => 'Collections',
-      'machine_name' => 'collections',
-      'description' => 'Zotero Collections',
-      'hierarchy' => 0,
-      'module' => 'taxonomy',
-      'weight' => 0,
-    ),
-    'zotero_tags' => array(
-      'name' => 'Zotero Tags',
-      'machine_name' => 'zotero_tags',
-      'description' => '',
-      'hierarchy' => 0,
-      'module' => 'taxonomy',
-      'weight' => 0,
-    ),
-  );
 }
