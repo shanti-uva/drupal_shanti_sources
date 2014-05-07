@@ -15,7 +15,7 @@
 class FeedsZoteroHTTPFetcherResult extends FeedsHTTPFetcherResult {
   protected $file_path;
   protected $timeout;
-  protected $itemsPages = array();
+  protected $itemsPages = array('no_collection_items' => array());
   protected $collectionPages = array();
   protected $notes = array();
   protected $files = array();
@@ -36,8 +36,13 @@ class FeedsZoteroHTTPFetcherResult extends FeedsHTTPFetcherResult {
    *    $key can be set to NULL if pages are not associated with a collection
    *    $pages - An array of XML pages retrieved from Zotero
    */
-  public function addItemPages($pages) {    
-    $this->itemsPages[] = $pages;
+  public function addItemPages($pages, $collection_key = NULL) {    
+    if ($collection_key) {
+      $this->itemsPages[$collection_key] = isset($this->itemsPages[$collection_key]) ? array_merge($this->itemsPages[$collection_key], $pages) : $pages;
+    }
+    else {
+      $this->itemsPages['no_collection_items'] = array_merge($this->itemsPages['no_collection_items'], $pages);
+    }
   }
   public function getItemPages() {
     return $this->itemsPages;
@@ -117,7 +122,7 @@ class FeedsZoteroHTTPFetcherResult extends FeedsHTTPFetcherResult {
       $this->collectionPages = array_merge($this->collectionPages, $page);
     }
     else {
-      $this->collectionPages[] = $page_xml;
+      $this->collectionPages[] = $page;
     }
   }
   public function getCollectionPages($page) {
@@ -247,21 +252,21 @@ class FeedsZoteroFetcher extends FeedsHTTPFetcher {
       foreach ($collection_keys as $key) { 
         $pages = $this->fetchPages(array('account_type' => $config['zotero_type'], 'account_id' => $config['zotero_id'], 
                                          'start' => $config['next_index'], 'source' => 'collection', 'source_key' => $key));
-        $result->addItemPages(array('collection_key' => $key, 'page' => $pages));
+        $result->addItemPages($pages, $key);
       }
       //Get top-level items not in any collection
       $pages = $this->fetchPages(array('account_type' => $config['zotero_type'], 'account_id' => $config['zotero_id'], 'start' => $config['next_index'], 'top' => TRUE));
-      $result->addItemPages(array('collection_key' => NULL, 'page' => $pages));
+      $result->addItemPages($pages);
     }
     else {
       $pages = $this->fetchPages(array('account_type' => $config['zotero_type'], 'account_id' => $config['zotero_id'], 'start' => $config['next_index']));
-      $result->addItemPages(array('collection_key' => NULL, 'page' => $pages));
+      $result->addItemPages($pages);
     }
     //Retrieve children for each item - Notes, Links, Files
     $child_pages = array();
     $pages = $result->getItemPages();
-    foreach ($result->getItemPages() as $pages => $page) { 
-      $item_keys = $result->getEntryKeys($page['page']);
+    foreach ($result->getItemPages() as $page) { 
+      $item_keys = $result->getEntryKeys($page);
       foreach ($item_keys as $item_key) {
         $result->addChildPages($item_key, $this->getItemChildren($item_key));
       }
@@ -367,10 +372,12 @@ class FeedsZoteroFetcher extends FeedsHTTPFetcher {
     if (isset($source) && $source) {
       $url .= "/$source";
     }
-    $url .= "/$target";
     if (isset($source_key) && $source_key) {
       $url .= "/$source_key";
     }
+    
+    $url .= "/$target";
+
     if (isset($top) && $top) {
       $url .= "/top";
     }

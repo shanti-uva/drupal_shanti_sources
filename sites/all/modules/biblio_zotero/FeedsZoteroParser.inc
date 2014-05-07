@@ -48,63 +48,52 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
       $source_config = $source->getConfig();
       $result = new FeedsParserResult();
       $result->collections = $fetcher_result->getCollectionHierarchy();      
-      // $result->link = (string)array_shift($feed_simple_xml->link);
       
-      // Pull collection key from each page below if exists
-      // Use Item Key to ensure only one copy of the items is created
-      // Add the collection key to item so we can tag in Processing phase      
-      foreach ($fetcher_result->getItemPages() as $page) { 
-        $collection_key = $page['collection_key'];
+      foreach ($fetcher_result->getItemPages() as $collection_key => $pages) { 
+        $collection_key = ($collection_key == 'no_collection_items') ? FALSE : $collection_key;
+        foreach ($pages as $page) {
 
-        if (!is_array($page['page'])) {
-          $page['page'] = array($page['page']);
-        }
-
-        foreach ($page['page'] as $feed_raw_xml) {
-
-          $feed_simple_xml = simplexml_load_string($feed_raw_xml);
+          $feed_simple_xml = simplexml_load_string($page);
           $namespaces = $feed_simple_xml->getNameSpaces(true);
 
           foreach ($feed_simple_xml->entry as $entry) {
             $zapi = $entry->children($namespaces['zapi']); 
             $item_key = (string)$zapi->key;
+            $item_type = (string)$zapi->itemType;
             $item = array();
+            $json = (string)$entry->content;
+            $data = json_decode($json);
+            $item = array_merge($item, (array)$data);
+            
+            //Item may have been processed in another collection, copy collection keys from result if they exist
+            $item['collection_keys'] = isset($result->items[$item_key]) ? $result->items[$item_key]['collection_keys'] : array();
 
-            if (isset($result->items[$item_key])) {
-              //Item already added in another collection, just add collection key
-              $item = $result->items[$item_key];
-              if (!is_null($collection_key)) {
-                $item['collection_keys'][] = $collection_key;
-              }              
+            if ($collection_key) {
+              $item['collection_keys'][] = $collection_key;
             }
-            else {
-              $item['collection_keys'] = $collection_key ? array($collection_key) : array();
-               
-              $json = (string)$entry->content;
-              $data = json_decode($json);
-              $item = array_merge($item, (array)$data);
-              $item['key'] = $item_key;
-              $item['guid'] = $item_key;
-               
-              $item['url'] = (string)$entry->id;
-              $item['published'] = (string)$entry->published;
-              $item['updated'] = (string)$entry->updated;
-              $item['description'] = ''; //description gets mapped to Full Text of the biblio node so leave it blank
-              $item['title'] = (string)$entry->title;
-               
-              $item['itemType'] = (string)$zapi->itemType;
-              $item['creatorSummary'] = (string)$zapi->creatorSummary;
-              $item['year'] = (string)$zapi->year;
-              $item['numChildren'] = (string)$zapi->numChildren;
-              $item['numTags'] = (string)$zapi->numTags;             
-              self::addItemTypePrefixes($item);
-              $this->addZoteroChildren($item, $fetcher_result->getChildPages($item_key));   
+             
+            $item['key'] = $item_key;
+            $item['guid'] = $item_key;
+             
+            $item['url'] = (string)$entry->id;
+            $item['published'] = (string)$entry->published;
+            $item['updated'] = (string)$entry->updated;
+            $item['description'] = ''; //description gets mapped to Full Text of the biblio node so leave it blank
+            $item['title'] = (string)$entry->title;
+             
+            $item['itemType'] = (string)$zapi->itemType;
+            $item['creatorSummary'] = (string)$zapi->creatorSummary;
+            $item['year'] = (string)$zapi->year;
+            $item['numChildren'] = (string)$zapi->numChildren;
+            $item['numTags'] = (string)$zapi->numTags;             
+            self::addItemTypePrefixes($item);
+            $this->addZoteroChildren($item, $fetcher_result->getChildPages($item_key));   
 
-            }
             $result->items[(string)$zapi->key] = $item;            
           }
         }
       }
+      dpm($result->items);
       $result->title = $result->title ? $result->title : t('Zotero Feed Importer');
       return $result;
    }
@@ -132,6 +121,15 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
              //@TODO expose 'notes' this with a proper source callback and target callback
              $item['notes'][] = $child; 
              break;
+           case 'attachment':
+             if ($child->url) {
+               $item['links'][] = $child->url;
+             }
+             elseif ($child->filename) {
+               $item['files'][] = $child->filename;
+             }
+             break;
+
            default:
          }
        }
@@ -162,6 +160,15 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
          'description' => t("Zotero creators vary by item type and the mapping is determined in a callback function provided in biblio_zotero.module"),
          'callback' => 'biblio_zotero_feeds_source_creators',
          );
+      $sources['links'] = array(
+         'name' => t("Zotero Links"),
+         'description' => t("Link attachments from Zotero"),
+         );
+      $sources['files'] = array(
+         'name' => t("Zotero Filenames"),
+         'description' => t("Names of attached files from Zotero"),
+  //         'callback' => 'link_feeds_set_target',
+         );
 
       $sources += parent::getMappingSources();
       return $sources;
@@ -173,16 +180,18 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
    * since they sometimes map to different biblio fields depending on publication type
    */
    function addItemTypePrefixes(&$item) {
-      $no_rename = array('itemType', 'guid','tags','creators', 'collection_keys');
+      $no_rename = array('itemType', 'guid','tags','creators', 'collection_keys', 'files', 'links');
       $item = (array)$item;
       $old_keys = array_keys($item);
       foreach( $old_keys as $old_key) {
          if (in_array($old_key, $no_rename)) {
             continue;
          }
-         $new_key = $item['itemType'] . ":" . $old_key;
-         $item[$new_key] = $item[$old_key];
-         unset($item[$old_key]);
+         if ($item['itemType']) {
+           $new_key = $item['itemType'] . ":" . $old_key;
+           $item[$new_key] = $item[$old_key];
+           unset($item[$old_key]);
+         }
       }
    }
 }

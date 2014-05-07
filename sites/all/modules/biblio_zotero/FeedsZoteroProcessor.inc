@@ -30,7 +30,6 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
 		$config['sync_tags'] = false;
 		$config['tags_field'] = null;
 		$config['tags_vocab'] = null;
-		$config['link_field'] = null;
 		$config['collections_field'] = null;
 		$config['collections_vocab'] = null;
 		$config['notes_field'] = 'biblio_notes';
@@ -88,13 +87,6 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
 				'#description' => $desc,
 				'#options' => $taxo_field_options,
 				'#default_value' => isset($this->config['collections_field']) ? $this->config['collections_field'] : FALSE,
-				);
-			$form['link_field'] = array(
-				'#type' => 'select',
-				'#title' => t('Select a field to import attached files from Zotero as links', array('@type' => $content_type)),
-				'#description' => 'This should be a field of type link',
-				'#options' => $taxo_field_options,
-				'#default_value' => isset($this->config['link_field']) ? $this->config['link_field'] : FALSE,
 				);
 			$form['collection_vocab'] = array(
 				'#type' => 'textfield',
