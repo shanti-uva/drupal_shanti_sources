@@ -12,4 +12,5 @@ features[defaultconfig][] = field_default_fields:node-biblio-field_biblio_long_l
 features[defaultconfig][] = field_default_fields:node-biblio-field_biblio_long_title
 features[features_api][] = api:2
 features[field_base][] = field_biblio_long_language
+features[field_base][] = field_biblio_long_title
 features[field_instance][] = node-biblio-field_biblio_long_language
