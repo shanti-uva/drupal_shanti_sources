@@ -54,7 +54,7 @@ class FeedsZoteroHTTPFetcherResult extends FeedsHTTPFetcherResult {
    * @pages - an array of XML Pages retrieved from Zotero
    *
    */
-  public function getEntryKeys($pages) {
+  public function getEntryKeys($pages, $exclude_types = array()) {
     $keys = array();
     foreach ($pages as $collectionsPage) {      
       $simple_xml = simplexml_load_string($collectionsPage);
@@ -62,8 +62,10 @@ class FeedsZoteroHTTPFetcherResult extends FeedsHTTPFetcherResult {
         $namespaces = $simple_xml->getNameSpaces(true);
         foreach ($simple_xml->entry as $entry) { 
           $zapi = $entry->children($namespaces['zapi']); 
-          $key  = (string)$zapi->key; 
-          $keys[$key] = $key;
+          if (!in_array($zapi->itemType, $exclude_types)) {
+            $key  = (string)$zapi->key; 
+            $keys[$key] = $key;
+          }
         }
       }
     }
@@ -245,7 +247,13 @@ class FeedsZoteroFetcher extends FeedsHTTPFetcher {
     $this->config = $source->getConfigFor($this);
     $config = $source->getConfigFor($this);
     $result = new FeedsZoteroHTTPFetcherResult($config['source']);
-    if ($config['fetch_collections'] && arg(2) != 'edit') {
+    //Retrieve minimal information for edit node page
+    if (arg(2) == 'edit') {
+      $pages = $this->fetchPages(array('account_type' => $config['zotero_type'], 'account_id' => $config['zotero_id'], 'start' => $config['next_index'], $top => TRUE));
+      $result->addItemPages($pages);
+      return $result;
+    }
+    if ($config['fetch_collections'] ) {
       $pages = $this->getCollections($source, $config['collection_key']);
       $result->addCollectionPages($pages);
       $collection_keys = $result->getEntryKeys($result->getCollectionPages());    
@@ -262,11 +270,12 @@ class FeedsZoteroFetcher extends FeedsHTTPFetcher {
       $pages = $this->fetchPages(array('account_type' => $config['zotero_type'], 'account_id' => $config['zotero_id'], 'start' => $config['next_index']));
       $result->addItemPages($pages);
     }
+  //    file_put_contents('itemsPages', print_r($result->getItemPages(), TRUE));
     //Retrieve children for each item - Notes, Links, Files
     $child_pages = array();
     $pages = $result->getItemPages();
     foreach ($result->getItemPages() as $page) { 
-      $item_keys = $result->getEntryKeys($page);
+      $item_keys = $result->getEntryKeys($page, array('attachment'));
       foreach ($item_keys as $item_key) {
         $result->addChildPages($item_key, $this->getItemChildren($item_key));
       }

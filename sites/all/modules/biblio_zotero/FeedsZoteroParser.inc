@@ -104,6 +104,7 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
        $xml = simplexml_load_string($child);
        $namespaces = $xml->getNameSpaces(true);
        
+       $note_count = 0;
        foreach ($xml->entry as $entry) {
          $child = json_decode( (string) $entry->content );
          $child->author = (string)$entry->author->name;
@@ -111,10 +112,15 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
          $child->key = (string)$zapi->key;
          $child->itemType = (string)$zapi->itemType;
          // for this to work, go to admin/config/content/biblio/fields and in Common fields set biblio_notes to common
-        
+         $biggest_note_size = 0; 
          switch ($child->itemType) {
            case 'note':
              $note = $child->note . PHP_EOL . " - " . $child->author;
+             if (strlen($note) > $biggest_note_size) {
+               $biggest_note_size = strlen($note);
+               $note_count++;
+  //               file_put_contents('biggest_note_'. $note_count, $note);
+             }
              // Concatenate multiple notes into one value; this 'note' field is exposed as a mapping source
              $item['note'] .= strip_tags($note) . PHP_EOL; 
              // This is here so the processor can do something more exciting than concat note text. 
