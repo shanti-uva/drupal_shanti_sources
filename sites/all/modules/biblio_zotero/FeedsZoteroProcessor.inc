@@ -454,6 +454,7 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
 		// Do the mappings
 		// parent::map($source, $result, $target_item); //parent::map IS OVERRIDDEN below in super_map
 		$this->super_map($source, $result, $target_item);
+
 		
 		// map the remaining zotero fields which do not have mapping sources: tags, creators, 
 		$feed = node_load($target_item->feeds_item->feed_nid);
@@ -486,10 +487,11 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
 
 		//Check for custom fields that support longer field length
   	if (field_info_field('field_biblio_long_title')) {
-		  $target_item->field_biblio_long_title[LANGUAGE_NONE][0]['value'] = $target_item->title;
+		  $target_item->field_biblio_long_title[LANGUAGE_NONE][0]['value'] = $parser->getSourceElement($source, $result, 'long_title');
   	}
 		if (field_info_field('field_biblio_long_language')) {
 		  $target_item->field_biblio_long_language[LANGUAGE_NONE][0]['value'] = $target_item->biblio_lang;
+      $target_item->biblio_lang = '';
 		}
 
 		// map the tags 

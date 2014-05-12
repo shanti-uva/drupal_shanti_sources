@@ -48,7 +48,6 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
       $source_config = $source->getConfig();
       $result = new FeedsParserResult();
       $result->collections = $fetcher_result->getCollectionHierarchy();      
-      
       foreach ($fetcher_result->getItemPages() as $collection_key => $pages) { 
         $collection_key = ($collection_key == 'no_collection_items') ? FALSE : $collection_key;
         foreach ($pages as $page) {
@@ -80,6 +79,7 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
             $item['updated'] = (string)$entry->updated;
             $item['description'] = ''; //description gets mapped to Full Text of the biblio node so leave it blank
             $item['title'] = (string)$entry->title;
+            $item['long_title'] = (string)$entry->title;
              
             $item['itemType'] = (string)$zapi->itemType;
             $item['creatorSummary'] = (string)$zapi->creatorSummary;
@@ -93,18 +93,15 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
           }
         }
       }
-      dpm($result->items);
       $result->title = $result->title ? $result->title : t('Zotero Feed Importer');
       return $result;
    }
    
    public function addZoteroChildren(&$item, $children) {
-
      foreach ($children as $child) { 
        $xml = simplexml_load_string($child);
        $namespaces = $xml->getNameSpaces(true);
        
-       $note_count = 0;
        foreach ($xml->entry as $entry) {
          $child = json_decode( (string) $entry->content );
          $child->author = (string)$entry->author->name;
@@ -116,23 +113,18 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
          switch ($child->itemType) {
            case 'note':
              $note = $child->note . PHP_EOL . " - " . $child->author;
-             if (strlen($note) > $biggest_note_size) {
-               $biggest_note_size = strlen($note);
-               $note_count++;
-  //               file_put_contents('biggest_note_'. $note_count, $note);
-             }
              // Concatenate multiple notes into one value; this 'note' field is exposed as a mapping source
-             $item['note'] .= strip_tags($note) . PHP_EOL; 
+             $item['note'] .= mysql_real_escape_string(strip_tags($note)) . PHP_EOL; 
              // This is here so the processor can do something more exciting than concat note text. 
              //@TODO expose 'notes' this with a proper source callback and target callback
              $item['notes'][] = $child; 
              break;
            case 'attachment':
              if ($child->url) {
-               $item['links'][] = $child->url;
+               $item['links'][] = mysql_real_escape_string($child->url);
              }
              elseif ($child->filename) {
-               $item['files'][] = $child->filename;
+               $item['files'][] = mysql_real_escape_string($child->filename);
              }
              break;
 
@@ -186,7 +178,7 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
    * since they sometimes map to different biblio fields depending on publication type
    */
    function addItemTypePrefixes(&$item) {
-      $no_rename = array('itemType', 'guid','tags','creators', 'collection_keys', 'files', 'links');
+      $no_rename = array('itemType', 'guid','tags','creators', 'collection_keys', 'files', 'links', 'long_title');
       $item = (array)$item;
       $old_keys = array_keys($item);
       foreach( $old_keys as $old_key) {

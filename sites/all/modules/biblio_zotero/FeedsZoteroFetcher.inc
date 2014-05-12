@@ -19,6 +19,7 @@ class FeedsZoteroHTTPFetcherResult extends FeedsHTTPFetcherResult {
   protected $collectionPages = array();
   protected $notes = array();
   protected $files = array();
+  protected $childPages = array();
 
   /** 
    * Constructor.
@@ -135,7 +136,7 @@ class FeedsZoteroHTTPFetcherResult extends FeedsHTTPFetcherResult {
   }
   public function getChildPages($item_key=FALSE) {
     if ($item_key !== FALSE) {
-      return $this->childPages[$item_key];
+      return isset($this->childPages[$item_key]) ? $this->childPages[$item_key] : array();
     }
     else {
       return $this->childPages;
@@ -246,10 +247,10 @@ class FeedsZoteroFetcher extends FeedsHTTPFetcher {
   public function fetch(FeedsSource $source) {    
     $this->config = $source->getConfigFor($this);
     $config = $source->getConfigFor($this);
-    $result = new FeedsZoteroHTTPFetcherResult($config['source']);
+    $result = new FeedsZoteroHTTPFetcherResult($source);
     //Retrieve minimal information for edit node page
     if (arg(2) == 'edit') {
-      $pages = $this->fetchPages(array('account_type' => $config['zotero_type'], 'account_id' => $config['zotero_id'], 'start' => $config['next_index'], $top => TRUE));
+      $pages = $this->fetchPages(array('account_type' => $config['zotero_type'], 'account_id' => $config['zotero_id'], 'start' => $config['next_index'], 'top' => TRUE));
       $result->addItemPages($pages);
       return $result;
     }
