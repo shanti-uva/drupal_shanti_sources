@@ -101,3 +101,43 @@ function csc_views_search_api_property_sort_custom_publication_year_getter_callb
   }    
   return $year;
 }
+
+/**
+ * Implements hook_views_pre_render().
+ */
+function csc_views_views_pre_render(&$view) {
+  if ($view->name == 'biblio_search_api_dev' && $view->exposed_input) {
+    $first_row = ($view->query->pager->current_page != 0) ? ($view->query->pager->current_page * $view->query->pager->options['items_per_page']) + 1 : 1;
+    $last_row = ($first_row + count($view->result)) - 1;
+    $max_page = ceil($view->query->pager->total_items/$view->query->pager->options['items_per_page']);
+    $next_page_link = ($view->query->pager->current_page != ($max_page - 1)) ? custom_pager_links($view, '>', $view->query->pager->current_page + 1) : '';
+    $prev_page_link = ($view->query->pager->current_page != 0) ? custom_pager_links($view, '<', $view->query->pager->current_page - 1) : '';
+    $current_page = $view->query->pager->current_page + 1;
+    $first_page_link = ($view->query->pager->current_page != 0) ? custom_pager_links($view, '<<', 0) : '';
+    $last_page_link = ($view->query->pager->current_page != ($max_page - 1)) ? custom_pager_links($view, '>>', $max_page - 1) : '';
+    $view->attachment_after = '<div class="custom-footer-pager"><div class="custom-footer-pager-left">Displaying ' . $first_row . ' - ' . $last_row . ' of ' 
+    . $view->query->pager->total_items . ' found</div><div class="custom-footer-pager-right">' . $first_page_link . ' ' . $prev_page_link . '<input type="text" 
+    name="pager-input" id="pager-input" value="' . $current_page . '"/>of ' . $max_page . ' ' . $next_page_link . ' ' . $last_page_link . '</div><input type="hidden" value="' . $max_page . '" id="max-page-input"></div>';
+  }
+}
+
+/**
+ * Returns custom pager link.
+ */
+function custom_pager_links($view, $pager_text, $pager_link) {
+  $search_text = ($view->exposed_raw_input['search_api_views_fulltext']) ? $view->exposed_raw_input['search_api_views_fulltext'] : '';
+  $sort_by = ($view->exposed_raw_input['sort_by']) ? $view->exposed_raw_input['sort_by'] : '';
+  $sort_order = ($view->exposed_raw_input['sort_order']) ? $view->exposed_raw_input['sort_order'] : '';
+  $custom_sort = ($view->exposed_raw_input['custom_sort']) ? $view->exposed_raw_input['custom_sort'] : '';
+  $link_output = l($pager_text, arg(0), array(
+    'query' => array(
+      'search_api_views_fulltext' => $search_text,
+      'sort_by' => $sort_by,
+      'sort_order' => $sort_order,
+      'custom_sort' => $custom_sort,
+      'page' => $pager_link,
+    )
+  ));
+  return $link_output;
+}
+

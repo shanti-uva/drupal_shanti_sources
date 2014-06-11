@@ -1,0 +1,24 @@
+.custom-footer-pager {
+  overflow: hidden;
+}
+.custom-footer-pager .custom-footer-pager-left, 
+.custom-footer-pager .custom-footer-pager-right {
+  width: auto;
+  display: inline-block;
+}
+.custom-footer-pager .custom-footer-pager-left {
+  float: left;
+}
+.custom-footer-pager .custom-footer-pager-right {
+  float: right;
+}
+.custom-footer-pager .custom-footer-pager-right a {
+  margin: 0 5px;
+}
+.custom-footer-pager  .custom-footer-pager-right #pager-input {
+  width: 15px;
+  margin: 0 5px;
+}
+.view-id-biblio_search_api_dev.view-display-id-page .item-list {
+  display: none;
+}
