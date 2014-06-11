@@ -15,7 +15,7 @@ function csc_views_form_alter(&$form, &$form_state, $form_id) {
     $form['sort_order']['#suffix'] = '</div>';
     $form['field_zotero_collections']['#prefix'] = '<div style="display: none;">';
     $form['field_zotero_collections']['#suffix'] = '</div>';
-    if (!empty($form_state['input']['search_api_views_fulltext']) || !empty($form_state['input']['field_zotero_collections'])) {
+    if (!search_landing_page()) {
       $form['custom_sort'] = array(
         '#type' => 'select',
         '#title' => 'Sort',
@@ -34,6 +34,7 @@ function csc_views_form_alter(&$form, &$form_state, $form_id) {
             'year_desc' => t('2014-1492')
           ),
         ),
+        '#default_value' => 'default',
       );
     }
   }
@@ -125,8 +126,8 @@ function csc_views_block_view($delta = '') {
     case 'custom_taxonomy_block':
       $vocabulary = taxonomy_vocabulary_machine_name_load('collections');
       $vid  = $vocabulary->vid;
-      $block['subject'] = (empty($_GET['field_zotero_collections'])) ? t('Browse') : '';
-      $block['content'] = (empty($_GET['field_zotero_collections'])) ? csc_views_generate_list(csc_views_build_taxonomy_tree($vid, 0)) : '';
+      $block['subject'] = (search_landing_page()) ? t('Browse') : '';
+      $block['content'] = (search_landing_page()) ? csc_views_generate_list(csc_views_build_taxonomy_tree($vid, 0)) : '';
       break;
     case 'custom_taxonomy_breadcrumb':
       $block['subject'] = t('CSC: Taxonomy Block');
@@ -240,11 +241,17 @@ function collection_breadcrumb($term_id) {
   return $breadcrumb;
 }
 
+
+function search_landing_page() {
+  if(!isset($_GET['search_api_views_fulltext']) && !isset($_GET['field_zotero_collections']) && !isset($_GET['sort_by']) && !isset($_GET['sort_order'])) {
+    return TRUE;
+  }
+}
 /**
  * Implements hook_views_pre_render().
  */
 function csc_views_views_pre_render(&$view) {
-  if ($view->name == 'biblio_search_api_dev' && $view->exposed_input) {
+  if ($view->name == 'biblio_search_api_dev' && $view->exposed_input && !empty($view->result)) {
     $first_row = ($view->query->pager->current_page != 0) ? ($view->query->pager->current_page * $view->query->pager->options['items_per_page']) + 1 : 1;
     $last_row = ($first_row + count($view->result)) - 1;
     $max_page = ceil($view->query->pager->total_items/$view->query->pager->options['items_per_page']);
@@ -264,12 +271,14 @@ function csc_views_views_pre_render(&$view) {
  */
 function custom_pager_links($view, $pager_text, $pager_link) {
   $search_text = ($view->exposed_raw_input['search_api_views_fulltext']) ? $view->exposed_raw_input['search_api_views_fulltext'] : '';
+  $collection_filter = ($view->exposed_raw_input['field_zotero_collections']) ? $view->exposed_raw_input['field_zotero_collections'] : '';;
   $sort_by = ($view->exposed_raw_input['sort_by']) ? $view->exposed_raw_input['sort_by'] : '';
   $sort_order = ($view->exposed_raw_input['sort_order']) ? $view->exposed_raw_input['sort_order'] : '';
   $custom_sort = ($view->exposed_raw_input['custom_sort']) ? $view->exposed_raw_input['custom_sort'] : '';
   $link_output = l($pager_text, arg(0), array(
     'query' => array(
       'search_api_views_fulltext' => $search_text,
+      'field_zotero_collections' => $collection_filter,
       'sort_by' => $sort_by,
       'sort_order' => $sort_order,
       'custom_sort' => $custom_sort,

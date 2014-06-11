@@ -45,10 +45,11 @@
       var sort_order = '&sort_order=' + $('#edit-sort-order').val();
       var sort_type = '&sort_by=' + $('#edit-sort-by').val();
       var cutom_sort = '&custom_sort=' + $('#edit-custom-sort').val();
+      var filter_collection = '&field_zotero_collections=' + $('#edit-field-zotero-collections').val();
       var pager = ($(this).val() <= parseInt($('#max-page-input').val())) ? '&page=' + ($('#pager-input').val() - 1) : '&page=' + ($('#max-page-input').val() - 1);   
       clearInterval(timer);
       timer = setTimeout(function() {
-        window.location.replace(window.location.href.split('?')[0] + '?' + text_search + sort_order + sort_type + cutom_sort + pager);
+        window.location.replace(window.location.href.split('?')[0] + '?' + text_search + sort_order + sort_type + cutom_sort + filter_collection + pager);
       }, 2000);
     });
     // Collections block
