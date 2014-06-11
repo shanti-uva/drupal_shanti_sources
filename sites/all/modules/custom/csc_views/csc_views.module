@@ -103,6 +103,144 @@ function csc_views_search_api_property_sort_custom_publication_year_getter_callb
 }
 
 /**
+ * Implements hook_block_info().
+ */
+function csc_views_block_info() {
+  $blocks['custom_taxonomy_block'] = array(
+    'info' => t('Custom taxonomy block'),
+    'region' => 'sidebar_first',
+  );
+  $blocks['custom_taxonomy_breadcrumb'] = array(
+    'info' => t('Custom taxonomy breadcrumb'),
+    'region' => 'content',
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function csc_views_block_view($delta = '') {
+  switch ($delta) {
+    case 'custom_taxonomy_block':
+      $vocabulary = taxonomy_vocabulary_machine_name_load('collections');
+      $vid  = $vocabulary->vid;
+      $block['subject'] = (empty($_GET['field_zotero_collections'])) ? t('Browse') : '';
+      $block['content'] = (empty($_GET['field_zotero_collections'])) ? csc_views_generate_list(csc_views_build_taxonomy_tree($vid, 0)) : '';
+      break;
+    case 'custom_taxonomy_breadcrumb':
+      $block['subject'] = t('CSC: Taxonomy Block');
+      $block['content'] = (!empty($_GET['field_zotero_collections'])) ? collection_breadcrumb($_GET['field_zotero_collections']) : '';
+      break;
+  }
+  return $block;
+}
+
+/**
+ * Generates & returns a nested array of taxonomy terms for the specified vocabulary id.
+ */
+function csc_views_build_taxonomy_tree($vid, $parent = 0) {
+  static $results;
+  $args = func_get_args();
+  $hash = md5(implode('-', $args));
+  if (!isset($results[$hash])) {
+    $terms = array();
+    $data = taxonomy_get_tree($vid, $parent);
+    foreach ($data as $term) {
+      $terms[$term->tid] = $term;
+    }
+    $terms = csc_views_nest_taxonomy_terms($terms, $parent);
+    $results[$hash] = $terms;
+  }
+  return $results[$hash];
+}
+
+/**
+ * Looks for each term's parent term in the given tree and assigns the child to the parent.
+ */
+function csc_views_nest_taxonomy_terms($terms, $parent) {
+  foreach ($terms as $term) {
+    $parent_tid = isset($term->parents[0]) ? $term->parents[0] : 0;
+    if ($parent_tid) {
+      if (isset($terms[$parent_tid])) {
+        $terms[$parent_tid]->children[$term->tid] = $term;
+        unset($terms[$term->tid]);
+      }
+      elseif ($parent_tid != $parent) {
+        csc_views_nest_taxonomy_terms_child($terms, $parent_tid, $term);
+        unset($terms[$term->tid]);
+      }
+    }
+  }
+  return $terms;
+}
+
+/**
+ * Recursive function which nests the child element within the appropriate parent element in the given terms tree.
+ */
+function csc_views_nest_taxonomy_terms_child(&$terms, $parent_tid, $child) {
+  foreach ($terms as &$term) {
+    if ($term->tid == $parent_tid) {
+      $term->children[$child->tid] = $child;
+      break;
+    }
+    elseif (!empty($term->children)) {
+      csc_views_nest_taxonomy_terms_child($term->children, $parent_tid, $child);
+    }
+  }
+}
+
+/**
+ * Generates a nested HTML list from hierarchy items.
+ */
+function csc_views_generate_list($hierarchy) {
+  $items = array();
+  foreach ($hierarchy as $term) {
+    $class_name = (!empty($term->children)) ? 'has-children' : '';
+    $item = l(t($term->name), 'csc-search-dev',  array(
+      'query' => array(
+        'field_zotero_collections' => $term->tid
+      ),
+      'attributes' => array(
+        'class' => array($class_name)
+      ),
+    ));
+    if (!empty($term->children)) {
+      $item .= csc_views_generate_list($term->children);
+    }
+    $items[] = $item;
+  }
+  return theme('item_list', array('items' => $items));
+}
+
+/**
+ *  Returns breadcrumb links.
+ */
+function collection_breadcrumb($term_id) {
+  $get_parents = taxonomy_get_parents_all($term_id);
+  $taxonomy_term = array_reverse($get_parents);
+  $breadcrumb = '';
+  foreach ($taxonomy_term as $key => $term) {
+    if ($key == 0) {
+      $breadcrumb .= l(t($term->name), 'csc-search-dev',  array(
+        'query' => array(
+          'field_zotero_collections' => $term->tid
+        ),
+      ));
+    }
+    else {
+      $breadcrumb .= ' &#187; ';
+      $breadcrumb .= l(t($term->name), 'csc-search-dev',  array(
+        'query' => array(
+          'field_zotero_collections' => $term->tid
+        ),
+      ));
+    }
+  }
+  return $breadcrumb;
+}
+
+/**
  * Implements hook_views_pre_render().
  */
 function csc_views_views_pre_render(&$view) {

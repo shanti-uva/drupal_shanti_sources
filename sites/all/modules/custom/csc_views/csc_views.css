@@ -22,3 +22,33 @@
 .view-id-biblio_search_api_dev.view-display-id-page .item-list {
   display: none;
 }
+
+#block-csc-views-custom-taxonomy-block ul {
+  padding: 0;
+  list-style: none;
+}
+
+#block-csc-views-custom-taxonomy-block ul li {
+  overflow: hidden;
+  padding-right: 0;
+  display: block;
+  width: 100%;
+  padding: 3px 0;
+}
+
+#block-csc-views-custom-taxonomy-block ul li a {
+  width: 90%;
+  display: inline-block;
+  float: left;
+}
+
+#block-csc-views-custom-taxonomy-block ul li a.expand-btn {
+  float: right;
+  display: inline-block;
+  width: auto;
+  text-decoration: none;
+}
+
+#block-csc-views-custom-taxonomy-block ul li .item-list ul {
+  margin: 0 0 0 5px;
+}

@@ -51,5 +51,15 @@
         window.location.replace(window.location.href.split('?')[0] + '?' + text_search + sort_order + sort_type + cutom_sort + pager);
       }, 2000);
     });
+    // Collections block
+    $('#block-csc-views-custom-taxonomy-block .content .item-list a').removeClass('active');
+    $('#block-csc-views-custom-taxonomy-block .content .item-list .item-list').hide();
+    $('#block-csc-views-custom-taxonomy-block .content .item-list .has-children').after('<a href="#" class="expand-btn">[+]</a>');
+    $('#block-csc-views-custom-taxonomy-block a.expand-btn').click(function(e) {
+      e.preventDefault();
+      $(this).next('div.item-list').toggle();
+      $(this).addClass('expanded');
+      ($(this).next('div.item-list').is(':visible')) ? $(this).text('[ - ]') : $(this).text('[+]');
+    });
   });
 })(jQuery);

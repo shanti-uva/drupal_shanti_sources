@@ -280,6 +280,22 @@ function csc_biblio_search_views_default_views() {
   $handler->display->display_options['filters']['type']['value'] = array(
     'biblio' => 'biblio',
   );
+  /* Filter criterion: Indexed Node: Zotero Collections */
+  $handler->display->display_options['filters']['field_zotero_collections']['id'] = 'field_zotero_collections';
+  $handler->display->display_options['filters']['field_zotero_collections']['table'] = 'search_api_index_database_node_index';
+  $handler->display->display_options['filters']['field_zotero_collections']['field'] = 'field_zotero_collections';
+  $handler->display->display_options['filters']['field_zotero_collections']['value'] = array();
+  $handler->display->display_options['filters']['field_zotero_collections']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_zotero_collections']['expose']['operator_id'] = 'field_zotero_collections_op';
+  $handler->display->display_options['filters']['field_zotero_collections']['expose']['operator'] = 'field_zotero_collections_op';
+  $handler->display->display_options['filters']['field_zotero_collections']['expose']['identifier'] = 'field_zotero_collections';
+  $handler->display->display_options['filters']['field_zotero_collections']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    3 => 0,
+    4 => 0,
+  );
+  $handler->display->display_options['filters']['field_zotero_collections']['expose']['reduce'] = 0;
   $handler->display->display_options['path'] = 'csc-search';
 
   /* Display: Content pane */
