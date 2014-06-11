@@ -28,8 +28,8 @@ function csc_biblio_search_default_fe_block_settings() {
         'weight' => 0,
       ),
       'responsive_bartik' => array(
-        'region' => 'sidebar_second',
-        'status' => 1,
+        'region' => '',
+        'status' => 0,
         'theme' => 'responsive_bartik',
         'weight' => -11,
       ),
@@ -54,8 +54,8 @@ function csc_biblio_search_default_fe_block_settings() {
         'weight' => 0,
       ),
       'responsive_bartik' => array(
-        'region' => 'sidebar_first',
-        'status' => 1,
+        'region' => '',
+        'status' => 0,
         'theme' => 'responsive_bartik',
         'weight' => -12,
       ),

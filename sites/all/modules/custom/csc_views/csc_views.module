@@ -1,0 +1,103 @@
+<?php
+/**
+ * @file
+ * Custom views functionalities for CSC site.
+ */
+
+/**
+ * Implements hook_form_alter().
+ */
+function csc_views_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'views_exposed_form' && $form_state['view']->name == 'biblio_search_api_dev' && $form_state['view']->current_display == 'page') {
+    $form['sort_by']['#prefix'] = '<div style="display: none;">';
+    $form['sort_by']['#suffix'] = '</div>';
+    $form['sort_order']['#prefix'] = '<div style="display: none;">';
+    $form['sort_order']['#suffix'] = '</div>';
+    $form['field_zotero_collections']['#prefix'] = '<div style="display: none;">';
+    $form['field_zotero_collections']['#suffix'] = '</div>';
+    if (!empty($form_state['input']['search_api_views_fulltext']) || !empty($form_state['input']['field_zotero_collections'])) {
+      $form['custom_sort'] = array(
+        '#type' => 'select',
+        '#title' => 'Sort',
+        '#options' => array(
+          'default' => t('Default'),
+          'Title' => array(
+            'title_asc' => t('A-Z'),
+            'title_desc' => t('Z-A')
+          ),
+          'Author' => array(
+            'author_asc' => t('A-Z'),
+            'author_desc' => t('Z-A')
+          ),
+          'Year' => array(
+            'year_asc' => t('1492-2014'),
+            'year_desc' => t('2014-1492')
+          ),
+        ),
+      );
+    }
+  }
+}
+
+/**
+ * Implements hook_entity_property_info_alter().
+ */
+function csc_views_entity_property_info_alter(&$info) {
+ $info['node']['properties']['sort_biblio_author'] = array(
+   'type' => 'text',
+   'label' => t('Sorting Biblio Author'),
+   'getter callback' => 'csc_views_search_api_property_sort_biblio_author_getter_callback',
+ );
+ $info['node']['properties']['sort_stripped_node_title'] = array(
+   'type' => 'text',
+   'label' => t('Sorting Stripped Node Title'),
+   'getter callback' => 'csc_views_search_api_property_sort_stripped_node_title_getter_callback',
+ );
+ $info['node']['properties']['sort_custom_publication_year'] = array(
+   'type' => 'text',
+   'label' => t('Sorting Custom Publication Year'),
+   'getter callback' => 'csc_views_search_api_property_sort_custom_publication_year_getter_callback',
+ );
+}
+
+/**
+ * Returns node biblio author value.
+ */
+function csc_views_search_api_property_sort_biblio_author_getter_callback($item) {
+  $node = node_load($item->nid);
+  $author_names = array();
+  foreach ($node->biblio_contributors as $author) {
+    if (!empty($author['lastname'])) {
+      $author_names[] = $author['lastname'];
+    }
+  }
+  return $author_names[0];
+}
+
+/**
+ * Return only alphanumeric characters.
+ */
+function csc_views_search_api_property_sort_stripped_node_title_getter_callback($item) {
+  return preg_replace('/[^A-Za-z0-9]/', '', $item->title);
+}
+
+/**
+ * Return empty publication years with the current year + 1 year for it to be placed on the last row of views result.
+ */
+function csc_views_search_api_property_sort_custom_publication_year_getter_callback($item) {
+  // We assign numeric equivalent for specific values, so we could use them for sorting
+  switch ($item->biblio_year) {
+    case '0':
+      $year = date('Y', strtotime('+1 year'));
+      break;
+    case 'Submitted':
+      $year = '1';
+      break;
+    case 'In Press':
+      $year = '2';
+      break;
+    default:
+    $year = $item->biblio_year;
+  }    
+  return $year;
+}
