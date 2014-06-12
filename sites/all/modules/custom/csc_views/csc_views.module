@@ -76,10 +76,13 @@ function csc_views_search_api_property_sort_biblio_author_getter_callback($item)
 }
 
 /**
- * Return only alphanumeric characters.
+ * Return only alphanumeric characters and remove specific words from sorting.
  */
 function csc_views_search_api_property_sort_stripped_node_title_getter_callback($item) {
-  return preg_replace('/[^A-Za-z0-9]/', '', $item->title);
+  $title = preg_replace('/[^A-Za-z0-9]/', '', $item->title);
+  $wordlist = array('a', 'an', 'the');
+  $stripped_title = str_ireplace($wordlist, '', $title);
+  return $stripped_title;
 }
 
 /**
@@ -241,12 +244,12 @@ function collection_breadcrumb($term_id) {
   return $breadcrumb;
 }
 
-
 function search_landing_page() {
   if(!isset($_GET['search_api_views_fulltext']) && !isset($_GET['field_zotero_collections']) && !isset($_GET['sort_by']) && !isset($_GET['sort_order'])) {
     return TRUE;
   }
 }
+
 /**
  * Implements hook_views_pre_render().
  */
