@@ -1,3 +1,8 @@
+/**
+ * @file
+ * Custom styling for CSC custom views module.
+ */
+ 
 .custom-footer-pager {
   overflow: hidden;
 }
@@ -51,4 +56,81 @@
 
 #block-csc-views-custom-taxonomy-block ul li .item-list ul {
   margin: 0 0 0 5px;
+}
+
+.view-id-biblio_search_api_dev .views-exposed-widget {
+  display: block;
+  width: 100%;
+}
+
+.view-id-biblio_search_api_dev .views-submit-button,
+.view-id-biblio_search_api_dev .views-reset-button {
+  width: 45%;
+  display: inline-block;
+}
+
+.view-id-biblio_search_api_dev .views-submit-button {
+  float: left;
+}
+
+.view-id-biblio_search_api_dev .views-reset-button {
+  float: right;
+}
+
+.view-id-biblio_search_api_dev #edit-biblio-year-wrapper,
+.view-id-biblio_search_api_dev #edit-biblio-year-1-wrapper {
+  width: 240px;
+  display: inline-block;
+  float: left;
+}
+
+.view-id-biblio_search_api_dev #edit-biblio-year-wrapper input {
+  float: left;
+}
+
+.view-id-biblio_search_api_dev #edit-biblio-year-wrapper span {
+  float: right;
+}
+
+.view-id-biblio_search_api_dev #edit-biblio-year-1-wrapper {
+  margin-top: 21px;
+}
+
+.view-id-biblio_search_api_dev .filter-content-right {
+  width: 300px;
+  display: inline-block;
+  float: right;
+  overflow: hidden;
+}
+
+.view-id-biblio_search_api_dev .filter-content-right select,
+.view-id-biblio_search_api_dev .filter-content-right input {
+  width: 93%;
+}
+
+.view-id-biblio_search_api_dev .filter-content-right #edit-biblio-year-wrapper,
+.view-id-biblio_search_api_dev .filter-content-right #edit-biblio-year-1-wrapper {
+  width: 45%;
+  display: inline-block;
+  float: left;
+}
+
+.view-id-biblio_search_api_dev .filter-content-right #edit-biblio-year-wrapper input,
+.view-id-biblio_search_api_dev .filter-content-right #edit-biblio-year-1-wrapper input {
+  width: 70%
+}
+
+.view-id-biblio_search_api_dev .result-content-left {
+  width: 880px;
+  display: inline-block;
+  float: left;
+}
+
+.view-id-biblio_search_api_dev .attachment.attachment-after {
+  clear: both;
+}
+
+#block-csc-views-custom-sort-filter {
+  width: 880px;
+  text-align: right;
 }
