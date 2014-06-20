@@ -9,6 +9,7 @@
  */
 function csc_views_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'views_exposed_form' && $form_state['view']->name == 'biblio_search_api_dev' && $form_state['view']->current_display == 'page') {
+    $form['#attributes'] = array('class' => array('csc-custom-search-form'));
     $form['sort_by']['#prefix'] = '<div style="display: none;">';
     $form['sort_by']['#suffix'] = '</div>';
     $form['sort_order']['#prefix'] = '<div style="display: none;">';
@@ -148,6 +149,8 @@ function csc_views_block_info() {
  * Implements hook_block_view().
  */
 function csc_views_block_view($delta = '') {
+  $vocabulary = taxonomy_vocabulary_machine_name_load('collections');
+  $vid  = $vocabulary->vid;
   if (!search_landing_page()) {
     $custom_sort_block_content = '<span>Sort by </span><select id="edit-custom-sort" name="custom_sort" class="form-select">
       <option value="default" selected="selected">Default</option>
@@ -165,14 +168,13 @@ function csc_views_block_view($delta = '') {
       $block['content'] = $custom_sort_block_content;
       break;
     case 'custom_taxonomy_block':
-      $vocabulary = taxonomy_vocabulary_machine_name_load('collections');
-      $vid  = $vocabulary->vid;
       $block['subject'] = (search_landing_page()) ? t('Browse') : '';
       $block['content'] = (search_landing_page()) ? csc_views_generate_list(csc_views_build_taxonomy_tree($vid, 0)) : '';
       break;
     case 'custom_taxonomy_breadcrumb':
       $block['subject'] = t('CSC: Taxonomy Block');
-      $block['content'] = (!empty($_GET['field_zotero_collections'])) ? collection_breadcrumb($_GET['field_zotero_collections']) : '';
+      $block['content'] = (!empty($_GET['field_zotero_collections'])) ? collection_breadcrumb($_GET['field_zotero_collections']) . ' <div class="library-dropdown" style="display: none;">'
+      . csc_views_generate_list(csc_views_build_taxonomy_tree($vid, 0)) . '</div>' : '';
       break;
   }
   return $block;
@@ -259,27 +261,39 @@ function csc_views_generate_list($hierarchy) {
  *  Returns breadcrumb links.
  */
 function collection_breadcrumb($term_id) {
-  $get_parents = taxonomy_get_parents_all($term_id);
-  $taxonomy_term = array_reverse($get_parents);
-  $breadcrumb = '';
-  foreach ($taxonomy_term as $key => $term) {
-    if ($key == 0) {
-      $breadcrumb .= l(t($term->name), 'csc-search-dev',  array(
-        'query' => array(
-          'field_zotero_collections' => $term->tid
-        ),
-      ));
-    }
-    else {
-      $breadcrumb .= ' &#187; ';
-      $breadcrumb .= l(t($term->name), 'csc-search-dev',  array(
-        'query' => array(
-          'field_zotero_collections' => $term->tid
-        ),
-      ));
+  if ($term_id != 'All') { 
+    $vocabulary = taxonomy_vocabulary_machine_name_load('collections');
+    $vid  = $vocabulary->vid;
+    $get_parents = taxonomy_get_parents_all($term_id);
+    $taxonomy_term = array_reverse($get_parents);
+    $breadcrumb = '';
+    foreach ($taxonomy_term as $key => $term) {
+      $breadcrumb .= '<div class="breadcrumb-item">';
+      $breadcrumb .= '&nbsp; &#187; &nbsp;';
+      $term_list = csc_views_build_taxonomy_tree($vid, $term->tid);
+      if ($term_list) {
+        $breadcrumb .= l(t($term->name), '',  array(
+          'fragment' => '',
+          'attributes' => array('class' => 'breadcrumb-dropdown-cta')
+        ));
+        $breadcrumb_term_child = csc_views_generate_list($term_list);
+        $breadcrumb .= '<div class="breadcrumb-child-container" style="display: none;">
+        <div class="breadcrumb-child-top">' . l(t('View all source for ' . $term->name), 'csc-search-dev', array('query' => array('field_zotero_collections' => $term->tid))) . '</div>
+        <div class="breadcrumb-child">' . $breadcrumb_term_child . '</div></div>';
+      }
+      else {
+        $breadcrumb .= $term->name;
+      }
+      $breadcrumb .= '</div>';
     }
   }
-  return $breadcrumb;
+  else {
+    $breadcrumb = (empty($_GET['biblio_publication_type']) && empty($_GET['biblio_authors']) && empty($_GET['biblio_publisher']) && empty($_GET['biblio_place_published'])
+    && empty($_GET['biblio_year']) && empty($_GET['biblio_year_1']) && empty($_GET['field_zotero_tags'])) ? '&nbsp; &#187; &nbsp;Search Results' : '&nbsp; &#187; &nbsp;Search Results (Filtered)';
+  }
+  $home_link = '<div class="breadcrumb-item">' . l(t('Home'), 'csc-search-dev', array('attributes' => array('class' => array('home-search-page')))) . '&nbsp;</div>';
+  $library_link = '<div class="breadcrumb-item">' . l(t('Library'), '', array('attributes' => array('id' => 'collection-library'), 'fragment' => '')) . '</div>';
+  return $home_link . ' ' . $library_link . ' ' . $breadcrumb;
 }
 
 function search_landing_page() {
@@ -303,7 +317,8 @@ function csc_views_views_pre_render(&$view) {
     $last_page_link = ($view->query->pager->current_page != ($max_page - 1)) ? custom_pager_links($view, '>>', $max_page - 1) : '';
     $view->attachment_after = '<div class="custom-footer-pager"><div class="custom-footer-pager-left">Displaying ' . $first_row . ' - ' . $last_row . ' of ' 
     . $view->query->pager->total_items . ' found</div><div class="custom-footer-pager-right">' . $first_page_link . ' ' . $prev_page_link . '<input type="text" 
-    name="pager-input" id="pager-input" value="' . $current_page . '"/>of ' . $max_page . ' ' . $next_page_link . ' ' . $last_page_link . '</div><input type="hidden" value="' . $max_page . '" id="max-page-input"></div>';
+    name="pager-input" id="pager-input" value="' . $current_page . '"/>of ' . $max_page . ' ' . $next_page_link . ' ' . $last_page_link . '</div><input type="hidden" value="' 
+    . $max_page . '" id="max-page-input"></div>';
   }
 }
 
@@ -319,7 +334,7 @@ function custom_pager_links($view, $pager_text, $pager_link) {
   $year_from = ($view->exposed_raw_input['biblio_year']) ? $view->exposed_raw_input['biblio_year'] : '';
   $year_to = ($view->exposed_raw_input['biblio_year_1']) ? $view->exposed_raw_input['biblio_year_1'] : '';
   $tags = ($view->exposed_raw_input['field_zotero_tags']) ? $view->exposed_raw_input['field_zotero_tags'] : '';;
-  $collection_filter = ($view->exposed_raw_input['field_zotero_collections']) ? $view->exposed_raw_input['field_zotero_collections'] : '';;
+  $collection_filter = ($view->exposed_raw_input['field_zotero_collections']) ? $view->exposed_raw_input['field_zotero_collections'] : '';
   $sort_by = ($view->exposed_raw_input['sort_by']) ? $view->exposed_raw_input['sort_by'] : '';
   $sort_order = ($view->exposed_raw_input['sort_order']) ? $view->exposed_raw_input['sort_order'] : '';
   $link_output = l($pager_text, arg(0), array(
@@ -345,9 +360,7 @@ function custom_pager_links($view, $pager_text, $pager_link) {
  * Returns publication types.
  */
 function csc_views_publication_type() {
-  $publication = array(
-    '' => 'Select',
-  );
+  $publication = array('' => 'Select');
   $query = db_query('SELECT tid, name FROM {biblio_types}');
   foreach ($query as $data) {
     $publication[$data->tid] = $data->name;
@@ -359,9 +372,7 @@ function csc_views_publication_type() {
  * Returns indexed authors.
  */
 function csc_views_indexed_author() {
-  $author = array(
-    '' => 'Select',
-  );
+  $author = array('' => 'Select');
   $query = db_query('SELECT DISTINCT value FROM {search_api_db_database_node_index_biblio_authors} WHERE value <> :val', array(':val' => ''));
   foreach ($query as $data) {
     $author[$data->value] = $data->value;
@@ -373,9 +384,7 @@ function csc_views_indexed_author() {
  * Returns indexed publishers.
  */
 function csc_views_indexed_publisher() {
-  $publisher = array(
-    '' => 'Select',
-  );
+  $publisher = array('' => 'Select');
   $query = db_query('SELECT DISTINCT value FROM {search_api_db_database_node_index_biblio_publisher} WHERE value <> :val', array(':val' => ''));
   foreach ($query as $data) {
     $publisher[$data->value] = $data->value;
@@ -387,9 +396,7 @@ function csc_views_indexed_publisher() {
  * Returns indexed publish location.
  */
 function csc_views_indexed_location() {
-  $location = array(
-    '' => 'Select',
-  );
+  $location = array('' => 'Select');
   $query = db_query('SELECT DISTINCT value FROM {search_api_db_database_node_index_biblio_place_published} WHERE value <> :val', array(':val' => ''));
   foreach ($query as $data) {
     $location[$data->value] = $data->value;
@@ -401,9 +408,7 @@ function csc_views_indexed_location() {
  * Returns zotero tags.
  */
 function csc_views_zotero_tags() {
-  $tag = array(
-    '' => 'Select',
-  );
+  $tag = array('' => 'Select');
   $zotero_vocabulary = taxonomy_vocabulary_machine_name_load('zotero_tags');
   $tree = taxonomy_get_tree($zotero_vocabulary->vid);
   foreach ($tree as $term) {

@@ -74,15 +74,15 @@
       }, 2000);
     });
     // Collections block
-    $('#block-csc-views-custom-taxonomy-block .content .item-list a').removeClass('active');
-    $('#block-csc-views-custom-taxonomy-block .content .item-list .item-list').hide();
-    $('#block-csc-views-custom-taxonomy-block .content .item-list .has-children').after('<a href="#" class="expand-btn">[+]</a>');
-    $('#block-csc-views-custom-taxonomy-block a.expand-btn').click(function(e) {
+    $('#block-csc-views-custom-taxonomy-block .content .item-list a, #block-csc-views-custom-taxonomy-breadcrumb .content .item-list a').removeClass('active');
+    $('#block-csc-views-custom-taxonomy-block .content .item-list .item-list, #block-csc-views-custom-taxonomy-breadcrumb .content .item-list .item-list').hide();
+    $('#block-csc-views-custom-taxonomy-block .content .item-list .has-children, #block-csc-views-custom-taxonomy-breadcrumb .content .item-list .has-children').after('<a href="#" class="expand-btn">[+]</a>');
+    $('#block-csc-views-custom-taxonomy-block a.expand-btn, #block-csc-views-custom-taxonomy-breadcrumb a.expand-btn').click(function(e) {
       e.preventDefault();
       $(this).next('div.item-list').toggle();
-      $(this).addClass('expanded');
-      ($(this).next('div.item-list').is(':visible')) ? $(this).text('[ - ]') : $(this).text('[+]');
+      ($(this).next('div.item-list').is(':visible')) ? $(this).addClass('expanded') : $(this).removeClass('expanded');
     });
+    // Add custom classes on div containers when results are returned
     if($('.view-biblio-search-api-dev .view-content').length || $('.view-biblio-search-api-dev .view-empty').length) {
       $('.view-biblio-search-api-dev .view-content').addClass('result-content-left');
       $('.view-biblio-search-api-dev .view-filters').addClass('filter-content-right');
@@ -93,5 +93,17 @@
       $('.view-biblio-search-api-dev .views-exposed-widget').hide();
       $('.views-widget-filter-search_api_views_fulltext, .views-submit-button').show();
     }
+    // Breadcrumb child links
+    $('#collection-library').click(function(e) {
+      e.preventDefault();
+      $('.breadcrumb-child-container').hide();
+      $('.library-dropdown').toggle();
+    });
+    $('a.breadcrumb-dropdown-cta').click(function(e) {
+      e.preventDefault();
+      $('.library-dropdown').hide()
+      $('.breadcrumb-child-container').not($(this).next('.breadcrumb-child-container')).hide();
+      $(this).next('.breadcrumb-child-container').toggle();
+    });
   });
 })(jQuery);

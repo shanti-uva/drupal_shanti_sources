@@ -24,16 +24,22 @@
   width: 15px;
   margin: 0 5px;
 }
-.view-id-biblio_search_api_dev.view-display-id-page .item-list {
+.csc-custom-search-form.view-display-id-page .item-list {
   display: none;
 }
 
-#block-csc-views-custom-taxonomy-block ul {
+#block-csc-views-custom-taxonomy-block ul,
+#block-csc-views-custom-taxonomy-breadcrumb ul {
   padding: 0;
   list-style: none;
 }
 
-#block-csc-views-custom-taxonomy-block ul li {
+#block-csc-views-custom-taxonomy-breadcrumb ul {
+  margin-top: 0;
+}
+
+#block-csc-views-custom-taxonomy-block ul li,
+#block-csc-views-custom-taxonomy-breadcrumb ul li {
   overflow: hidden;
   padding-right: 0;
   display: block;
@@ -41,96 +47,174 @@
   padding: 3px 0;
 }
 
-#block-csc-views-custom-taxonomy-block ul li a {
-  width: 90%;
+#block-csc-views-custom-taxonomy-block ul li a,
+#block-csc-views-custom-taxonomy-breadcrumb ul li a {
   display: inline-block;
-  float: left;
-}
-
-#block-csc-views-custom-taxonomy-block ul li a.expand-btn {
   float: right;
+}
+#block-csc-views-custom-taxonomy-breadcrumb ul li a {
+  width: 92%;
+}
+
+#block-csc-views-custom-taxonomy-block ul li a {
+  width: 97%;
+}
+
+#block-csc-views-custom-taxonomy-block ul li a.expand-btn,
+#block-csc-views-custom-taxonomy-breadcrumb ul li a.expand-btn {
+  float: left;
   display: inline-block;
-  width: auto;
   text-decoration: none;
+  background: url(./images/dropdown-arrow-right.png) no-repeat;
+  width: 11px;
+  height: 20px;
+  background-size: 100%;
+  background-position: left 5px;
+  text-indent: -999em;
 }
 
-#block-csc-views-custom-taxonomy-block ul li .item-list ul {
-  margin: 0 0 0 5px;
+#block-csc-views-custom-taxonomy-block ul li a.expand-btn.expanded,
+#block-csc-views-custom-taxonomy-breadcrumb ul li a.expand-btn.expanded {
+  background: url(./images/dropdown-arrow-down.png) no-repeat;
+  width: 14px;
+  height: 20px;
+  background-size: 100%;
+  background-position: left 5px;
+  text-indent: -999em;
 }
 
-.view-id-biblio_search_api_dev .views-exposed-widget {
+#block-csc-views-custom-taxonomy-block ul li .item-list ul,
+#block-csc-views-custom-taxonomy-breadcrumb ul li .item-list ul {
+  margin: 0 0 0 10px;
+}
+
+.csc-custom-search-form .views-exposed-widget {
   display: block;
   width: 100%;
 }
 
-.view-id-biblio_search_api_dev .views-submit-button,
-.view-id-biblio_search_api_dev .views-reset-button {
+.csc-custom-search-form .views-submit-button,
+.csc-custom-search-form .views-reset-button {
   width: 45%;
   display: inline-block;
 }
 
-.view-id-biblio_search_api_dev .views-submit-button {
+.csc-custom-search-form .views-submit-button {
   float: left;
 }
 
-.view-id-biblio_search_api_dev .views-reset-button {
+.csc-custom-search-form .views-reset-button {
   float: right;
 }
 
-.view-id-biblio_search_api_dev #edit-biblio-year-wrapper,
-.view-id-biblio_search_api_dev #edit-biblio-year-1-wrapper {
+.csc-custom-search-form #edit-biblio-year-wrapper,
+.csc-custom-search-form #edit-biblio-year-1-wrapper {
   width: 240px;
   display: inline-block;
   float: left;
 }
 
-.view-id-biblio_search_api_dev #edit-biblio-year-wrapper input {
+.csc-custom-search-form #edit-biblio-year-wrapper input {
   float: left;
 }
 
-.view-id-biblio_search_api_dev #edit-biblio-year-wrapper span {
+.csc-custom-search-form #edit-biblio-year-wrapper span {
   float: right;
 }
 
-.view-id-biblio_search_api_dev #edit-biblio-year-1-wrapper {
+.csc-custom-search-form #edit-biblio-year-1-wrapper {
   margin-top: 21px;
 }
 
-.view-id-biblio_search_api_dev .filter-content-right {
+.csc-custom-search-form .filter-content-right {
   width: 300px;
   display: inline-block;
   float: right;
   overflow: hidden;
 }
 
-.view-id-biblio_search_api_dev .filter-content-right select,
-.view-id-biblio_search_api_dev .filter-content-right input {
+.csc-custom-search-form .filter-content-right select,
+.csc-custom-search-form .filter-content-right input {
   width: 93%;
 }
 
-.view-id-biblio_search_api_dev .filter-content-right #edit-biblio-year-wrapper,
-.view-id-biblio_search_api_dev .filter-content-right #edit-biblio-year-1-wrapper {
+.csc-custom-search-form .filter-content-right #edit-biblio-year-wrapper,
+.csc-custom-search-form .filter-content-right #edit-biblio-year-1-wrapper {
   width: 45%;
   display: inline-block;
   float: left;
 }
 
-.view-id-biblio_search_api_dev .filter-content-right #edit-biblio-year-wrapper input,
-.view-id-biblio_search_api_dev .filter-content-right #edit-biblio-year-1-wrapper input {
+.csc-custom-search-form .filter-content-right #edit-biblio-year-wrapper input,
+.csc-custom-search-form .filter-content-right #edit-biblio-year-1-wrapper input {
   width: 70%
 }
 
-.view-id-biblio_search_api_dev .result-content-left {
+.csc-custom-search-form .result-content-left {
   width: 880px;
   display: inline-block;
   float: left;
 }
 
-.view-id-biblio_search_api_dev .attachment.attachment-after {
+.csc-custom-search-form .attachment.attachment-after {
   clear: both;
 }
 
 #block-csc-views-custom-sort-filter {
   width: 880px;
   text-align: right;
+}
+
+#block-csc-views-custom-taxonomy-breadcrumb {
+  overflow: hidden;
+}
+
+.library-dropdown,
+.breadcrumb-child-container {
+  display: block;
+  width: 300px;
+  -webkit-box-shadow: 7px 7px 10px -6px rgba(51,51,51,1);
+  -moz-box-shadow: 7px 7px 10px -6px rgba(51,51,51,1);
+  box-shadow: 7px 7px 10px -6px rgba(51,51,51,1);
+  background: #f1f1f1;
+  position: absolute;
+}
+
+.library-dropdown {
+  margin-left: 57px;
+  margin-top: 21px;
+  padding: 15px;
+}
+
+.breadcrumb-child-container {
+  margin-left: 20px;
+}
+
+.breadcrumb-item {
+  display: inline-block;
+  width: auto;
+  float: left;
+}
+
+.breadcrumb-child-container .breadcrumb-child-top {
+  padding: 10px 15px 15px 15px;
+  border-bottom: 1px solid #c3c3c3;
+}
+
+.breadcrumb-child-container .breadcrumb-parent {
+  padding: 15px 15px 0px 15px;
+}
+
+.breadcrumb-child-container .breadcrumb-child {
+  padding: 0 15px;
+}
+
+.home-search-page {
+  display: block;
+  background: url(./images/home-icon.jpg) no-repeat;
+  text-indent: -999em;
+  width: 40px;
+  height: 20px;
+  background-size: 93%;
+  background-position: 0 -10px;
 }
