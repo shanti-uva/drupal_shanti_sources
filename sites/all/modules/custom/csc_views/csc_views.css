@@ -28,6 +28,10 @@
   display: none;
 }
 
+#block-csc-views-custom-taxonomy-breadcrumb a {
+  font-size: 12px;
+}
+
 #block-csc-views-custom-taxonomy-block ul,
 #block-csc-views-custom-taxonomy-breadcrumb ul {
   padding: 0;
@@ -36,6 +40,8 @@
 
 #block-csc-views-custom-taxonomy-breadcrumb ul {
   margin-top: 0;
+  padding-bottom: 0;
+  margin-bottom: 0;
 }
 
 #block-csc-views-custom-taxonomy-block ul li,
@@ -48,11 +54,13 @@
 }
 
 #block-csc-views-custom-taxonomy-block ul li a,
-#block-csc-views-custom-taxonomy-breadcrumb ul li a {
+#block-csc-views-custom-taxonomy-breadcrumb ul li a,
+.breadcrumb-child-sub-top a {
   display: inline-block;
   float: right;
 }
-#block-csc-views-custom-taxonomy-breadcrumb ul li a {
+#block-csc-views-custom-taxonomy-breadcrumb ul li a,
+.breadcrumb-child-sub-top a {
   width: 92%;
 }
 
@@ -61,7 +69,8 @@
 }
 
 #block-csc-views-custom-taxonomy-block ul li a.expand-btn,
-#block-csc-views-custom-taxonomy-breadcrumb ul li a.expand-btn {
+#block-csc-views-custom-taxonomy-breadcrumb ul li a.expand-btn,
+.breadcrumb-child-sub-top a.expand-btn {
   float: left;
   display: inline-block;
   text-decoration: none;
@@ -69,17 +78,18 @@
   width: 11px;
   height: 20px;
   background-size: 100%;
-  background-position: left 5px;
+  background-position: left 2px;
   text-indent: -999em;
 }
 
 #block-csc-views-custom-taxonomy-block ul li a.expand-btn.expanded,
-#block-csc-views-custom-taxonomy-breadcrumb ul li a.expand-btn.expanded {
+#block-csc-views-custom-taxonomy-breadcrumb ul li a.expand-btn.expanded,
+.breadcrumb-child-sub-top a.expand-btn.expanded {
   background: url(./images/dropdown-arrow-down.png) no-repeat;
   width: 14px;
   height: 20px;
   background-size: 100%;
-  background-position: left 5px;
+  background-position: left 2px;
   text-indent: -999em;
 }
 
@@ -126,37 +136,38 @@
   margin-top: 21px;
 }
 
-.csc-custom-search-form .filter-content-right {
+.view-filters.filter-content-right {
   width: 300px;
   display: inline-block;
   float: right;
   overflow: hidden;
 }
 
-.csc-custom-search-form .filter-content-right select,
-.csc-custom-search-form .filter-content-right input {
+.view-filters.filter-content-right select,
+.view-filters.filter-content-right input {
   width: 93%;
 }
 
-.csc-custom-search-form .filter-content-right #edit-biblio-year-wrapper,
-.csc-custom-search-form .filter-content-right #edit-biblio-year-1-wrapper {
+.view-filters.filter-content-right #edit-biblio-year-wrapper,
+.view-filters.filter-content-right #edit-biblio-year-1-wrapper {
   width: 45%;
   display: inline-block;
   float: left;
 }
 
-.csc-custom-search-form .filter-content-right #edit-biblio-year-wrapper input,
-.csc-custom-search-form .filter-content-right #edit-biblio-year-1-wrapper input {
+.view-filters.filter-content-right #edit-biblio-year-wrapper input,
+.view-filters.filter-content-right #edit-biblio-year-1-wrapper input {
   width: 70%
 }
 
-.csc-custom-search-form .result-content-left {
+.view-content.result-content-left {
   width: 880px;
   display: inline-block;
   float: left;
 }
 
-.csc-custom-search-form .attachment.attachment-after {
+.page-csc-search-dev .attachment-after,
+.page-csc-search .attachment-after {
   clear: both;
 }
 
@@ -172,7 +183,7 @@
 .library-dropdown,
 .breadcrumb-child-container {
   display: block;
-  width: 300px;
+  width: 362px;
   -webkit-box-shadow: 7px 7px 10px -6px rgba(51,51,51,1);
   -moz-box-shadow: 7px 7px 10px -6px rgba(51,51,51,1);
   box-shadow: 7px 7px 10px -6px rgba(51,51,51,1);
@@ -181,13 +192,14 @@
 }
 
 .library-dropdown {
-  margin-left: 57px;
+  margin-left: 40px;
   margin-top: 21px;
   padding: 15px;
 }
 
 .breadcrumb-child-container {
   margin-left: 20px;
+  padding-bottom: 15px;
 }
 
 .breadcrumb-item {
@@ -201,12 +213,21 @@
   border-bottom: 1px solid #c3c3c3;
 }
 
+.breadcrumb-child-container .breadcrumb-child-sub-top {
+  padding: 15px 15px 0 15px;
+  overflow: hidden;
+}
+
 .breadcrumb-child-container .breadcrumb-parent {
   padding: 15px 15px 0px 15px;
 }
 
 .breadcrumb-child-container .breadcrumb-child {
   padding: 0 15px;
+}
+
+.breadcrumb-child-container .breadcrumb-child ul {
+  margin-left: 10px;
 }
 
 .home-search-page {
