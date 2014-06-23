@@ -6,6 +6,9 @@
 .custom-footer-pager {
   overflow: hidden;
 }
+.item-list ul.pager {
+  display: none;
+}
 .custom-footer-pager .custom-footer-pager-left, 
 .custom-footer-pager .custom-footer-pager-right {
   width: auto;
@@ -24,6 +27,7 @@
   width: 15px;
   margin: 0 5px;
 }
+
 .csc-custom-search-form.view-display-id-page .item-list {
   display: none;
 }
@@ -59,6 +63,7 @@
   display: inline-block;
   float: right;
 }
+
 #block-csc-views-custom-taxonomy-breadcrumb ul li a,
 .breadcrumb-child-sub-top a {
   width: 92%;
@@ -91,6 +96,11 @@
   background-size: 100%;
   background-position: left 2px;
   text-indent: -999em;
+}
+
+#block-csc-views-custom-taxonomy-block ul li .item-list,
+#block-csc-views-custom-taxonomy-breadcrumb ul li .item-list {
+  clear: left;
 }
 
 #block-csc-views-custom-taxonomy-block ul li .item-list ul,
@@ -137,7 +147,7 @@
 }
 
 .view-filters.filter-content-right {
-  width: 300px;
+  width: 25%;
   display: inline-block;
   float: right;
   overflow: hidden;
@@ -161,7 +171,7 @@
 }
 
 .view-content.result-content-left {
-  width: 880px;
+  width: 73%;
   display: inline-block;
   float: left;
 }
