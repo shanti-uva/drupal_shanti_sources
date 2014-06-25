@@ -204,7 +204,14 @@
 .library-dropdown {
   margin-left: 40px;
   margin-top: 21px;
+}
+
+.library-dropdown .item-list {
   padding: 15px;
+}
+
+.library-dropdown .item-list .item-list {
+  padding: 0;
 }
 
 .breadcrumb-child-container {
@@ -218,8 +225,9 @@
   float: left;
 }
 
-.breadcrumb-child-container .breadcrumb-child-top {
-  padding: 10px 15px 15px 15px;
+.breadcrumb-child-container .breadcrumb-child-top,
+.view-all-library-container {
+  padding: 10px 15px 10px 15px;
   border-bottom: 1px solid #c3c3c3;
 }
 

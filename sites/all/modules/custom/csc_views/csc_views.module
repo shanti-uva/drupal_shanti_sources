@@ -173,8 +173,8 @@ function csc_views_block_view($delta = '') {
       break;
     case 'custom_taxonomy_breadcrumb':
       $block['subject'] = t('CSC: Taxonomy Block');
-      $block['content'] = (!empty($_GET['field_zotero_collections'])) ? collection_breadcrumb($_GET['field_zotero_collections']) . ' <div class="library-dropdown" style="display: none;">'
-      . csc_views_generate_list(csc_views_build_taxonomy_tree($vid, 0)) . '</div>' : '';
+      $block['content'] = (!empty($_GET['field_zotero_collections'])) ? collection_breadcrumb($_GET['field_zotero_collections']) . ' <div class="library-dropdown" style="display: none;"><div class="view-all-library-container">
+      ' . l(t('View all sources'), 'csc-search-dev', array('query' => array('field_zotero_collections' => 'All'))) . '</div>' . csc_views_generate_list(csc_views_build_taxonomy_tree($vid, 0)) . '</div>' : '';
       break;
   }
   return $block;
