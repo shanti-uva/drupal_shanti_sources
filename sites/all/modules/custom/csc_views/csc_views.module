@@ -110,51 +110,51 @@ function csc_views_exposed_filter_validation($form, &$form_state) {
  * Implements hook_entity_property_info_alter().
  */
 function csc_views_entity_property_info_alter(&$info) {
- $info['node']['properties']['sort_biblio_author'] = array(
-   'type' => 'text',
-   'label' => t('Sorting Biblio Author'),
-   'getter callback' => 'csc_views_search_api_property_sort_biblio_author_getter_callback',
- );
- $info['node']['properties']['sort_stripped_node_title'] = array(
-   'type' => 'text',
-   'label' => t('Sorting Stripped Node Title'),
-   'getter callback' => 'csc_views_search_api_property_sort_stripped_node_title_getter_callback',
- );
- $info['node']['properties']['sort_custom_publication_year'] = array(
-   'type' => 'text',
-   'label' => t('Sorting Custom Publication Year'),
-   'getter callback' => 'csc_views_search_api_property_sort_custom_publication_year_getter_callback',
- );
- $info['node']['properties']['biblio_publication_type'] = array(
-   'type' => 'text',
-   'label' => t('Publication Type'),
-   'getter callback' => 'csc_views_search_api_property_biblio_publication_type_getter_callback',
- );
- $info['node']['properties']['search_text_biblio_author'] = array(
-   'type' => 'text',
-   'label' => t('Search text biblio authors'),
-   'getter callback' => 'csc_views_search_api_property_search_text_biblio_author_getter_callback',
- );
- $info['node']['properties']['search_text_biblio_publisher'] = array(
-   'type' => 'text',
-   'label' => t('Search text publisher'),
-   'getter callback' => 'csc_views_search_api_property_search_text_biblio_publisher_getter_callback',
- );
- $info['node']['properties']['search_text_biblio_publish_place'] = array(
-   'type' => 'text',
-   'label' => t('Search text publish place'),
-   'getter callback' => 'csc_views_search_api_property_search_text_biblio_publish_place_getter_callback',
- );
- $info['node']['properties']['search_text_biblio_abstract'] = array(
-   'type' => 'text',
-   'label' => t('Search text abstract'),
-   'getter callback' => 'csc_views_search_api_property_search_text_biblio_abstract_getter_callback',
- );
+  $info['node']['properties']['sort_biblio_author'] = array(
+    'type' => 'text',
+    'label' => t('Sorting Biblio Author'),
+    'getter callback' => 'csc_views_search_api_property_sort_biblio_author_getter_callback',
+  );
+  $info['node']['properties']['sort_stripped_node_title'] = array(
+    'type' => 'text',
+    'label' => t('Sorting Stripped Node Title'),
+    'getter callback' => 'csc_views_search_api_property_sort_stripped_node_title_getter_callback',
+  );
+  $info['node']['properties']['sort_custom_publication_year'] = array(
+    'type' => 'text',
+    'label' => t('Sorting Custom Publication Year'),
+    'getter callback' => 'csc_views_search_api_property_sort_custom_publication_year_getter_callback',
+  );
+  $info['node']['properties']['biblio_publication_type'] = array(
+    'type' => 'text',
+    'label' => t('Publication Type'),
+    'getter callback' => 'csc_views_search_api_property_biblio_publication_type_getter_callback',
+  );
+  $info['node']['properties']['search_text_biblio_author'] = array(
+    'type' => 'text',
+    'label' => t('Search text biblio authors'),
+    'getter callback' => 'csc_views_search_api_property_search_text_biblio_author_getter_callback',
+  );
+  $info['node']['properties']['search_text_biblio_publisher'] = array(
+    'type' => 'text',
+    'label' => t('Search text publisher'),
+    'getter callback' => 'csc_views_search_api_property_search_text_biblio_publisher_getter_callback',
+  );
+  $info['node']['properties']['search_text_biblio_publish_place'] = array(
+    'type' => 'text',
+    'label' => t('Search text publish place'),
+    'getter callback' => 'csc_views_search_api_property_search_text_biblio_publish_place_getter_callback',
+  );
+  $info['node']['properties']['search_text_biblio_abstract'] = array(
+    'type' => 'text',
+    'label' => t('Search text abstract'),
+    'getter callback' => 'csc_views_search_api_property_search_text_biblio_abstract_getter_callback',
+  );
   $info['node']['properties']['search_text_zotero_tags'] = array(
-   'type' => 'text',
-   'label' => t('Search text zotero tags'),
-   'getter callback' => 'csc_views_search_api_property_search_text_zotero_tags_getter_callback',
- );
+    'type' => 'text',
+    'label' => t('Search text zotero tags'),
+    'getter callback' => 'csc_views_search_api_property_search_text_zotero_tags_getter_callback',
+  );
 }
 
 /**
