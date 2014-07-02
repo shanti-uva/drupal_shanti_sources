@@ -35,6 +35,64 @@ function csc_views_form_alter(&$form, &$form_state, $form_id) {
     $form['biblio_year']['#suffix'] = '<span>To</span>';
     $form['biblio_year']['#attributes'] = array('placeholder' => array('From'));
     $form['biblio_year_1']['#attributes'] = array('placeholder' => array('To'));
+    $form['advanced_search_fieldset'] = array(
+      '#type' => 'fieldset', 
+      '#title' => '',   
+      '#collapsed' => TRUE,
+      '#attributes' => array(
+        'class' => array('advanced-search-container'),
+      ),
+    );
+    $form['advanced_search_fieldset']['condition_option'] = array(
+      '#type' => 'select',
+      '#options' => array(
+        'all' => t('all'),
+        'any' => t('any'),
+      ),
+      '#prefix' => '<div class="operation-option-container">' . t('Find items that match '),
+      '#suffix' => ' ' . t('of the fields below') . '</div>',
+    );
+    $form['advanced_search_fieldset']['advanced_biblio_publication_type'] = $form['biblio_publication_type'];
+    $form['advanced_search_fieldset']['advanced_biblio_publication_type']['#title'] = t('Source type');
+    $form['advanced_search_fieldset']['title'] = $form['title'];
+    $form['advanced_search_fieldset']['title']['#title'] = t('Title');
+    $form['advanced_search_fieldset']['search_text_biblio_author'] = $form['search_text_biblio_author'];
+    $form['advanced_search_fieldset']['search_text_biblio_author']['#title'] = t('Author');
+    $form['advanced_search_fieldset']['search_text_biblio_publisher'] = $form['search_text_biblio_publisher'];
+    $form['advanced_search_fieldset']['search_text_biblio_publisher']['#title'] = t('Publisher');
+    $form['advanced_search_fieldset']['search_text_biblio_publish_place'] = $form['search_text_biblio_publish_place'];
+    $form['advanced_search_fieldset']['search_text_biblio_publish_place']['#title'] = t('Place of Publication');
+    $form['advanced_search_fieldset']['search_text_biblio_abstract'] = $form['search_text_biblio_abstract'];
+    $form['advanced_search_fieldset']['search_text_biblio_abstract']['#title'] = t('Abstract');
+    $form['advanced_search_fieldset']['search_text_zotero_tags'] = $form['search_text_zotero_tags'];
+    $form['advanced_search_fieldset']['search_text_zotero_tags']['#title'] = t('Tags');
+    $form['advanced_search_fieldset']['advanced_search_publication_year'] = array(
+      '#type' => 'radios',
+      '#title' => t('Year of Publication'),
+      '#options' => array(
+        date('Y') => t('Current'),
+        date('Y', strtotime('-1 year')) => t('Last 12 months'),
+        'range' => t('Range'),
+      ),
+      '#default_value' => 'range',
+    );
+    $form['advanced_search_fieldset']['advanced_search_start_year'] = $form['biblio_year'];
+    $form['advanced_search_fieldset']['advanced_search_start_year']['#prefix'] = '';
+    $form['advanced_search_fieldset']['advanced_search_start_year']['#default_value'] = '1942';
+    $form['advanced_search_fieldset']['advanced_search_end_year'] = $form['biblio_year_1'];
+    $form['advanced_search_fieldset']['advanced_search_end_year']['#default_value'] = date('Y');
+    $form['search_api_views_fulltext']['#prefix'] = '<div class="advanced-search-cta-container"><span class="source-type-selected-filter"></span><span class="field-selected-filter"></span><span class="year-selected-filter"></span></div>';
+    $form['advanced_search_fieldset']['reset'] = array(
+      '#type' => 'submit',
+      '#value' => t('Clear'),
+    );
+    $form['advanced_search_fieldset']['submit'] = $form['submit'];
+    unset($form['title']);
+    unset($form['search_text_biblio_author']);
+    unset($form['search_text_biblio_publisher']);
+    unset($form['search_text_biblio_publish_place']);
+    unset($form['search_text_biblio_abstract']);
+    unset($form['search_text_zotero_tags']);
     $form['#validate'][] = 'csc_views_exposed_filter_validation';
   }
 }
@@ -71,6 +129,31 @@ function csc_views_entity_property_info_alter(&$info) {
    'type' => 'text',
    'label' => t('Publication Type'),
    'getter callback' => 'csc_views_search_api_property_biblio_publication_type_getter_callback',
+ );
+ $info['node']['properties']['search_text_biblio_author'] = array(
+   'type' => 'text',
+   'label' => t('Search text biblio authors'),
+   'getter callback' => 'csc_views_search_api_property_search_text_biblio_author_getter_callback',
+ );
+ $info['node']['properties']['search_text_biblio_publisher'] = array(
+   'type' => 'text',
+   'label' => t('Search text publisher'),
+   'getter callback' => 'csc_views_search_api_property_search_text_biblio_publisher_getter_callback',
+ );
+ $info['node']['properties']['search_text_biblio_publish_place'] = array(
+   'type' => 'text',
+   'label' => t('Search text publish place'),
+   'getter callback' => 'csc_views_search_api_property_search_text_biblio_publish_place_getter_callback',
+ );
+ $info['node']['properties']['search_text_biblio_abstract'] = array(
+   'type' => 'text',
+   'label' => t('Search text abstract'),
+   'getter callback' => 'csc_views_search_api_property_search_text_biblio_abstract_getter_callback',
+ );
+  $info['node']['properties']['search_text_zotero_tags'] = array(
+   'type' => 'text',
+   'label' => t('Search text zotero tags'),
+   'getter callback' => 'csc_views_search_api_property_search_text_zotero_tags_getter_callback',
  );
 }
 
@@ -125,6 +208,56 @@ function csc_views_search_api_property_sort_custom_publication_year_getter_callb
 function csc_views_search_api_property_biblio_publication_type_getter_callback($item) {
   $node = node_load($item->nid);
   return $node->biblio_type;
+}
+
+/**
+ * Returns biblio author value.
+ */
+function csc_views_search_api_property_search_text_biblio_author_getter_callback($item) {
+  $node = node_load($item->nid);
+  $author_names = '';
+  foreach ($node->biblio_contributors as $author) {
+    if (!empty($author['name'])) {
+      $author_names .= $author['name'] . ' ';
+    }
+  }
+  return $author_names;
+}
+
+/**
+ * Returns biblio publisher value.
+ */
+function csc_views_search_api_property_search_text_biblio_publisher_getter_callback($item) {
+  return $item->biblio_publisher;
+}
+
+/**
+ * Returns biblio publish place value.
+ */
+function csc_views_search_api_property_search_text_biblio_publish_place_getter_callback($item) {
+  return $item->biblio_place_published;
+}
+
+/**
+ * Returns biblio abstract value.
+ */
+function csc_views_search_api_property_search_text_biblio_abstract_getter_callback($item) {
+  return $item->biblio_abst_e;
+}
+
+/**
+ * Returns zotero tags value.
+ */
+function csc_views_search_api_property_search_text_zotero_tags_getter_callback($item) {
+  $node = node_load($item->nid);
+  $tags = '';
+  foreach ($node->field_zotero_tags['und'] as $tag) {
+    if (!empty($tag['tid'])) {
+      $term = taxonomy_term_load($tag['tid']);
+      $tags .= $term->name . ' ';
+    }
+  }
+  return $tags;
 }
 
 /**
@@ -327,33 +460,13 @@ function csc_views_views_pre_render(&$view) {
  * Returns custom pager link.
  */
 function custom_pager_links($view, $pager_text, $pager_link) {
-  $search_text = ($view->exposed_raw_input['search_api_views_fulltext']) ? $view->exposed_raw_input['search_api_views_fulltext'] : '';
-  $source_type = ($view->exposed_raw_input['biblio_publication_type']) ? $view->exposed_raw_input['biblio_publication_type'] : '';
-  $authors = ($view->exposed_raw_input['biblio_authors']) ? $view->exposed_raw_input['biblio_authors'] : '';
-  $publishers = ($view->exposed_raw_input['biblio_publisher']) ? $view->exposed_raw_input['biblio_publisher'] : '';
-  $published_location = ($view->exposed_raw_input['biblio_place_published']) ? $view->exposed_raw_input['biblio_place_published'] : '';
-  $year_from = ($view->exposed_raw_input['biblio_year']) ? $view->exposed_raw_input['biblio_year'] : '';
-  $year_to = ($view->exposed_raw_input['biblio_year_1']) ? $view->exposed_raw_input['biblio_year_1'] : '';
-  $tags = ($view->exposed_raw_input['field_zotero_tags']) ? $view->exposed_raw_input['field_zotero_tags'] : '';;
-  $collection_filter = ($view->exposed_raw_input['field_zotero_collections']) ? $view->exposed_raw_input['field_zotero_collections'] : '';
-  $sort_by = ($view->exposed_raw_input['sort_by']) ? $view->exposed_raw_input['sort_by'] : '';
-  $sort_order = ($view->exposed_raw_input['sort_order']) ? $view->exposed_raw_input['sort_order'] : '';
-  $link_output = l($pager_text, arg(0), array(
-    'query' => array(
-      'search_api_views_fulltext' => $search_text,
-      'biblio_publication_type' => $source_type,
-      'biblio_authors' => $authors,
-      'biblio_publisher' => $publishers,
-      'biblio_place_published' => $published_location,
-      'biblio_year' => $year_from,
-      'biblio_year_1' => $year_to,
-      'field_zotero_tags' => $tags,
-      'field_zotero_collections' => $collection_filter,
-      'sort_by' => $sort_by,
-      'sort_order' => $sort_order,
-      'page' => $pager_link,
-    )
-  ));
+  $query_strings = array();
+  foreach ($view->exposed_input as $key => $value) {
+    $query_strings[$key] = $value;
+  }
+  $pager = array('page' => $pager_link);
+  array_push($query_strings, $pager);
+  $link_output = l($pager_text, arg(0), array('query' => $query_strings));
   return $link_output;
 }
 
@@ -404,7 +517,7 @@ function csc_views_indexed_location() {
   }
   return $location;
 }
- 
+
 /**
  * Returns zotero tags.
  */
@@ -416,4 +529,15 @@ function csc_views_zotero_tags() {
     $tag[$term->tid] = $term->name;
   }
   return $tag;
+}
+
+/**
+ * Implements hook_views_pre_build().
+ */
+function csc_views_views_pre_build(&$view) {
+  if ($view->name == 'biblio_search_api_dev' && !empty($_GET['condition_option'])) {
+    if ($_GET['condition_option'] == 'any') {
+      $view->display_handler->options['filter_groups']['groups'][1] = 'OR';
+    }
+  }
 }

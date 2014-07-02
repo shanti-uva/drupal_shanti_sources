@@ -114,16 +114,20 @@
 }
 
 .csc-custom-search-form .views-submit-button,
-.csc-custom-search-form .views-reset-button {
+.csc-custom-search-form .views-reset-button,
+.advanced-search-container #edit-submit-biblio-search-api-dev,
+.advanced-search-container #edit-reset--2 {
   width: 45%;
   display: inline-block;
 }
 
-.csc-custom-search-form .views-submit-button {
+.csc-custom-search-form .views-submit-button,
+.advanced-search-container #edit-submit-biblio-search-api-dev {
   float: left;
 }
 
-.csc-custom-search-form .views-reset-button {
+.csc-custom-search-form .views-reset-button,
+.advanced-search-container #edit-reset--2 {
   float: right;
 }
 
@@ -142,6 +146,11 @@
   float: right;
 }
 
+.csc-custom-search-form #edit-advanced-search-fieldset span {
+  float: left;
+  margin: 10px 3px;
+}
+
 .csc-custom-search-form #edit-biblio-year-1-wrapper {
   margin-top: 21px;
 }
@@ -153,16 +162,44 @@
   overflow: hidden;
 }
 
+.view-filters.filter-content-right .advanced-search-cta-container {
+  width: 87%;
+  margin-bottom: 5px;
+}
+
+.view-filters.filter-content-right #edit-search-api-views-fulltext-wrapper {
+  padding: 0;
+}
+
+.view-filters.filter-content-right #edit-search-api-views-fulltext {
+  width: 90%;
+}
+
+.view-filters.filter-content-right .advanced-search-container{
+  margin-top: 216px;
+}
+
 .view-filters.filter-content-right select,
 .view-filters.filter-content-right input {
   width: 93%;
 }
 
+.view-filters.filter-content-right input[type="radio"] {
+  width: auto;
+}
+
 .view-filters.filter-content-right #edit-biblio-year-wrapper,
-.view-filters.filter-content-right #edit-biblio-year-1-wrapper {
+.view-filters.filter-content-right #edit-biblio-year-1-wrapper,
+.views-exposed-form .advanced-search-container .form-item.form-item-advanced-search-start-year {
   width: 45%;
   display: inline-block;
   float: left;
+}
+
+.views-exposed-form .advanced-search-container .form-item.form-item-advanced-search-end-year  {
+  float: right;
+  display: inline-block;
+  width: 45%;
 }
 
 .view-filters.filter-content-right #edit-biblio-year-wrapper input,
@@ -257,3 +294,97 @@
   background-size: 93%;
   background-position: 0 -10px;
 }
+
+.advanced-search-cta-container {
+  float: left;
+  display: inline-block;
+  width: 180px;
+  overflow: hidden;
+  background: #f1f1f1 url(./images/dropdown-arrow-down.png) no-repeat;
+  background-position: 95% 11px;
+  background-size: 9px;
+  height: 22px;
+  margin-top: 1px;
+  padding: 3px 10px;
+  cursor: pointer;
+}
+
+.advanced-search-container {
+  display: none;
+  margin-top: 118px;
+  width: 280px;
+  -webkit-box-shadow: 7px 7px 10px -6px rgba(51,51,51,1);
+  -moz-box-shadow: 7px 7px 10px -6px rgba(51,51,51,1);
+  box-shadow: 7px 7px 10px -6px rgba(51,51,51,1);
+  background: #f1f1f1;
+  position: absolute;
+  padding: 0 7px 20px 7px;
+  border: none;
+  margin-left: 0;
+  border-radius: 0;
+}
+
+.advanced-search-container input[type="text"] {
+  width: 90%;
+  margin: 5px 0;
+}
+
+.advanced-search-container select {
+  width: 93%;
+}
+
+.views-exposed-form  .advanced-search-container .form-item {
+  margin: 5px 0;
+}
+
+.views-exposed-form  .advanced-search-container .form-item.form-item-biblio-publication-type {
+  margin-bottom: 10px;
+}
+
+.advanced-search-container  input[type="radio"] {
+  margin: 9px 0;
+}
+
+.advanced-search-container .fieldset-wrapper {
+  margin-top: 0;
+}
+
+#advanced-search-start-year {
+  width: 35%;
+  margin-right: 5px;
+}
+
+#advanced-search-end-year {
+  width: 35%;
+  margin-left: 5px;
+}
+
+.views-widget-filter-title,
+.views-widget-filter-search_text_biblio_author,
+.views-widget-filter-search_text_biblio_abstract,
+.views-widget-filter-search_text_biblio_publish_place,
+.views-widget-filter-search_text_biblio_publisher,
+.views-widget-filter-search_text_zotero_tags,
+#edit-field-zotero-collections-wrapper {
+  display: none !important; /* Override inline display style property */
+}
+
+.operation-option-container {
+  padding: 15px 0;
+}
+
+.operation-option-container .form-item {
+  width: 59px;
+  display: inline-block;
+  margin: 0 3px;
+}
+
+#edit-advanced-search-publication-year label.option {
+  font-weight: normal;
+}
+
+#edit-condition-option {
+  width: 59px;
+}
+
+
