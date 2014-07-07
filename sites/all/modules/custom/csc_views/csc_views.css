@@ -155,11 +155,8 @@
   margin-top: 21px;
 }
 
-.view-filters.filter-content-right {
-  width: 25%;
-  display: inline-block;
-  float: right;
-  overflow: hidden;
+.view-filters {
+  display: none;
 }
 
 .view-filters.filter-content-right .advanced-search-cta-container {
@@ -207,10 +204,8 @@
   width: 70%
 }
 
-.view-content.result-content-left {
-  width: 73%;
-  display: inline-block;
-  float: left;
+.view-content {
+  display: none;
 }
 
 .page-csc-search-dev .attachment-after,
@@ -327,6 +322,10 @@
 .advanced-search-container input[type="text"] {
   width: 90%;
   margin: 5px 0;
+}
+
+.advanced-search-container input[type="text"].readonly {
+  background: #E8E8E8;
 }
 
 .advanced-search-container select {
