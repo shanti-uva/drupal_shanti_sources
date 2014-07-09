@@ -2,8 +2,8 @@
  * @file
  * Custom javascript functionalities for CSC custom views module.
  */
-(function ($) {
-  $(document).ready(function () {    
+(function($) {
+  $(document).ready(function() { 
     // Update hidden sort field values based on the selected value of custom sort field.
     $('#edit-custom-sort').change(function() {
       switch ($(this).val()) { 
@@ -244,6 +244,94 @@
         $('#edit-submit-biblio-search-api-dev').click();
         return false;  
       }
+    });
+    var delay = (function(){
+      var timer = 0;
+      return function(callback, ms){
+        clearTimeout (timer);
+        timer = setTimeout(callback, ms);
+      };
+    })();
+    $('#edit-search-api-views-fulltext').keyup(function(e) {
+      delay(function(){
+        if ($('#edit-search-api-views-fulltext').val() != '' && $('#edit-search-api-views-fulltext').val().length > 2) {
+          $('.autocomplete-search-result-container').remove();
+          $('.form-item-search-api-views-fulltext').append('<div class="autocomplete-search-result-container"></div>');
+          var autocomplete_search_results_publication_type = new Array();
+          var autocomplete_search_results_authors = new Array();
+          var autocomplete_search_results_publishers = new Array();
+          var autocomplete_search_results_publication_place = new Array();
+          var autocomplete_search_results_tag = new Array();
+          $('#edit-biblio-publication-type option').each(function() {
+            retrieve_search_value_option($(this).val(), $(this).text(), autocomplete_search_results_publication_type, 'source-type-group');
+          });
+          append_result(autocomplete_search_results_publication_type, 'Source Type', 'source-type-group-label');
+          $('#edit-biblio-authors option').each(function() {
+            retrieve_search_value_option($(this).val(), $(this).text(), autocomplete_search_results_authors, 'authors-group');
+          });
+          append_result(autocomplete_search_results_authors, 'Authors', 'authors-group-label');
+          $('#edit-biblio-publisher option').each(function() {
+            retrieve_search_value_option($(this).val(), $(this).text(), autocomplete_search_results_publishers, 'publishers-group');
+          });
+          append_result(autocomplete_search_results_publishers, 'Publishers', 'publishers-group-label');
+          $('#edit-biblio-place-published option').each(function() {
+            retrieve_search_value_option($(this).val(), $(this).text(), autocomplete_search_results_publication_place, 'place_published-group');
+          });
+          append_result(autocomplete_search_results_publication_place, 'Place of Publication', 'place_published-group-label');
+          $('#edit-field-zotero-tags option').each(function() {
+            retrieve_search_value_option($(this).val(), $(this).text(), autocomplete_search_results_tag, 'tags-group');
+          });
+          append_result(autocomplete_search_results_tag, 'Tags', 'tags-group-label');
+          function retrieve_search_value_option(value, text, option_list, class_name) {
+            if(text.toLowerCase().search($('#edit-search-api-views-fulltext').val().toLowerCase()) != -1){
+              option_list.push({'html' : '<a href="#" class="' + class_name + '" id="' + value + '">' + text + '</a>', 'text_value' : text.replace(/[^a-z0-9\s]/gi, '')});
+            }
+          }
+          // Append array result to auto search container result
+          function append_result(result_list, group, class_name) {
+            if (result_list.length > 0) {
+              $('.autocomplete-search-result-container').append('<span class="result-item-type ' + class_name + '">' + group + '</span>');
+              result_list.sort(compare);
+              for (var i = 0; i < result_list.length; i++){
+                $('.autocomplete-search-result-container').append(result_list[i]['html']);
+              }
+            }
+          }
+          // Sort text value alphabetically
+          function compare(a, b) {
+            if (a.text_value < b.text_value) return -1;
+            if (a.text_value > b.text_value) {
+              return 1;
+              return 0;
+            }
+          }
+          $('.form-item-search-api-views-fulltext a').click(function() {
+            switch ($(this).attr('class')) {
+              case 'source-type-group':
+                $('#edit-biblio-publication-type').val($(this).attr('id'));
+                break;
+              case 'authors-group':
+                $('#edit-biblio-authors').val($(this).attr('id'));
+                break;
+              case 'publishers-group':
+                $('#edit-biblio-publisher').val($(this).attr('id'));
+                break;
+              case 'place_published-group':
+                $('#edit-biblio-place-published').val($(this).attr('id'));
+                break;
+              case 'tags-group':
+                $('#edit-field-zotero-tags').val($(this).attr('id'));
+                break;
+            }
+            $('#edit-search-api-views-fulltext').val('');
+            $('#edit-submit-biblio-search-api-dev').click();
+            return false;
+          });
+        }
+        else {
+          $('.autocomplete-search-result-container').remove();
+        }
+      }, 500 );
     });
   });
   $(window).load(function() {

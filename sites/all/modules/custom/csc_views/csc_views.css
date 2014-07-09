@@ -386,4 +386,93 @@
   width: 59px;
 }
 
+.autocomplete-search-result-container {
+  position: absolute;
+  max-height: 300px;
+  overflow-y: scroll;
+  background: #F8F8F8;
+  border: 1px solid #f1f1f1;
+  padding: 5px;
+  margin-left: 200px;
+  width: 400px;
+}
 
+.view-filters.filter-content-right .autocomplete-search-result-container {
+  width: 295px;
+  margin-left: 0;
+}
+
+.autocomplete-search-result-container a,
+.autocomplete-search-result-container span {
+  display: block;
+}
+
+.autocomplete-search-result-container a:hover {
+  text-decoration: none;
+}
+
+.autocomplete-search-result-container .result-item-type {
+  color: #3b3b3b;
+  text-decoration: none;
+  padding: 10px 0 10px 35px;
+}
+
+.autocomplete-search-result-container a {
+  padding-left: 35px;
+  text-transform: capitalize;
+}
+
+.autocomplete-search-result-container .result-item a {
+  display: block;
+  border-bottom: 1px dashed #000;
+  padding: 10px 5px;
+}
+
+#edit-search-api-views-fulltext {
+  width: 400px
+}
+
+#edit-search-api-views-fulltext-wrapper {
+  display: inline-block;
+  float: left;
+  width: 49%;
+}
+
+.view-filters.filter-content-right #edit-search-api-views-fulltext-wrapper {
+  width: 100%;
+}
+
+.views-exposed-widget.views-submit-button {
+  display: inline-block;
+  float: left;
+  width: auto;
+}
+
+.view-filters.filter-content-right .views-exposed-widget.views-submit-button {
+  width: 45%;
+}
+
+.result-item-type.source-type-group-label {
+  background: url(./images/source-type-group-icon.jpg) no-repeat;
+  background-position: 5px 5px;
+}
+
+.result-item-type.authors-group-label {
+  background: url(./images/authors-group-icon.jpg) no-repeat;
+  background-position: 5px 5px;
+}
+
+.result-item-type.publishers-group-label {
+  background: url(./images/publishers-group-icon.jpg) no-repeat;
+  background-position: 5px 5px;
+}
+
+.result-item-type.place_published-group-label {
+  background: url(./images/place-published-group-icon.jpg) no-repeat;
+  background-position: 5px 5px;
+}
+
+.result-item-type.tags-group-label {
+  background: url(./images/tags-group-icon.jpg) no-repeat;
+  background-position: 5px 5px;
+}
