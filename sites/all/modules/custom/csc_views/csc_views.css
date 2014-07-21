@@ -97,7 +97,11 @@
   background-position: left 2px;
   text-indent: -999em;
 }
-
+#block-csc-views-custom-taxonomy-block,
+#block-csc-views-custom-sort-filter,
+#csc-custom-search-form {
+  display: none;
+}
 #block-csc-views-custom-taxonomy-block ul li .item-list,
 #block-csc-views-custom-taxonomy-breadcrumb ul li .item-list {
   clear: left;
@@ -115,19 +119,19 @@
 
 .csc-custom-search-form .views-submit-button,
 .csc-custom-search-form .views-reset-button,
-.advanced-search-container #edit-submit-biblio-search-api-dev,
-.advanced-search-container #edit-reset--2 {
+#edit-advanced-search-fieldset #edit-submit-biblio-search-api-dev,
+#edit-advanced-search-fieldset #edit-reset--2 {
   width: 45%;
   display: inline-block;
 }
 
 .csc-custom-search-form .views-submit-button,
-.advanced-search-container #edit-submit-biblio-search-api-dev {
+#edit-advanced-search-fieldset #edit-submit-biblio-search-api-dev {
   float: left;
 }
 
 .csc-custom-search-form .views-reset-button,
-.advanced-search-container #edit-reset--2 {
+#edit-advanced-search-fieldset #edit-reset--2 {
   float: right;
 }
 
@@ -172,7 +176,7 @@
   width: 90%;
 }
 
-.view-filters.filter-content-right .advanced-search-container{
+.view-filters.filter-content-right #edit-advanced-search-fieldset{
   margin-top: 216px;
 }
 
@@ -187,13 +191,13 @@
 
 .view-filters.filter-content-right #edit-biblio-year-wrapper,
 .view-filters.filter-content-right #edit-biblio-year-1-wrapper,
-.views-exposed-form .advanced-search-container .form-item.form-item-advanced-search-start-year {
+.views-exposed-form #edit-advanced-search-fieldset .form-item.form-item-advanced-search-start-year {
   width: 45%;
   display: inline-block;
   float: left;
 }
 
-.views-exposed-form .advanced-search-container .form-item.form-item-advanced-search-end-year  {
+.views-exposed-form #edit-advanced-search-fieldset .form-item.form-item-advanced-search-end-year  {
   float: right;
   display: inline-block;
   width: 45%;
@@ -208,7 +212,7 @@
   display: none;
 }
 
-.page-csc-search-dev .attachment-after,
+.page-csc-search .attachment-after,
 .page-csc-search .attachment-after {
   clear: both;
 }
@@ -298,13 +302,12 @@
   background: #f1f1f1 url(./images/dropdown-arrow-down.png) no-repeat;
   background-position: 95% 11px;
   background-size: 9px;
-  height: 22px;
   margin-top: 1px;
   padding: 3px 10px;
   cursor: pointer;
 }
 
-.advanced-search-container {
+#edit-advanced-search-fieldset {
   display: none;
   margin-top: 118px;
   width: 280px;
@@ -319,32 +322,32 @@
   border-radius: 0;
 }
 
-.advanced-search-container input[type="text"] {
+#edit-advanced-search-fieldset input[type="text"] {
   width: 90%;
   margin: 5px 0;
 }
 
-.advanced-search-container input[type="text"].readonly {
+#edit-advanced-search-fieldset input[type="text"].readonly {
   background: #E8E8E8;
 }
 
-.advanced-search-container select {
+#edit-advanced-search-fieldset select {
   width: 93%;
 }
 
-.views-exposed-form  .advanced-search-container .form-item {
+.views-exposed-form  #edit-advanced-search-fieldset .form-item {
   margin: 5px 0;
 }
 
-.views-exposed-form  .advanced-search-container .form-item.form-item-biblio-publication-type {
+.views-exposed-form  #edit-advanced-search-fieldset .form-item.form-item-biblio-publication-type {
   margin-bottom: 10px;
 }
 
-.advanced-search-container  input[type="radio"] {
+#edit-advanced-search-fieldset  input[type="radio"] {
   margin: 9px 0;
 }
 
-.advanced-search-container .fieldset-wrapper {
+#edit-advanced-search-fieldset .fieldset-wrapper {
   margin-top: 0;
 }
 

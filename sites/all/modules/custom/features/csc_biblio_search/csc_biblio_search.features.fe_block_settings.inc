@@ -12,6 +12,102 @@ function csc_biblio_search_default_fe_block_settings() {
 
   $export['version'] = '2.0';
 
+  $export['csc_views-custom_sort_filter'] = array(
+    'cache' => 1,
+    'custom' => 0,
+    'delta' => 'custom_sort_filter',
+    'module' => 'csc_views',
+    'node_types' => array(),
+    'pages' => 'csc-search',
+    'roles' => array(),
+    'themes' => array(
+      'bartik' => array(
+        'region' => '',
+        'status' => 0,
+        'theme' => 'bartik',
+        'weight' => 0,
+      ),
+      'responsive_bartik' => array(
+        'region' => 'content',
+        'status' => 1,
+        'theme' => 'responsive_bartik',
+        'weight' => -12,
+      ),
+      'shanti_sarvaka' => array(
+        'region' => 'content',
+        'status' => 1,
+        'theme' => 'shanti_sarvaka',
+        'weight' => -12,
+      ),
+    ),
+    'title' => '',
+    'visibility' => 1,
+  );
+
+  $export['csc_views-custom_taxonomy_block'] = array(
+    'cache' => 1,
+    'custom' => 0,
+    'delta' => 'custom_taxonomy_block',
+    'module' => 'csc_views',
+    'node_types' => array(),
+    'pages' => 'csc-search',
+    'roles' => array(),
+    'themes' => array(
+      'bartik' => array(
+        'region' => '',
+        'status' => 0,
+        'theme' => 'bartik',
+        'weight' => 0,
+      ),
+      'responsive_bartik' => array(
+        'region' => 'content',
+        'status' => 1,
+        'theme' => 'responsive_bartik',
+        'weight' => -10,
+      ),
+      'shanti_sarvaka' => array(
+        'region' => 'content',
+        'status' => 1,
+        'theme' => 'shanti_sarvaka',
+        'weight' => -10,
+      ),
+    ),
+    'title' => '',
+    'visibility' => 1,
+  );
+
+  $export['csc_views-custom_taxonomy_breadcrumb'] = array(
+    'cache' => 1,
+    'custom' => 0,
+    'delta' => 'custom_taxonomy_breadcrumb',
+    'module' => 'csc_views',
+    'node_types' => array(),
+    'pages' => 'csc-search',
+    'roles' => array(),
+    'themes' => array(
+      'bartik' => array(
+        'region' => '',
+        'status' => 0,
+        'theme' => 'bartik',
+        'weight' => 0,
+      ),
+      'responsive_bartik' => array(
+        'region' => 'content',
+        'status' => 1,
+        'theme' => 'responsive_bartik',
+        'weight' => -13,
+      ),
+      'shanti_sarvaka' => array(
+        'region' => 'banner',
+        'status' => 1,
+        'theme' => 'shanti_sarvaka',
+        'weight' => -13,
+      ),
+    ),
+    'title' => '<none>',
+    'visibility' => 1,
+  );
+
   $export['taxonomy_block-taxonomy_block'] = array(
     'cache' => -1,
     'custom' => 0,
@@ -31,6 +127,12 @@ function csc_biblio_search_default_fe_block_settings() {
         'region' => '',
         'status' => 0,
         'theme' => 'responsive_bartik',
+        'weight' => -11,
+      ),
+      'shanti_sarvaka' => array(
+        'region' => '',
+        'status' => 0,
+        'theme' => 'shanti_sarvaka',
         'weight' => -11,
       ),
     ),
@@ -57,6 +159,12 @@ function csc_biblio_search_default_fe_block_settings() {
         'region' => '',
         'status' => 0,
         'theme' => 'responsive_bartik',
+        'weight' => -12,
+      ),
+      'shanti_sarvaka' => array(
+        'region' => '',
+        'status' => 0,
+        'theme' => 'shanti_sarvaka',
         'weight' => -12,
       ),
     ),
