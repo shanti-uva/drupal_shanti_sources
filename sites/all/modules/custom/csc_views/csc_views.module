@@ -9,10 +9,9 @@
  */
 function csc_views_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'views_exposed_form' && $form_state['view']->name == 'biblio_search_api' && $form_state['view']->current_display == 'page') {
+    drupal_add_js('sites/all/libraries/cookie.js/jquery.cookie.js', 'file');
     $filter_options = (!empty($form_state['input']['search_api_views_fulltext'])) ? get_filter_node_ids($form_state['input']['search_api_views_fulltext']) : '';
     $form['#attributes'] = array('class' => array('csc-custom-search-form'));
-    $form['field_zotero_collections']['#prefix'] = '<div style="display: none;">';
-    $form['field_zotero_collections']['#suffix'] = '</div>';
     $form['biblio_publication_type']['#type'] = 'select';
     $form['biblio_publication_type']['#size'] = NULL;
     $form['biblio_publication_type']['#options'] =  csc_views_publication_type($filter_options);
@@ -284,7 +283,7 @@ function csc_views_block_view($delta = '') {
   switch ($delta) {
     case 'custom_sort_filter':
       $block['subject'] = '';
-      $block['content'] = (!search_landing_page()) ? csc_views_custom_srot_block_content() : '';
+      $block['content'] = (!search_landing_page()) ? csc_views_custom_sort_block_content() : '';
       break;
     case 'custom_taxonomy_block':
       $block['subject'] = (search_landing_page()) ? t('Browse') : '';
@@ -298,8 +297,10 @@ function csc_views_block_view($delta = '') {
   return $block;
 }
 
-function csc_views_custom_srot_block_content() {
-   $custom_sort_block_content = '<div class="custom-sort-container"><select id="edit-custom-sort" name="custom_sort" class="form-select">
+function csc_views_custom_sort_block_content() {
+  $custom_sort_block_content = '<div class="detail-level-container"><span>Detail</span><ul class="detail-level-option"><li><a id="short-detail" href="#">Short</a></li>
+    <li><a id="medium-detail" class="active" href="#">Medium</a></li><li><a id="long-detail" href="#">Long</a></li></ul></div>
+    <div class="custom-sort-container"><select id="edit-custom-sort" name="custom_sort" class="form-select">
     <option value="default" selected="selected">' . t('Sort by') . '</option>
     <optgroup label="Title"><option value="title_asc">A-Z</option><option value="title_desc">Z-A</option></optgroup>
     <optgroup label="Author"><option value="author_asc">A-Z</option><option value="author_desc">Z-A</option></optgroup>
@@ -441,9 +442,8 @@ function csc_views_breadrumb_output($breadcrumb_content = NULL) {
 }
 
 function search_landing_page() {
-  if (!isset($_GET['search_api_views_fulltext']) && !isset($_GET['field_zotero_collections']) && !isset($_GET['field_zotero_tags']) && !isset($_GET['sort_by']) && !isset($_GET['sort_order'])) {
-    return TRUE;
-  }
+  $query_string = explode('&', $_SERVER['QUERY_STRING']);
+  if (empty($query_string[0])) return TRUE;
 }
 
 /**
