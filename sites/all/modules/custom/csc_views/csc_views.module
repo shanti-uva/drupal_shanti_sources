@@ -5,6 +5,19 @@
  */
 
 /**
+ * Implements hook_menu().
+ *
+ */
+function csc_views_menu() {
+  $items['biblio/titles/list_callback'] = array(
+    'page callback' => 'biblio_title_list_callback',
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('access content'),
+  );
+  return $items;
+}
+
+/**
  * Implements hook_form_alter().
  */
 function csc_views_form_alter(&$form, &$form_state, $form_id) {
@@ -12,6 +25,7 @@ function csc_views_form_alter(&$form, &$form_state, $form_id) {
     drupal_add_js('sites/all/libraries/cookie.js/jquery.cookie.js', 'file');
     $filter_options = (!empty($form_state['input']['search_api_views_fulltext'])) ? get_filter_node_ids($form_state['input']['search_api_views_fulltext']) : '';
     $form['#attributes'] = array('class' => array('csc-custom-search-form'));
+    $form['search_api_views_fulltext']['#autocomplete_path'] = 'biblio/titles/list_callback';
     $form['biblio_publication_type']['#type'] = 'select';
     $form['biblio_publication_type']['#size'] = NULL;
     $form['biblio_publication_type']['#options'] =  csc_views_publication_type($filter_options);
@@ -91,6 +105,53 @@ function csc_views_form_alter(&$form, &$form_state, $form_id) {
     unset($form['search_text_zotero_tags']);
     $form['#validate'][] = 'csc_views_exposed_filter_validation';
   }
+}
+
+/**
+ * Returns auto complete search values
+ */
+function biblio_title_list_callback($string = '') {
+  $string = ucfirst($string);
+  $matches = array();
+  if (!empty($string) && strlen($string) >= 3) {
+    $titles = db_query('SELECT n.title, n.nid, y.value FROM {node} as n LEFT JOIN {search_api_db_database_node_index_biblio_year} as y ON n.nid = y.item_id WHERE n.title LIKE :value ORDER BY title ASC', array(':value' => db_like($string) . '%'));
+    if ($titles->rowCount() != 0) {
+      foreach ($titles as $key => $node) {
+        $title_authors = db_query('SELECT value FROM {search_api_db_database_node_index_biblio_authors} WHERE item_id = :nid', array(':nid' => $node->nid));
+        $title_author = '';
+        foreach ($title_authors as $author_data_key => $author_data) {
+          $title_author .= ($author_data_key != 0) ? ', ' . $author_data->value : $author_data->value;
+        }
+        $year = ($node->value != 0) ? '(' . $node->value . ')': '';
+        $matches['node-' . $node->nid] = ($key == 0) ? '<span class="result-item-type title-group-label">' . t('Titles') . '</span><span class="title-group">' . $node->title . ' ' . $year . '<br/>' . $title_author . '</span>' : '<span class="title-group">' . $node->title . ' ' . $year . '<br/>' . $title_author . '</span>';
+      }
+    }
+    $authors = db_query('SELECT value FROM {search_api_db_database_node_index_biblio_authors} WHERE value LIKE :value ORDER BY value ASC', array(':value' => db_like($string) . '%'));
+    if ($authors->rowCount() != 0) {
+      foreach ($authors as $key => $author) {
+        $matches['author-' . $author->value] = ($key == 0) ? '<span class="result-item-type authors-group-label">' . t('Authors') . '</span><span class="authors-group">' . $author->value . '</span>' : '<span class="authors-group">' . $author->value . '</span>';
+      }
+    }
+    $publishers = db_query('SELECT value FROM {search_api_db_database_node_index_biblio_publisher} WHERE value LIKE :value ORDER BY value ASC', array(':value' => db_like($string) . '%'));
+    if ($publishers->rowCount() != 0) {
+      foreach ($publishers as $key => $publisher) {
+        $matches['publisher-' . $publisher->value] = ($key == 0) ? '<span class="result-item-type publishers-group-label">' . t('Publishers') . '</span><span class="publishers-group">' . $publisher->value . '</span>' : '<span class="publishers-group">' . $publisher->value . '</span>';
+      }
+    }
+    $placed_published = db_query('SELECT value FROM {search_api_db_database_node_index_biblio_place_published} WHERE value LIKE :value ORDER BY value ASC', array(':value' => db_like($string) . '%'));
+    if ($placed_published->rowCount() != 0) {
+      foreach ($placed_published as $key => $place) {
+        $matches['publishplace-' . $place->value] = ($key == 0) ? '<span class="result-item-type place_published-group-label">' . t('Place of Publication') . '</span><span class="place-published-group">' . $place->value . '</span>' : '<span class="place-published-group">' . $place->value . '</span>';
+      }
+    }
+    $tags = db_query('SELECT name, tid FROM {taxonomy_term_data} WHERE name LIKE :name ORDER BY name ASC', array(':name' => db_like($string) . '%'));
+    if ($tags->rowCount() != 0) {
+      foreach ($tags as $key => $tag) {
+        $matches['tag-' . $tag->tid] = ($key == 0) ? '<span class="result-item-type tags-group-label">' . t('Tags') . '</span><span class="tags-group">' . $tag->name . '</span>' : '<span class="tags-group">' . $tag->name . '</span>';
+      }
+    } 
+  }
+  drupal_json_output($matches);
 }
 
 function csc_views_exposed_filter_validation($form, &$form_state) {
