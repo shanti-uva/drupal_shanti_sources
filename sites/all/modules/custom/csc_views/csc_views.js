@@ -161,6 +161,8 @@
         $('#edit-advanced-search-publication-year-range').prop('checked',true);
         $('#date-range-slider-dropdown').slider('enable');
         $('#date-range-slider-dropdown').slider({values: [publication_start_year, current_year]});
+        $('#date-range-slider-dropdown .start-year-inner').text(publication_start_year);
+        $('#date-range-slider-dropdown .end-year-inner').text(current_year);
         $('#date-range-slider-dropdown .start-year, #date-range-slider-dropdown .end-year').fadeIn();
         $('.source-type-selected-filter').text('All');
         $('.field-selected-filter').text('');
@@ -178,6 +180,8 @@
         $('#edit-biblio-place-published-wrapper .holder').text($("#edit-biblio-place-published option:selected").text());
         $('#edit-field-zotero-tags-wrapper .holder').text($("#edit-field-zotero-tags option:selected").text());
         $('#date-range-slider').slider({values: [publication_start_year, current_year]});
+        $('#date-range-slider .start-year-inner').text(publication_start_year);
+        $('#date-range-slider .end-year-inner').text(current_year);
         $('#date-range-slider .start-year, #date-range-slider .end-year').fadeIn();
         return false;
       });
