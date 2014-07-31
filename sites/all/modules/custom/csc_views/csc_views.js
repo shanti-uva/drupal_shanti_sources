@@ -155,7 +155,7 @@
         $('#edit-advanced-biblio-publication-type').val($(this).val());
         advanced_search_dropwdown_text_source_type()
       });
-      // Set feild values to default
+      // Set field values to default
       $('#edit-reset--2').click(function() {
         $('#edit-advanced-biblio-publication-type, #edit-advanced-search-fieldset .form-text, field-selected-filter').val('');
         $('#edit-advanced-search-publication-year-range').prop('checked',true);
@@ -166,7 +166,19 @@
         $('.field-selected-filter').text('');
         $('.year-selected-filter').text(', ' + publication_start_year + ' - ' + current_year);
         $('#edit-condition-option').val('all');
-        $('.form-item-advanced-biblio-publication-type .holder').text('Select Source Type');
+        $('.form-item-advanced-biblio-publication-type .holder').text($("#edit-advanced-biblio-publication-type option:selected").text());
+        $('.form-item-condition-option .holder').text($("#edit-condition-option option:selected").text());
+        return false;
+      });
+      $('#edit-reset').click(function() {
+        $('#edit-biblio-publication-type, #edit-biblio-authors, #edit-biblio-publisher, #edit-biblio-place-published, #edit-field-zotero-tags').val('');
+        $('#edit-biblio-publication-type-wrapper .holder').text($("#edit-biblio-publication-type option:selected").text());
+        $('#edit-biblio-authors-wrapper .holder').text($("#edit-biblio-authors option:selected").text());
+        $('#edit-biblio-publisher-wrapper .holder').text($("#edit-biblio-publisher option:selected").text());
+        $('#edit-biblio-place-published-wrapper .holder').text($("#edit-biblio-place-published option:selected").text());
+        $('#edit-field-zotero-tags-wrapper .holder').text($("#edit-field-zotero-tags option:selected").text());
+        $('#date-range-slider').slider({values: [publication_start_year, current_year]});
+        $('#date-range-slider .start-year, #date-range-slider .end-year').fadeIn();
         return false;
       });
       // Make enter key submit search form.
