@@ -188,29 +188,26 @@
         $('#edit-search-api-views-fulltext').css('color', '#333333');
       });
       // Show autocomplete search result
-      $('#edit-search-api-views-fulltext').autocomplete({
-        change: function(e, ui){
-          var autocomplete_value = $(this).val().split('-');
-          console.log('key: ' + autocomplete_value[0] + ' value: ' + autocomplete_value[1]);
-          switch (autocomplete_value[0]) {
-            case 'node':
-              window.location.replace(location.protocol + '//' + location.host + '/node/' + autocomplete_value[1]);
-              break;
-            case 'author':
-              autocomplete_redirect('biblio_authors', autocomplete_value[1]);
-              break;
-            case 'publisher':
-              autocomplete_redirect('biblio_publisher', autocomplete_value[1]);
-              break;
-            case 'publishplace':
-              autocomplete_redirect('biblio_place_published', autocomplete_value[1]);
-              break;
-            case 'tag':
-              autocomplete_redirect('field_zotero_tags', autocomplete_value[1]);
-              break;
-          }
-          $('#edit-search-api-views-fulltext').css('color', 'white');
+      $('input#edit-search-api-views-fulltext', context).bind('autocompleteSelect', function() {
+        var autocomplete_value = $(this).val().split('-');
+        switch (autocomplete_value[0]) {
+          case 'node':
+            window.location.replace(location.protocol + '//' + location.host + '/node/' + autocomplete_value[1]);
+            break;
+          case 'author':
+            autocomplete_redirect('biblio_authors', autocomplete_value[1]);
+            break;
+          case 'publisher':
+            autocomplete_redirect('biblio_publisher', autocomplete_value[1]);
+            break;
+          case 'publishplace':
+            autocomplete_redirect('biblio_place_published', autocomplete_value[1]);
+            break;
+          case 'tag':
+            autocomplete_redirect('field_zotero_tags', autocomplete_value[1]);
+            break;
         }
+        $('#edit-search-api-views-fulltext').css('color', 'white');
       });
       // Clear search text
       $('a.clear-search-text').click(function(e) {
