@@ -205,7 +205,7 @@
       });
       // Show autocomplete search result
       $('input#edit-search-api-views-fulltext', context).bind('autocompleteSelect', function() {
-        var autocomplete_value = $(this).val().split('-');
+        var autocomplete_value = $(this).val().split('=');
         switch (autocomplete_value[0]) {
           case 'node':
             window.location.replace(location.protocol + '//' + location.host + '/node/' + autocomplete_value[1]);
