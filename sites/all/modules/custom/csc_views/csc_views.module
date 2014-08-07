@@ -499,8 +499,15 @@ function csc_views_breadrumb_output($breadcrumb_content = NULL) {
     $breadcrumb_output = $breadcrumb_content;
   }
   else {
-    $breadcrumb_output = (empty($_GET['biblio_publication_type']) && empty($_GET['biblio_authors']) && empty($_GET['biblio_publisher']) && empty($_GET['biblio_place_published'])
-      && empty($_GET['biblio_year']) && empty($_GET['biblio_year_1']) && empty($_GET['field_zotero_tags'])) ? '<span class="breadcrumb-item non-default-item current_breadcrumb">' . t('Search Results') . '</span>' : '<span class="breadcrumb-item non-default-item current_breadcrumb">' . t('Search Results (Filtered)') . '</span>';
+    if(!empty($_GET['field_zotero_collections'])) {
+      if ($_GET['field_zotero_collections'] == 'All' && count(explode('&', $_SERVER['QUERY_STRING'])) <= 2) {
+        $breadcrumb_output = '';
+      }
+      else {
+        $breadcrumb_output = (empty($_GET['biblio_publication_type']) && empty($_GET['biblio_authors']) && empty($_GET['biblio_publisher']) && empty($_GET['biblio_place_published'])
+        && empty($_GET['biblio_year']) && empty($_GET['biblio_year_1']) && empty($_GET['field_zotero_tags'])) ? '<span class="breadcrumb-item non-default-item current_breadcrumb">' . t('Search Results') . '</span>' : '<span class="breadcrumb-item non-default-item current_breadcrumb">' . t('Search Results (Filtered)') . '</span>';
+      }
+    }
   }
   if (!empty($_SERVER['QUERY_STRING'])) return $home_link . ' ' . $library_link . ' ' . $breadcrumb_output;
 }
