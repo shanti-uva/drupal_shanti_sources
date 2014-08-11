@@ -105,6 +105,9 @@ function csc_views_form_alter(&$form, &$form_state, $form_id) {
       unset($form['search_text_biblio_abstract']);
       unset($form['search_text_zotero_tags']);
       $form['#validate'][] = 'csc_views_exposed_filter_validation';
+      $form['default_min_max_publication_year'] = array(
+        '#markup' => csc_views_get_unfiltered_min_max_year('views-attach'),
+      );
     }
   }
 }
@@ -361,13 +364,15 @@ function csc_views_block_view($delta = '') {
 }
 
 function csc_views_custom_sort_block_content() {
+  $publish_year_values = csc_views_get_min_max_year('biblio_search_api', 'page', 'views-custom-sort');
+  $published_year = (!empty($publish_year_values)) ? $publish_year_values : csc_views_get_unfiltered_min_max_year('views-custom-sort');
   $custom_sort_block_content = '<div class="detail-level-container"><span>Detail</span><ul class="detail-level-option"><li><a id="short-detail" href="#">Short</a></li>
     <li><a id="medium-detail" class="active" href="#">Medium</a></li><li><a id="long-detail" href="#">Long</a></li></ul></div>
     <div class="custom-sort-container"><select id="edit-custom-sort" name="custom_sort" class="form-select">
     <option value="default" selected="selected">' . t('Sort by') . '</option>
     <optgroup label="Title"><option value="title_asc">A-Z</option><option value="title_desc">Z-A</option></optgroup>
     <optgroup label="Author"><option value="author_asc">A-Z</option><option value="author_desc">Z-A</option></optgroup>
-    <optgroup label="Year"><option value="year_asc">1492-2014</option><option value="year_desc">2014-1492</option></optgroup>
+    <optgroup label="Year"><option value="year_asc">' . $published_year['asc'] . '</option><option value="year_desc">' . $published_year['desc'] . '</option></optgroup>
     </select></div>';
   return $custom_sort_block_content;
 }
@@ -461,7 +466,8 @@ function csc_views_generate_list($hierarchy) {
 function collection_breadcrumb($term_id) {
   $breadcrumb = NULL;
   $parameter = explode('&', $_SERVER['QUERY_STRING']);
-  if ((count($parameter) == 1 && current_path() == 'csc-search') || (current_path() == 'csc-search/biblio' && count($parameter) <= 2 && !empty($_GET['field_zotero_collections']))){
+  if ((count($parameter) == 1 && current_path() == 'csc-search') || (current_path() == 'csc-search/biblio' && count($parameter) <= 2 &&
+  !empty($_GET['field_zotero_collections'])) || (count($parameter) <= 4 && !empty($_GET['sort_by']) && !empty($_GET['sort_order']))) {
     if ($term_id != 'All') {
       $vocabulary = taxonomy_vocabulary_machine_name_load('collections');
       $vid  = $vocabulary->vid;
@@ -488,25 +494,30 @@ function collection_breadcrumb($term_id) {
         $breadcrumb .= '</div>';
       }
     }
-  }  
+  } 
   return csc_views_breadrumb_output($breadcrumb);
 }
 
 function csc_views_breadrumb_output($breadcrumb_content = NULL) {
   $home_link = '<div class="breadcrumb-item">' . l(t('Home'), 'csc-search', array('attributes' => array('class' => array('home-search-page')))) . '&nbsp;</div>';
   $library_link = '<div class="breadcrumb-item">' . l(t('Library'), '', array('attributes' => array('id' => 'collection-library'), 'fragment' => '')) . '</div>';
+  $search_result_text = '<span class="breadcrumb-item non-default-item current_breadcrumb">' . t('Search Results') . '</span>';
+  $search_result_filtered_text = '<span class="breadcrumb-item non-default-item current_breadcrumb">' . t('Search Results (Filtered)') . '</span>';
   if (!empty($breadcrumb_content)) {
     $breadcrumb_output = $breadcrumb_content;
   }
   else {
-    if(!empty($_GET['field_zotero_collections'])) {
+    if (!empty($_GET['field_zotero_collections'])) {
       if ($_GET['field_zotero_collections'] == 'All' && count(explode('&', $_SERVER['QUERY_STRING'])) <= 2) {
         $breadcrumb_output = '';
       }
       else {
         $breadcrumb_output = (empty($_GET['biblio_publication_type']) && empty($_GET['biblio_authors']) && empty($_GET['biblio_publisher']) && empty($_GET['biblio_place_published'])
-        && empty($_GET['biblio_year']) && empty($_GET['biblio_year_1']) && empty($_GET['field_zotero_tags'])) ? '<span class="breadcrumb-item non-default-item current_breadcrumb">' . t('Search Results') . '</span>' : '<span class="breadcrumb-item non-default-item current_breadcrumb">' . t('Search Results (Filtered)') . '</span>';
+        && empty($_GET['biblio_year']) && empty($_GET['biblio_year_1']) && empty($_GET['field_zotero_tags'])) ? $search_result_text : $search_result_filtered_text;
       }
+    }
+    if ((count(explode('&', $_SERVER['QUERY_STRING'])) <= 3) && (!empty($_GET['field_zotero_tags']) || !empty($_GET['biblio_publisher'])) || !empty($_GET['biblio_place_published']) || !empty($_GET['biblio_authors'])) {
+      $breadcrumb_output = $search_result_filtered_text;
     }
   }
   if (!empty($_SERVER['QUERY_STRING'])) return $home_link . ' ' . $library_link . ' ' . $breadcrumb_output;
@@ -535,6 +546,8 @@ function csc_views_views_pre_render(&$view) {
     . $view->query->pager->total_items . ' found</div><div class="custom-footer-pager-right">' . $first_page_link . ' ' . $prev_page_link . '<span>' . t('Page') . '</span><input type="text" 
     name="pager-input" id="pager-input" value="' . $current_page . '"/>of ' . $max_page . ' ' . $next_page_link . ' ' . $last_page_link . '</div><input type="hidden" value="' 
     . $max_page . '" id="max-page-input"></div>';
+    // Attach hidden input with min/max publication year values
+    $view->attachment_after .= csc_views_get_min_max_year('biblio_search_api', 'page', 'views-attach');
   }
 }
 
@@ -670,6 +683,66 @@ function csc_views_zotero_tags($filter_ids) {
   return $tag;
 }
 
+/**
+ * Returns filtered min/max publication year
+ */
+function csc_views_get_min_max_year($view_name, $display_id, $return_option) {
+  $get_view = views_get_view($view_name);
+  $get_view->set_display($display_id);
+  $get_view->set_items_per_page(0);
+  $get_view->pre_execute();
+  $get_view->execute();
+  $filtered_publication_years = array();
+  foreach ($get_view->result as $node_data) {
+    $publication_year = db_query('SELECT DISTINCT(yr.value) FROM {search_api_db_database_node_index_biblio_year} yr WHERE yr.value <> :year_val and yr.item_id = :item_id_val', array(':year_val' => 0, ':item_id_val' => $node_data->entity));
+    foreach ($publication_year as $year_data) {
+      $filtered_publication_years[] = $year_data->value;
+    }
+  }
+  return csc_views_year_ouput($filtered_publication_years, 'filtered', $return_option);
+}
+
+/**
+ * Returns unfiltered min/max publication year
+ */
+function csc_views_get_unfiltered_min_max_year($return_option) {
+  $result = db_query('SELECT DISTINCT(yr.value) FROM {search_api_db_database_node_index_biblio_year} yr WHERE yr.value <> :year_val', array(':year_val' => 0));
+  $unfiltered_filtered_publication_years = array();
+  foreach ($result as $year_data) {
+    $unfiltered_filtered_publication_years[] = $year_data->value;
+  }
+  return csc_views_year_ouput($unfiltered_filtered_publication_years, 'unfiltered', $return_option);
+}
+
+/**
+ * Returns unfiltered min/max publication year output
+ */
+function csc_views_year_ouput($publication_years, $result_option, $return_option) {
+  if (!empty($publication_years)) {
+    $latest_year = max($publication_years);
+    $earliest_year = min($publication_years);
+    switch ($return_option) {
+      case 'views-attach':
+        if ($result_option == 'filtered') {
+          $output = '<input type="hidden" id="latest-published-year" value="' . $latest_year . '" />';
+          $output .= '<input type="hidden" id="earliest-published-year" value="' . $earliest_year . '" />';
+        }
+        else {
+          $output = '<input type="hidden" id="unfiltered-latest-published-year" value="' . $latest_year . '" />';
+          $output .= '<input type="hidden" id="unfiltered-earliest-published-year" value="' . $earliest_year . '" />';
+        }
+        break;
+      case 'views-custom-sort':
+        $output = array('asc' => $earliest_year . ' - ' . $latest_year, 'desc' =>  $latest_year . ' - ' . $earliest_year);
+        break;
+    }
+  }
+  else {
+    $output = NULL;
+  }
+  return $output;
+}
+ 
 /**
  * Implements hook_views_pre_build().
  */
