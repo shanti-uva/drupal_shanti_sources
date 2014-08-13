@@ -109,6 +109,15 @@ function csc_views_form_alter(&$form, &$form_state, $form_id) {
         '#markup' => csc_views_get_unfiltered_min_max_year('views-attach'),
       );
     }
+    if ($form_state['view']->current_display == 'block_1') {
+      $node = node_load($_GET['current_nid']);
+      $form['field_zotero_tags']['#type'] = 'select';
+      $form['field_zotero_tags']['#size'] = NULL;
+      $form['field_zotero_tags']['#options'] =  csc_views_zotero_tags($node->nid);
+      $form['biblio_publication_type']['#type'] = 'select';
+      $form['biblio_publication_type']['#size'] = NULL;
+      $form['biblio_publication_type']['#options'] =  csc_views_publication_type($node->nid);
+    }
   }
 }
 
@@ -121,14 +130,22 @@ function biblio_title_list_callback($string = '') {
   if (!empty($string) && strlen($string) >= 3) {
     $titles = db_query_range('SELECT n.title, n.nid, y.value FROM {node} as n LEFT JOIN {search_api_db_database_node_index_biblio_year} as y ON n.nid = y.item_id WHERE n.title LIKE :value ORDER BY title ASC', 0, 3, array(':value' => db_like($string) . '%'));
     if ($titles->rowCount() != 0) {
+      // Load views for biblio full content
+      $biblio_full_results = csc_views_get_views_results('biblio_search_api', 'biblio_full');
       foreach ($titles as $key => $node) {
         $title_authors = db_query_range('SELECT value FROM {search_api_db_database_node_index_biblio_authors} WHERE item_id = :nid', 0, 3, array(':nid' => $node->nid));
         $title_author = '';
+        // Attach current biblio item page
+        foreach ($biblio_full_results as $biblio_full_result_key => $value) {
+          if ($value->entity == $node->nid) $current_page = $biblio_full_result_key;
+        }
+        // Attach authors
         foreach ($title_authors as $author_data_key => $author_data) {
           $title_author .= ($author_data_key != 0) ? ', ' . $author_data->value : $author_data->value;
         }
+        // Attach publication year
         $year = ($node->value != 0) ? '(' . $node->value . ')': '';
-        $matches['node=' . $node->nid] = ($key == 0) ? '<span class="result-item-type title-group-label">' . t('Titles') . '</span><span class="title-group">' . $node->title . ' ' . $year . '<br/>' . $title_author . '</span>' : '<span class="title-group">' . $node->title . ' ' . $year . '<br/>' . $title_author . '</span>';
+        $matches['node=' . $node->nid . '=' . $current_page] = ($key == 0) ? '<span class="result-item-type title-group-label">' . t('Titles') . '</span><span class="title-group">' . $node->title . ' ' . $year . '<br/>' . $title_author . '</span>' : '<span class="title-group">' . $node->title . ' ' . $year . '<br/>' . $title_author . '</span>';
       }
     }
     $authors = db_query_range('SELECT value FROM {search_api_db_database_node_index_biblio_authors} WHERE value LIKE :value ORDER BY value ASC', 0, 3, array(':value' => db_like($string) . '%'));
@@ -379,7 +396,7 @@ function csc_views_custom_sort_block_content() {
 
 function csc_views_breadcrumb_library($vid) {
   $content = '<div class="library-dropdown" style="display: none;"><div class="inner-library"><div class="view-all-library-container">
-    ' . l(t('View all sources'), current_path(), array('query' => array('field_zotero_collections' => 'All'))) . '</div>' . csc_views_generate_list(csc_views_build_taxonomy_tree($vid, 0)) . '</div></div>';
+    ' . l(t('View all sources'), 'csc-search', array('query' => array('field_zotero_collections' => 'All'))) . '</div>' . csc_views_generate_list(csc_views_build_taxonomy_tree($vid, 0)) . '</div></div>';
   return $content;
 }
 
@@ -444,7 +461,7 @@ function csc_views_generate_list($hierarchy) {
   $items = array();
   foreach ($hierarchy as $term) {
     $class_name = (!empty($term->children)) ? 'has-children' : '';
-    $item = l(t($term->name), current_path(),  array(
+    $item = l(t($term->name), 'csc-search',  array(
       'query' => array(
         'field_zotero_collections' => $term->tid
       ),
@@ -466,7 +483,7 @@ function csc_views_generate_list($hierarchy) {
 function collection_breadcrumb($term_id) {
   $breadcrumb = NULL;
   $parameter = explode('&', $_SERVER['QUERY_STRING']);
-  if ((count($parameter) == 1 && current_path() == 'csc-search') || (current_path() == 'csc-search/biblio' && count($parameter) <= 2 &&
+  if ((count($parameter) == 1 && current_path() == 'csc-search') || (current_path() == 'csc-search/biblio' && count($parameter) <= 3 &&
   !empty($_GET['field_zotero_collections'])) || (count($parameter) <= 4 && !empty($_GET['sort_by']) && !empty($_GET['sort_order']))) {
     if ($term_id != 'All') {
       $vocabulary = taxonomy_vocabulary_machine_name_load('collections');
@@ -507,6 +524,7 @@ function csc_views_breadrumb_output($breadcrumb_content = NULL) {
     $breadcrumb_output = $breadcrumb_content;
   }
   else {
+    $breadcrumb_output = $search_result_text;
     if (!empty($_GET['field_zotero_collections'])) {
       if ($_GET['field_zotero_collections'] == 'All' && count(explode('&', $_SERVER['QUERY_STRING'])) <= 2) {
         $breadcrumb_output = '';
@@ -532,6 +550,7 @@ function search_landing_page() {
  * Implements hook_views_pre_render().
  */
 function csc_views_views_pre_render(&$view) {
+  drupal_add_js(drupal_get_path('module', 'csc_views') . '/csc_views.js');
   if ($view->name == 'biblio_search_api' && !empty($view->exposed_input) && !empty($view->result)) {
     $first_row = ($view->query->pager->current_page != 0) ? ($view->query->pager->current_page * $view->query->pager->options['items_per_page']) + 1 : 1;
     $last_row = ($first_row + count($view->result)) - 1;
@@ -686,14 +705,10 @@ function csc_views_zotero_tags($filter_ids) {
 /**
  * Returns filtered min/max publication year
  */
-function csc_views_get_min_max_year($view_name, $display_id, $return_option) {
-  $get_view = views_get_view($view_name);
-  $get_view->set_display($display_id);
-  $get_view->set_items_per_page(0);
-  $get_view->pre_execute();
-  $get_view->execute();
+function csc_views_get_min_max_year($view_id, $display_id, $return_option) {
+  $biblio_views_result = csc_views_get_views_results($view_id, $display_id);
   $filtered_publication_years = array();
-  foreach ($get_view->result as $node_data) {
+  foreach ($biblio_views_result as $node_data) {
     $publication_year = db_query('SELECT DISTINCT(yr.value) FROM {search_api_db_database_node_index_biblio_year} yr WHERE yr.value <> :year_val and yr.item_id = :item_id_val', array(':year_val' => 0, ':item_id_val' => $node_data->entity));
     foreach ($publication_year as $year_data) {
       $filtered_publication_years[] = $year_data->value;
@@ -754,3 +769,14 @@ function csc_views_views_pre_build(&$view) {
   }
 }
 
+/**
+ *  Returns views result values.
+ */
+ function csc_views_get_views_results($views_id, $display_id) {
+  $get_view = views_get_view($views_id);
+  $get_view->set_display($display_id);
+  $get_view->set_items_per_page(0);
+  $get_view->pre_execute();
+  $get_view->execute();
+  return $get_view->result;
+}

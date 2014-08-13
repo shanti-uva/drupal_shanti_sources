@@ -212,7 +212,7 @@
         var autocomplete_value = $(this).val().split('=');
         switch (autocomplete_value[0]) {
           case 'node':
-            window.location.replace(location.protocol + '//' + location.host + '/node/' + autocomplete_value[1]);
+            window.location.replace(location.protocol + '//' + location.host + '/csc-search/biblio?page=' + autocomplete_value[2] + '&current_nid=' + autocomplete_value[1]);
             break;
           case 'author':
             autocomplete_redirect('biblio_authors', autocomplete_value[1]);

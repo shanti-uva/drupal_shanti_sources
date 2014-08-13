@@ -37,7 +37,7 @@ function csc_biblio_search_default_fe_block_settings() {
         'region' => 'content',
         'status' => 1,
         'theme' => 'shanti_sarvaka',
-        'weight' => -12,
+        'weight' => -15,
       ),
     ),
     'title' => '',
@@ -69,7 +69,7 @@ function csc_biblio_search_default_fe_block_settings() {
         'region' => 'content',
         'status' => 1,
         'theme' => 'shanti_sarvaka',
-        'weight' => -10,
+        'weight' => -12,
       ),
     ),
     'title' => '',
@@ -82,7 +82,8 @@ function csc_biblio_search_default_fe_block_settings() {
     'delta' => 'custom_taxonomy_breadcrumb',
     'module' => 'csc_views',
     'node_types' => array(),
-    'pages' => 'csc-search',
+    'pages' => 'csc-search
+csc-search/biblio',
     'roles' => array(),
     'themes' => array(
       'bartik' => array(
@@ -106,6 +107,38 @@ function csc_biblio_search_default_fe_block_settings() {
     ),
     'title' => '<none>',
     'visibility' => 1,
+  );
+
+  $export['system-main'] = array(
+    'cache' => -1,
+    'custom' => 0,
+    'delta' => 'main',
+    'module' => 'system',
+    'node_types' => array(),
+    'pages' => '',
+    'roles' => array(),
+    'themes' => array(
+      'bartik' => array(
+        'region' => 'content',
+        'status' => 1,
+        'theme' => 'bartik',
+        'weight' => 0,
+      ),
+      'responsive_bartik' => array(
+        'region' => 'content',
+        'status' => 1,
+        'theme' => 'responsive_bartik',
+        'weight' => -11,
+      ),
+      'shanti_sarvaka' => array(
+        'region' => 'content',
+        'status' => 1,
+        'theme' => 'shanti_sarvaka',
+        'weight' => -13,
+      ),
+    ),
+    'title' => '',
+    'visibility' => 0,
   );
 
   $export['taxonomy_block-taxonomy_block'] = array(
@@ -138,6 +171,39 @@ function csc_biblio_search_default_fe_block_settings() {
     ),
     'title' => '',
     'visibility' => 1,
+  );
+
+  $export['views--exp-biblio_search_api-page'] = array(
+    'cache' => -1,
+    'custom' => 0,
+    'delta' => '-exp-biblio_search_api-page',
+    'module' => 'views',
+    'node_types' => array(),
+    'pages' => 'csc-search
+csc-search/biblio',
+    'roles' => array(),
+    'themes' => array(
+      'bartik' => array(
+        'region' => '',
+        'status' => 0,
+        'theme' => 'bartik',
+        'weight' => 0,
+      ),
+      'responsive_bartik' => array(
+        'region' => '',
+        'status' => 0,
+        'theme' => 'responsive_bartik',
+        'weight' => 0,
+      ),
+      'shanti_sarvaka' => array(
+        'region' => 'content',
+        'status' => 1,
+        'theme' => 'shanti_sarvaka',
+        'weight' => -14,
+      ),
+    ),
+    'title' => '',
+    'visibility' => 0,
   );
 
   $export['views-zotero_tags-block'] = array(
