@@ -132,14 +132,14 @@
       $('.form-item-advanced-search-publication-year input[type="radio"]').change(function() {
         if ($('input[name=advanced_search_publication_year]:checked').val() != 'range') {
           $('#edit-biblio-year, #edit-biblio-year-1, #edit-advanced-search-start-year, #edit-advanced-search-end-year').val($(this).val());
-          $('#date-range-slider').slider({min: last_year, max: current_year, values: [$(this).val(), $(this).val()]});
+          $('#date-range-slider').slider({values: [$(this).val(), $(this).val()]});
           $('#date-range-slider .start-year-inner').text($(this).val());
           $('#date-range-slider .end-year-inner').text($(this).val());
         }
         else {
           $('#edit-biblio-year').val($('#edit-advanced-search-start-year').val());
           $('#edit-biblio-year-1').val($('#edit-advanced-search-end-year').val());
-          $('#date-range-slider-dropdown, #date-range-slider').slider({min: publication_start_year, max: publication_end_year, values: [publication_start_year, publication_end_year]});
+          $('#date-range-slider-dropdown, #date-range-slider').slider({min: default_publication_start_year, max: default_publication_end_year, values: [publication_start_year, publication_end_year]});
           $('#date-range-slider-dropdown .start-year-inner, #date-range-slider .start-year-inner').text(publication_start_year);
           $('#date-range-slider-dropdown .end-year-inner, #date-range-slider .end-year-inner').text(publication_end_year);
         }
@@ -253,22 +253,18 @@
       if (selected_published_year != 'range') {
         var year_val = parseInt(selected_published_year);
         var default_start_year = year_val;
-        var default_end_year = year_val;
-        var min_year = default_publication_start_year - 1;
-        var max_year = default_publication_end_year;  
+        var default_end_year = year_val; 
       }
       else {
         var default_start_year = ($('#edit-biblio-year').val() != '') ? $('#edit-biblio-year').val() : publication_start_year;
         var default_end_year = ($('#edit-biblio-year-1').val() != '') ? $('#edit-biblio-year-1').val() : publication_end_year;
-        var min_year = (publication_start_year != publication_end_year) ? publication_start_year : publication_start_year - 1;
-        var max_year = publication_end_year;  
       }
       $('#edit-field-zotero-tags-wrapper').append('<label class="publication-year-label">Year</label><div id="date-range-slider"></div>');
       $('#edit-advanced-search-publication-year').append('<label class="publication-year-label">Year</label><div id="date-range-slider-dropdown"></div>');
       $('#date-range-slider, #date-range-slider-dropdown').slider({
         range: true,
-        min: min_year,
-        max: max_year,
+        min: default_publication_start_year,
+        max: default_publication_end_year,
         values: [default_start_year, default_end_year],
         slide: function(event, ui) {
           $('#date-range-slider-dropdown, #date-range-slider').slider('values', 0, ui.values[0]);
@@ -427,7 +423,7 @@
         $('#date-range-slider-dropdown .start-year, #date-range-slider-dropdown .end-year, #date-range-slider .start-year, #date-range-slider .end-year').fadeIn();
         $('#edit-advanced-search-start-year, #edit-biblio-year').val(default_publication_start_year);
         $('#edit-advanced-search-end-year, #edit-biblio-year-1').val(default_publication_end_year);
-        $('#edit-advanced-search-publication-year-range').prop('checked',true);
+        $('#edit-advanced-search-publication-year-range').prop('checked', true);
       }
     }
   };
