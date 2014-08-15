@@ -604,7 +604,7 @@ function get_node_id_query($query) {
  * Returns publication types.
  */
 function csc_views_publication_type($filter_ids) {
-  $publication = array('' => 'Select Source Type');
+  $publication = array();
   if (!empty($filter_ids)) {
     $query = db_query('SELECT bt.tid, bt.name FROM {biblio_types} as bt LEFT JOIN {search_api_db_database_node_index_biblio_publication_type} as pt ON bt.tid = pt.value WHERE pt.item_id in (:node_ids)', array(':node_ids' => $filter_ids));
   }
@@ -614,14 +614,16 @@ function csc_views_publication_type($filter_ids) {
   foreach ($query as $data) {
     $publication[$data->tid] = $data->name;
   }
-  return $publication;
+  asort($publication);
+  $publication_values = array('' => 'Select Source Type') + $publication;
+  return $publication_values;
 }
 
 /**
  * Returns indexed authors.
  */
 function csc_views_indexed_author($filter_ids) {
-  $author = array('' => 'Select Author');
+  $author = array();
   if (!empty($filter_ids)) {
     $query = db_query('SELECT DISTINCT value FROM {search_api_db_database_node_index_biblio_authors} WHERE item_id in (:item_id) and value <> :val', array(':item_id' => $filter_ids, ':val' => ''));
   }
@@ -631,14 +633,16 @@ function csc_views_indexed_author($filter_ids) {
   foreach ($query as $data) {
     $author[$data->value] = $data->value;
   }
-  return $author;
+  asort($author);
+  $author_values = array('' => 'Select Author') + $author;
+  return $author_values;
 }
  
 /**
  * Returns indexed publishers.
  */
 function csc_views_indexed_publisher($filter_ids) {
-  $publisher = array('' => 'Select Publisher');
+  $publisher = array();
   if (!empty($filter_ids)) {
     $query = db_query('SELECT DISTINCT value FROM {search_api_db_database_node_index_biblio_publisher} WHERE item_id in (:item_id) and value <> :val', array(':item_id' => $filter_ids, ':val' => ''));
   }
@@ -648,14 +652,16 @@ function csc_views_indexed_publisher($filter_ids) {
   foreach ($query as $data) {
     $publisher[$data->value] = $data->value;
   }
-  return $publisher;
+  asort($publisher);
+  $publisher_values = array('' => 'Select Publisher') + $publisher;
+  return $publisher_values;
 }
 
 /**
  * Returns indexed publish location.
  */
 function csc_views_indexed_location($filter_ids) {
-  $location = array('' => 'Select Location');
+  $location = array();
   if (!empty($filter_ids)) {
     $query = db_query('SELECT DISTINCT value FROM {search_api_db_database_node_index_biblio_place_published} WHERE item_id in (:item_id) and value <> :val', array(':item_id' => $filter_ids, ':val' => ''));
   }
@@ -665,29 +671,33 @@ function csc_views_indexed_location($filter_ids) {
   foreach ($query as $data) {
     $location[$data->value] = $data->value;
   }
-  return $location;
+  asort($location);
+  $location_values = array('' => 'Select Location') + $location;  
+  return $location_values;
 }
 
 /**
  * Returns zotero tags.
  */
 function csc_views_zotero_tags($filter_ids) {
-  $tag = array('' => 'Select Tags');
+  $tag_data = array();
   if (!empty($filter_ids)) {
     $query_tags = db_query('SELECT DISTINCT value FROM {search_api_db_database_node_index_field_zotero_tags} WHERE item_id in (:item_id) and value <> :val', array(':item_id' => $filter_ids, ':val' => ''));
     foreach ($query_tags as $data) {
       $taxonomy_tag = taxonomy_term_load($data->value);
-      $tag[$data->value] = $taxonomy_tag->name;
+      $tag_data[$data->value] = $taxonomy_tag->name;
     }
   }
   else {
     $zotero_vocabulary = taxonomy_vocabulary_machine_name_load('zotero_tags');
     $query_tags = taxonomy_get_tree($zotero_vocabulary->vid);
     foreach ($query_tags as $term) {
-      $tag[$term->tid] = $term->name;
+      $tag_data[$term->tid] = $term->name;
     }
   }
-  return $tag;
+  asort($tag_data);
+  $tag_values = array('' => 'Select Tags') + $tag_data;  
+  return $tag_values;
 }
 
 /**
