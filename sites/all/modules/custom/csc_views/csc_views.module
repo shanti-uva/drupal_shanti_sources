@@ -541,7 +541,12 @@ function search_landing_page() {
  * Implements hook_views_pre_render().
  */
 function csc_views_views_pre_render(&$view) {
-  drupal_add_js(drupal_get_path('module', 'csc_views') . '/csc_views.js');
+  drupal_add_js(drupal_get_path('module', 'csc_views') . '/js/csc_views.js');
+  drupal_add_js(drupal_get_path('module', 'csc_views') . '/js/cscViewsAutocomplete.js');
+  drupal_add_js(drupal_get_path('module', 'csc_views') . '/js/cscViewsCustomSort.js');
+  drupal_add_js(drupal_get_path('module', 'csc_views') . '/js/cscViewsSearchFilter.js');
+  drupal_add_js(drupal_get_path('module', 'csc_views') . '/js/cscViewsCustomPager.js');
+  drupal_add_js(drupal_get_path('module', 'csc_views') . '/js/cscViewsCollections.js');
   if ($view->name == 'biblio_search_api' && !empty($view->exposed_input) && !empty($view->result)) {
     $first_row = ($view->query->pager->current_page != 0) ? ($view->query->pager->current_page * $view->query->pager->options['items_per_page']) + 1 : 1;
     $last_row = ($first_row + count($view->result)) - 1;
