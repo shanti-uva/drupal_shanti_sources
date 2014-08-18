@@ -10,16 +10,16 @@
       var default_publication_end_year = parseInt($('#unfiltered-latest-published-year').val());
       var publication_start_year = ($('#earliest-published-year').length > 0) ? parseInt($('#earliest-published-year').val()) : default_publication_start_year;
       var publication_end_year = ($('#latest-published-year').length > 0) ? parseInt($('#latest-published-year').val()) : default_publication_end_year;
-      advanced_search_dropwdown_text_source_type();
-      advanced_search_dropwdown_text_field();
-      advanced_search_dropwdown_text_year();
+      set_advanced_search_dropwdown_source_type_text();
+      set_advanced_search_dropwdown_filter_field_text();
+      set_advanced_search_dropwdown_year_text();
       // Advanced search drop down
       $('#edit-biblio-publication-type--2').keyup(function() {
-        advanced_search_dropwdown_text_source_type();
+        set_advanced_search_dropwdown_source_type_text();
       });
       // Make enter key submit search form.
       $('#views-exposed-form-biblio-search-api-page input[type="text"], #views-exposed-form-biblio-search-api-page input[type="select"], #views-exposed-form-biblio-search-api-page input[type="radio"]').keypress(function (e) {
-        if(e.which == 13) { // Enter key
+        if (e.which == 13) { // Enter key
           $('.csc-custom-search-form').submit();
           return false;  
         }
@@ -69,35 +69,35 @@
           $('#date-range-slider-dropdown .start-year-inner, #date-range-slider .start-year-inner').text(publication_start_year);
           $('#date-range-slider-dropdown .end-year-inner, #date-range-slider .end-year-inner').text(publication_end_year);
         }
-        advanced_search_dropwdown_text_year();
+        set_advanced_search_dropwdown_year_text();
       });
       $('#edit-advanced-search-start-year').keyup(function() {
         $('#edit-biblio-year').val($('#edit-advanced-search-start-year').val());
-        advanced_search_dropwdown_text_year();
+        set_advanced_search_dropwdown_year_text();
       });
       $('#edit-advanced-search-end-year').keyup(function() {
         $('#edit-biblio-year-1').val($('#edit-advanced-search-end-year').val());
-        advanced_search_dropwdown_text_year();
+        set_advanced_search_dropwdown_year_text();
       });
       if ($('#edit-biblio-year').val() != '' && $('#edit-biblio-year-1').val() != '') {
         $('#edit-advanced-search-start-year').val($('#edit-biblio-year').val());
         $('#edit-advanced-search-end-year').val($('#edit-biblio-year-1').val());
-        advanced_search_dropwdown_text_year();
+        set_advanced_search_dropwdown_year_text();
       }
       $('#edit-advanced-biblio-publication-type').change(function() {
         $('#edit-biblio-publication-type').val($(this).val());
-        advanced_search_dropwdown_text_source_type()
+        set_advanced_search_dropwdown_source_type_text()
       });
       $('#edit-biblio-publication-type').change(function() {
         $('#edit-advanced-biblio-publication-type').val($(this).val());
-        advanced_search_dropwdown_text_source_type()
+        set_advanced_search_dropwdown_source_type_text()
       });
       // Date range slider
       var selected_published_year = $('input[name=advanced_search_publication_year]:checked').val();
       if (selected_published_year != 'range') {
-        var year_val = parseInt(selected_published_year);
-        var default_start_year = year_val;
-        var default_end_year = year_val; 
+        var year_value = parseInt(selected_published_year);
+        var default_start_year = year_value;
+        var default_end_year = year_value; 
       }
       else {
         var default_start_year = ($('#edit-biblio-year').val() != '') ? $('#edit-biblio-year').val() : publication_start_year;
@@ -111,16 +111,18 @@
         max: default_publication_end_year,
         values: [default_start_year, default_end_year],
         slide: function(event, ui) {
-          $('#date-range-slider-dropdown, #date-range-slider').slider('values', 0, ui.values[0]);
-          $('#date-range-slider-dropdown, #date-range-slider').slider('values', 1, ui.values[1]);
+          var slider_start_year_value = ui.values[0];
+          var slider_end_year_value = ui.values[1];
+          $('#date-range-slider-dropdown, #date-range-slider').slider('values', 0, slider_start_year_value);
+          $('#date-range-slider-dropdown, #date-range-slider').slider('values', 1, slider_end_year_value);
           $('#edit-advanced-search-publication-year-range').prop('checked',true);
           $('#date-range-slider-dropdown').slider('enable');
-          $('#edit-biblio-year').val(ui.values[0]);
-          $('#edit-advanced-search-start-year').val(ui.values[0]);
-          $('#edit-biblio-year-1').val(ui.values[1]);
-          $('#edit-advanced-search-end-year').val(ui.values[1]);
-          $('#date-range-slider .start-year-inner, #date-range-slider-dropdown .start-year-inner').text(ui.values[0]);
-          $('#date-range-slider .end-year-inner, #date-range-slider-dropdown .end-year-inner').text(ui.values[1]);
+          $('#edit-biblio-year').val(slider_start_year_value);
+          $('#edit-advanced-search-start-year').val(slider_start_year_value);
+          $('#edit-biblio-year-1').val(slider_end_year_value);
+          $('#edit-advanced-search-end-year').val(slider_end_year_value);
+          $('#date-range-slider .start-year-inner, #date-range-slider-dropdown .start-year-inner').text(slider_start_year_value);
+          $('#date-range-slider .end-year-inner, #date-range-slider-dropdown .end-year-inner').text(slider_end_year_value);
         }
       });
       (selected_published_year != 'range') ? $('#date-range-slider-dropdown').slider('disable') : $('#date-range-slider-dropdown').slider('enable');
@@ -136,7 +138,7 @@
         $('#date-range-slider-dropdown .start-year, #date-range-slider-dropdown .end-year').fadeIn();
       });
       // Update dropdown button source type text
-      function advanced_search_dropwdown_text_source_type() {
+      function set_advanced_search_dropwdown_source_type_text() {
         var source_type = ($( "#edit-advanced-biblio-publication-type option:selected" ).val() != '') ? $( "#edit-advanced-biblio-publication-type option:selected" ).text() : 'All';
         $('.source-type-selected-filter').text(source_type);
       }
@@ -165,13 +167,8 @@
         set_default_date_slider();
         return false;
       });
-      // Update dropdown button source type text
-      function advanced_search_dropwdown_text_source_type() {
-        var source_type = ($( "#edit-advanced-biblio-publication-type option:selected" ).val() != '') ? $( "#edit-advanced-biblio-publication-type option:selected" ).text() : 'All';
-        $('.source-type-selected-filter').text(source_type);
-      }
       // Update dropdown button field text
-      function advanced_search_dropwdown_text_field() {
+      function set_advanced_search_dropwdown_filter_field_text() {
         var text_fields = [
           $('#edit-title').val(), 
           $('#edit-search-text-biblio-author').val(),
@@ -193,7 +190,7 @@
         }
       }
       // Update dropdown button year text
-      function advanced_search_dropwdown_text_year() {
+      function set_advanced_search_dropwdown_year_text() {
         if ($('input[name=advanced_search_publication_year]:checked').val() != 'range') {
           var publish_year = ', ' + $('input[name=advanced_search_publication_year]:checked').val();
            $('#date-range-slider-dropdown').slider('disable');

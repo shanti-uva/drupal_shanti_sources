@@ -11,8 +11,8 @@
         $(this).after('<span class="holder"></span>');
       });
       // Update detail level display of search results
-      if($.isFunction($.cookie)){
-        if($.cookie('detail-level-value') != undefined) set_detail_level($.cookie('detail-level-value'));
+      if ($.isFunction($.cookie)){
+        if ($.cookie('detail-level-value') != undefined) set_detail_level($.cookie('detail-level-value'));
       }
       $('.detail-level-option a').click(function(e) {
         e.stopPropagation();
@@ -42,7 +42,7 @@
   };
   $(window).load(function() {
      // Add custom classes on div containers when results are returned
-    if($('.view-biblio-search-api .view-content').length || $('.view-biblio-search-api .view-empty').length) {
+    if ($('.view-biblio-search-api .view-content').length || $('.view-biblio-search-api .view-empty').length) {
       $('.csc-custom-search-form .views-exposed-form .views-exposed-widgets').append('<a href="#" class="toggle-filter-btn-open">Filter</a><div class="inner-filer-container"><div class="filter-header"><h3>Filter</h3><a href="#" class="toggle-filter-btn">Toggle</a></div></div>');
       $('#edit-biblio-publication-type-wrapper, #edit-biblio-authors-wrapper, #edit-biblio-publisher-wrapper, #edit-biblio-place-published-wrapper, #edit-field-zotero-tags-wrapper, #edit-biblio-year-wrapper, #edit-biblio-year-1-wrapper, .views-submit-button, .views-reset-button').appendTo('.inner-filer-container');
     }
@@ -79,7 +79,7 @@
     var vars = query.split('&');
       for (var i = 0; i < vars.length; i++) {
         var pair = vars[i].split('=');
-        if(pair[0] == variable){return pair[1];}
+        if (pair[0] == variable){return pair[1];}
       }
     return(false);
   }

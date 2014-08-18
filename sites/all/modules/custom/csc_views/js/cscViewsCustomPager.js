@@ -7,7 +7,7 @@ Drupal.behaviors.cscViewsCustomPager = {
   attach: function (context, settings) {
     // Restrict input to numbers only
     $('#pager-input').keypress(function(key) {
-      if(key.charCode < 48 || key.charCode > 57) return false;
+      if (key.charCode < 48 || key.charCode > 57) return false;
     });
     // Auto submit pager value after 2 sec delay
     var timer;

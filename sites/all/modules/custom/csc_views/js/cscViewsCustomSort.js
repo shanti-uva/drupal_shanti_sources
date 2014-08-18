@@ -48,13 +48,13 @@ Drupal.behaviors.cscViewsCustomSort = {
     });
     // Custom sort text display
     $('select').change(function(){
-      var selectedOption = $(this).find(':selected').text();
-      if($(this).attr('id') == 'edit-custom-sort' && $(this).val() != 'default') {
+      var selected_option = $(this).find(':selected').text();
+      if ($(this).attr('id') == 'edit-custom-sort' && $(this).val() != 'default') {
         var group = $(this.options[this.selectedIndex]).closest('optgroup').prop('label');
-        $(this).next('.holder').text('Sort by ' + group + ':  ' + selectedOption);
+        $(this).next('.holder').text('Sort by ' + group + ':  ' + selected_option);
       }
       else {
-        $(this).next('.holder').text(selectedOption);
+        $(this).next('.holder').text(selected_option);
       }
     }).trigger('change');
     // Update sort fields
