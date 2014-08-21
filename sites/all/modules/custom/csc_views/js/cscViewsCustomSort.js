@@ -19,10 +19,13 @@ Drupal.behaviors.cscViewsCustomSort = {
         var default_sort_value = (sort_order == 'ASC') ? 'year_asc' : 'year_desc';
         break;
     }
-    $('#edit-custom-sort').find('option[value="' + default_sort_value + '"]').attr('selected',true);
+    console.log(default_sort_value);
+    $('#block-csc-views-custom-sort-filter .bootstrap-select.select-wrapper .dropdown-menu li').each(function(index) {
+      ($(this).attr('rel') == default_sort_value) ? $(this).addClass('selected') : $(this).removeClass('selected');
+    });
     // Update hidden sort field values based on the selected value of custom sort field.
-    $('#edit-custom-sort').change(function() {
-      switch ($(this).val()) {
+    $('#block-csc-views-custom-sort-filter .bootstrap-select.select-wrapper .dropdown-menu li').click(function() {
+      switch ($(this).attr('rel')) {
         case 'title_asc':
           update_sort_field('sort_stripped_node_title', 'ASC');
           break;
@@ -46,17 +49,6 @@ Drupal.behaviors.cscViewsCustomSort = {
           break;
       }
     });
-    // Custom sort text display
-    $('select').change(function(){
-      var selected_option = $(this).find(':selected').text();
-      if ($(this).attr('id') == 'edit-custom-sort' && $(this).val() != 'default') {
-        var group = $(this.options[this.selectedIndex]).closest('optgroup').prop('label');
-        $(this).next('.holder').text('Sort by ' + group + ':  ' + selected_option);
-      }
-      else {
-        $(this).next('.holder').text(selected_option);
-      }
-    }).trigger('change');
     // Update sort fields
     function update_sort_field(sort_type, sort_value) {
       if ($('#edit-sort-by').val() != sort_type || $('#edit-sort-order').val() != sort_value) {

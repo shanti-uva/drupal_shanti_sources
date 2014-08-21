@@ -6,13 +6,14 @@
   Drupal.behaviors.cscViewsSearchFilter = {
     attach: function (context, settings) {
       // Set default values
+      var default_year_published_option = $('.form-item-advanced-search-publication-year input[type=radio]:checked').val();
       var default_publication_start_year = parseInt($('#unfiltered-earliest-published-year').val());
       var default_publication_end_year = parseInt($('#unfiltered-latest-published-year').val());
       var publication_start_year = ($('#earliest-published-year').length > 0) ? parseInt($('#earliest-published-year').val()) : default_publication_start_year;
       var publication_end_year = ($('#latest-published-year').length > 0) ? parseInt($('#latest-published-year').val()) : default_publication_end_year;
       set_advanced_search_dropwdown_source_type_text();
       set_advanced_search_dropwdown_filter_field_text();
-      set_advanced_search_dropwdown_year_text();
+      set_advanced_search_dropwdown_year_text(default_year_published_option);
       // Advanced search drop down
       $('#edit-biblio-publication-type--2').keyup(function() {
         set_advanced_search_dropwdown_source_type_text();
@@ -55,12 +56,13 @@
       });
       $('div#edit-advanced-search-fieldset').appendTo('#edit-search-api-views-fulltext-wrapper');
       // Publication year
-      $('.form-item-advanced-search-publication-year input[type="radio"]').change(function() {
-        if ($('input[name=advanced_search_publication_year]:checked').val() != 'range') {
-          $('#edit-biblio-year, #edit-biblio-year-1, #edit-advanced-search-start-year, #edit-advanced-search-end-year').val($(this).val());
-          $('#date-range-slider').slider({values: [$(this).val(), $(this).val()]});
-          $('#date-range-slider .start-year-inner').text($(this).val());
-          $('#date-range-slider .end-year-inner').text($(this).val());
+      $('#edit-advanced-search-publication-year .form-item label.option').click(function() {
+        var year_value = $(this).find('input[type="radio"]').val();
+        if (year_value != 'range') {
+          $('#edit-biblio-year, #edit-biblio-year-1, #edit-advanced-search-start-year, #edit-advanced-search-end-year').val(year_value);
+          $('#date-range-slider').slider({values: [year_value, year_value]});
+          $('#date-range-slider .start-year-inner').text(year_value);
+          $('#date-range-slider .end-year-inner').text(year_value);
         }
         else {
           $('#edit-biblio-year').val($('#edit-advanced-search-start-year').val());
@@ -69,20 +71,20 @@
           $('#date-range-slider-dropdown .start-year-inner, #date-range-slider .start-year-inner').text(publication_start_year);
           $('#date-range-slider-dropdown .end-year-inner, #date-range-slider .end-year-inner').text(publication_end_year);
         }
-        set_advanced_search_dropwdown_year_text();
+        set_advanced_search_dropwdown_year_text(year_value);
       });
       $('#edit-advanced-search-start-year').keyup(function() {
         $('#edit-biblio-year').val($('#edit-advanced-search-start-year').val());
-        set_advanced_search_dropwdown_year_text();
+        set_advanced_search_dropwdown_year_text(default_year_published_option);
       });
       $('#edit-advanced-search-end-year').keyup(function() {
         $('#edit-biblio-year-1').val($('#edit-advanced-search-end-year').val());
-        set_advanced_search_dropwdown_year_text();
+        set_advanced_search_dropwdown_year_text(default_year_published_option);
       });
       if ($('#edit-biblio-year').val() != '' && $('#edit-biblio-year-1').val() != '') {
         $('#edit-advanced-search-start-year').val($('#edit-biblio-year').val());
         $('#edit-advanced-search-end-year').val($('#edit-biblio-year-1').val());
-        set_advanced_search_dropwdown_year_text();
+        set_advanced_search_dropwdown_year_text(default_year_published_option);
       }
       $('#edit-advanced-biblio-publication-type').change(function() {
         $('#edit-biblio-publication-type').val($(this).val());
@@ -190,9 +192,9 @@
         }
       }
       // Update dropdown button year text
-      function set_advanced_search_dropwdown_year_text() {
-        if ($('input[name=advanced_search_publication_year]:checked').val() != 'range') {
-          var publish_year = ', ' + $('input[name=advanced_search_publication_year]:checked').val();
+      function set_advanced_search_dropwdown_year_text(option_value) {
+        if (option_value != 'range') {
+          var publish_year = ', ' + option_value;
            $('#date-range-slider-dropdown').slider('disable');
            $('#date-range-slider-dropdown .start-year, #date-range-slider-dropdown .end-year').fadeOut();
         }

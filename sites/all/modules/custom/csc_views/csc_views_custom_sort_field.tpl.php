@@ -7,19 +7,32 @@
   </ul>
 </div>
 <div class="custom-sort-container">
-  <select id="edit-custom-sort" name="custom_sort" class="form-select">
-    <option value="default" selected="selected"><?php print t('Sort by'); ?></option>
-    <optgroup label="Title">
-      <option value="title_asc">A-Z</option>
-      <option value="title_desc">Z-A</option>
-    </optgroup>
-    <optgroup label="Author">
-      <option value="author_asc">A-Z</option>
-      <option value="author_desc">Z-A</option>
-    </optgroup>
-    <optgroup label="Year">
-      <option value="year_asc"><?php print $value['publish_year_asc']; ?></option>
-      <option value="year_desc"><?php print $value['publish_year_desc']; ?></option>
-    </optgroup>
-  </select>
+  <form id="custom-sort-form" action="" accept-charset="UTF-8">
+    <div class="btn-group bootstrap-select form-control form-select ss-select select-wrapper">
+      <button type="button" class="btn dropdown-toggle selectpicker btn-default" data-toggle="dropdown" data-id="edit-custom-sort" title="<?php print t('Sort by'); ?>">
+        <span class="filter-option pull-left"><?php print t('Sort by'); ?></span>&nbsp;
+        <span class="caret"></span>
+      </button>
+      <div class="dropdown-menu open ">
+        <ul class="dropdown-menu inner selectpicker">
+          <li rel="default" class="selected"><a tabindex="0" class="" style=""><span class="text"><?php print t('Sort by'); ?></span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li>
+        </ul>
+        <label>Title</label>
+          <ul class="dropdown-menu inner selectpicker">
+            <li rel="title_asc"><a tabindex="0" class="" style=""><span class="text">A-Z</span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li>
+            <li rel="title_desc"><a tabindex="0" class="" style=""><span class="text">Z-A</span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li>
+          </ul>
+        <label>Author</label>
+          <ul class="dropdown-menu inner selectpicker">
+            <li rel="author_asc"><a tabindex="0" class="" style=""><span class="text">A-Z</span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li>
+            <li rel="author_desc"><a tabindex="0" class="" style=""><span class="text">Z-A</span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li>
+          </ul>
+        <label>Year</label>
+          <ul class="dropdown-menu inner selectpicker">
+            <li rel="year_asc"><a tabindex="0" class="" style=""><span class="text"><?php print $value['publish_year_asc']; ?></span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li>
+            <li rel="year_desc"><a tabindex="0" class="" style=""><span class="text"><?php print $value['publish_year_desc']; ?></span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li>
+          </ul>
+      </div>
+    </div>
+  </form>
 </div>

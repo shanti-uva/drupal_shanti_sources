@@ -25,7 +25,7 @@ function csc_views_form_alter(&$form, &$form_state, $form_id) {
     if ($form_state['view']->current_display == 'page') {
       drupal_add_js('sites/all/libraries/cookie.js/jquery.cookie.js', 'file');
       $filter_options = (arg(1) == '' && csc_views_get_filter_node_ids()) ? csc_views_get_filter_node_ids() : '';
-      $form['#attributes'] = array('class' => array('csc-custom-search-form'));
+      $form['#attributes'] = (search_landing_page()) ? array('class' => array('csc-custom-search-form', 'landing-page')) : array('class' => array('csc-custom-search-form'));
       $form['search_api_views_fulltext']['#autocomplete_path'] = 'biblio/titles/list_callback';
       $form['biblio_publication_type']['#type'] = 'select';
       $form['biblio_publication_type']['#size'] = NULL;
