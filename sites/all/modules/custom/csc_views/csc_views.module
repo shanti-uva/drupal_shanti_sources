@@ -113,7 +113,7 @@ function csc_views_form_alter(&$form, &$form_state, $form_id) {
 }
 
 /**
- * Returns auto complete search values
+ * Returns auto complete search values.
  */
 function biblio_title_list_callback($string = '') {
   $string = ucfirst($string);
@@ -486,8 +486,8 @@ function csc_views_collection_breadcrumb($term_id) {
         if ($term_list) {
           $breadcrumb_items['term_name_link'] = l(t($term->name), '',  array('fragment' => '', 'attributes' => array('class' => 'breadcrumb-dropdown-cta')));
           $breadcrumb_items['breadcrumb_term_child'] = csc_views_generate_list($term_list);
-          $breadcrumb_items['all_srouces_top_link'] = l(t('View all sources for ' . $term->name), 'csc-search', array('query' => array('field_zotero_collections' => $term->tid)));
-          $breadcrumb_items['all_srouces_sub_top_link'] = l(t($term->name), current_path(), array('query' => array('field_zotero_collections' => $term->tid)));
+          $breadcrumb_items['all_sources_top_link'] = l(t('View all sources for ' . $term->name), 'csc-search', array('query' => array('field_zotero_collections' => $term->tid)));
+          $breadcrumb_items['all_sources_sub_top_link'] = l(t($term->name), current_path(), array('query' => array('field_zotero_collections' => $term->tid)));
         }
         else {
           $breadcrumb_items['term_name'] = $term->name;
@@ -597,7 +597,7 @@ function csc_views_custom_pager_links($view, $pager_text, $pager_link) {
 }
 
 /**
- * Returns node ids for option filter
+ * Returns node ids for option filter.
  */
 function csc_views_get_filter_node_ids() {
   $filter_ids = views_get_current_view();
@@ -722,7 +722,7 @@ function csc_views_zotero_tags($filter_ids) {
 }
 
 /**
- * Returns filtered min/max publication year
+ * Returns filtered min/max publication year.
  */
 function csc_views_get_min_max_year($view_id, $display_id, $return_option) {
   $biblio_views_result = csc_views_get_views_results($view_id, $display_id);
@@ -737,7 +737,7 @@ function csc_views_get_min_max_year($view_id, $display_id, $return_option) {
 }
 
 /**
- * Returns unfiltered min/max publication year
+ * Returns unfiltered min/max publication year.
  */
 function csc_views_get_unfiltered_min_max_year($return_option) {
   $result = db_query('SELECT DISTINCT(yr.value) FROM {search_api_db_database_node_index_biblio_year} yr WHERE yr.value <> :year_val', array(':year_val' => 0));
@@ -749,7 +749,7 @@ function csc_views_get_unfiltered_min_max_year($return_option) {
 }
 
 /**
- * Returns unfiltered min/max publication year output
+ * Returns unfiltered min/max publication year output.
  */
 function csc_views_year_ouput($publication_years, $result_option, $return_option) {
   if (!empty($publication_years)) {
