@@ -19,7 +19,6 @@ Drupal.behaviors.cscViewsCustomSort = {
         var default_sort_value = (sort_order == 'ASC') ? 'year_asc' : 'year_desc';
         break;
     }
-    console.log(default_sort_value);
     $('#block-csc-views-custom-sort-filter .bootstrap-select.select-wrapper .dropdown-menu li').each(function(index) {
       ($(this).attr('rel') == default_sort_value) ? $(this).addClass('selected') : $(this).removeClass('selected');
     });

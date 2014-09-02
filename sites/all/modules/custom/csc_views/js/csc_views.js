@@ -19,11 +19,6 @@
         if ($.cookie('detail-level-value') != undefined) $.set_detail_level($.cookie('detail-level-value'));
         if ($.cookie('content-expand') != undefined) $.set_result_content_width($.cookie('content-expand'));
       }
-      // Modify select element to consistently show custom drop down field on all browsers
-      $('select').each(function(){
-        $(this).wrap('<span class="select-wrapper"></span>');
-        $(this).after('<span class="holder"></span>');
-      });
       $('.detail-level-option a').click(function(e) {
         e.stopPropagation();
         e.preventDefault();

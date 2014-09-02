@@ -352,6 +352,7 @@ function csc_views_block_info() {
  * Implements hook_block_view().
  */
 function csc_views_block_view($delta = '') {
+  $block = array();
   $vocabulary = taxonomy_vocabulary_machine_name_load('collections');
   $vid  = $vocabulary->vid;
   switch ($delta) {
