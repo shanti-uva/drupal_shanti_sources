@@ -57,6 +57,8 @@
       $('div#edit-advanced-search-fieldset').appendTo('#edit-search-api-views-fulltext-wrapper');
       // Publication year
       $('#edit-advanced-search-publication-year .form-item label.option').click(function() {
+        $('#edit-advanced-search-publication-year .form-item label.option div.iradio_minimal-red').removeClass('checked');
+        $(this).find('div.iradio_minimal-red').addClass('checked');
         var year_value = $(this).find('input[type="radio"]').val();
         if (year_value != 'range') {
           $('#edit-biblio-year, #edit-biblio-year-1, #edit-advanced-search-start-year, #edit-advanced-search-end-year').val(year_value);
@@ -145,10 +147,11 @@
         $('.source-type-selected-filter').text(source_type);
       }
       // Set field values to default
-      $('#edit-reset--2').click(function() {
+      $('#csc-views-advanced-search-form #edit-clear').click(function() {
         $('#edit-advanced-biblio-publication-type').val('').change();
         $('#edit-advanced-search-fieldset .form-text, field-selected-filter').val('');
-        $('#edit-advanced-search-publication-year-range').prop('checked',true);
+        $('#edit-advanced-search-publication-year .form-item label.option div.iradio_minimal-red').removeClass('checked');
+        $('#edit-advanced-search-publication-year-range').parent().addClass('checked');
         $('.source-type-selected-filter').text('All');
         $('.field-selected-filter').text('');
         $('.year-selected-filter').text(', ' + publication_start_year + ' - ' + publication_end_year);
@@ -168,6 +171,12 @@
         $('#edit-field-zotero-tags-wrapper .holder').text($("#edit-field-zotero-tags option:selected").text());
         set_default_date_slider();
         return false;
+      });
+      // Open advanced search filter
+      $('.advanced-search-filter-btn').click(function(e) {
+        $('#edit-advanced-option').slideToggle();
+        ($(this).text() == '+ Advanced') ? $(this).text('- Advanced') : $(this).text('+ Advanced');
+        e.preventDefault();
       });
       // Update dropdown button field text
       function set_advanced_search_dropdown_filter_field_text() {
