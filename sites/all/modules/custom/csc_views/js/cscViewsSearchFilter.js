@@ -148,24 +148,22 @@
       $('#edit-reset--2').click(function() {
         $('#edit-advanced-biblio-publication-type').val('').change();
         $('#edit-advanced-search-fieldset .form-text, field-selected-filter').val('');
+        $('.form-item-advanced-search-publication-year div').removeClass('checked');
         $('#edit-advanced-search-publication-year-range').prop('checked',true);
+        $('#edit-advanced-search-publication-year-range').parent().addClass('checked');
         $('.source-type-selected-filter').text('All');
         $('.field-selected-filter').text('');
         $('.year-selected-filter').text(', ' + publication_start_year + ' - ' + publication_end_year);
-        $('#edit-condition-option').val('all');
-        $('.form-item-advanced-biblio-publication-type .holder').text($("#edit-advanced-biblio-publication-type option:selected").text());
-        $('.form-item-condition-option .holder').text($("#edit-condition-option option:selected").text());
+        $('#edit-condition-option').val('all').change();
         set_default_date_slider()
         return false;
       });
       $('#edit-reset').click(function() {
         $('#edit-biblio-publication-type').val('').change();
-        $('#edit-biblio-authors, #edit-biblio-publisher, #edit-biblio-place-published, #edit-field-zotero-tags').val('');
-        $('#edit-biblio-publication-type-wrapper .holder').text($("#edit-biblio-publication-type option:selected").text());
-        $('#edit-biblio-authors-wrapper .holder').text($("#edit-biblio-authors option:selected").text());
-        $('#edit-biblio-publisher-wrapper .holder').text($("#edit-biblio-publisher option:selected").text());
-        $('#edit-biblio-place-published-wrapper .holder').text($("#edit-biblio-place-published option:selected").text());
-        $('#edit-field-zotero-tags-wrapper .holder').text($("#edit-field-zotero-tags option:selected").text());
+        $('#edit-biblio-authors').val('').change();
+        $('#edit-biblio-publisher').val('').change();
+        $('#edit-biblio-place-published').val('').change();
+        $('#edit-field-zotero-tags').val('').change();
         set_default_date_slider();
         return false;
       });
