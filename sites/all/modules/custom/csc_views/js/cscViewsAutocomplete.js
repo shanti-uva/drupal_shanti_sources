@@ -6,7 +6,7 @@
 Drupal.behaviors.cscViewsAutocomplete = {
   attach: function (context, settings) {
     // Show autocomplete search result
-    $('input#edit-search-api-views-fulltext', context).bind('autocompleteSelect', function() {
+    $('input#edit-advanced-search-api-views-fulltext', context).bind('autocompleteSelect', function() {
       var autocomplete_value = $(this).val().split('=');
       var filter_type  = autocomplete_value[0];
       var filter_value = autocomplete_value[1];
@@ -28,7 +28,7 @@ Drupal.behaviors.cscViewsAutocomplete = {
           autocomplete_redirect('field_zotero_tags', filter_value);
           break;
       }
-      $('#edit-search-api-views-fulltext').css('color', 'white');
+      $('#edit-advanced-search-api-views-fulltext').css('color', 'white');
     });
     // Redirect to selected auto complete search item
     function autocomplete_redirect(query_key, query_value) {
