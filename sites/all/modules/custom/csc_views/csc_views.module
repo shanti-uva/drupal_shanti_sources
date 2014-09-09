@@ -564,7 +564,7 @@ function csc_views_advanced_search_form($form, &$form_state) {
   $form['advanced_search_api_views_fulltext'] = array(
     '#type' => 'textfield',
     '#autocomplete_path' => 'biblio/titles/list_callback',
-    '#suffix' => '<a href="#" class="advanced-search-filter-btn">+ Advanced</a>',
+    '#suffix' => '<div class="selected-filter"><span class="source-type-selected-filter"></span><span class="field-selected-filter"></span><span class="year-selected-filter"></span></div><a href="#" class="advanced-search-filter-btn">+ Advanced</a>',
   );
   $form['advanced_option'] = array(
     '#type' => 'fieldset', 
@@ -651,12 +651,24 @@ function csc_views_advanced_search_form($form, &$form_state) {
   );
   return $form;
 }
+
+/**
+ * Redirects to biblio result page with the necessary query strings for filter.
+ */
 function csc_views_advanced_search_form_submit($form, &$form_state) {
+  $biblio_authors = (!empty($_GET['biblio_authors'])) ? $_GET['biblio_authors'] : '';
+  $biblio_publisher = (!empty($_GET['biblio_publisher'])) ? $_GET['biblio_publisher'] : '';
+  $biblio_place_published = (!empty($_GET['biblio_place_published'])) ? $_GET['biblio_place_published'] : '';
+  $field_zotero_tags =(!empty($_GET['field_zotero_tags'])) ? $_GET['field_zotero_tags'] : '';
   drupal_goto('csc-search', array('query' => array(
     'field_zotero_collections' => 'All',
     'sort_by' => 'sort_stripped_node_title',
     'sort_order' => 'ASC',
     'biblio_publication_type' => $form_state['values']['advanced_biblio_publication_type'],
+    'biblio_authors' => $biblio_authors,
+    'biblio_publisher' => $biblio_publisher,
+    'biblio_place_published' => $biblio_place_published,
+    'field_zotero_tags' => $field_zotero_tags,
     'biblio_year' => $form_state['values']['advanced_search_start_year'],
     'biblio_year_1' => $form_state['values']['advanced_search_end_year'],
     'search_api_views_fulltext' => $form_state['values']['advanced_search_api_views_fulltext'],
@@ -673,6 +685,7 @@ function csc_views_advanced_search_form_submit($form, &$form_state) {
     'advanced_search_end_year' => $form_state['values']['advanced_search_end_year'],
   )));
 }
+
 /**
  * Implements hook_views_pre_render().
  */
@@ -741,7 +754,7 @@ function csc_views_get_filter_node_ids() {
     return $node_ids;
   }
   else {
-    return false;
+    return FALSE;
   }
 }
 
