@@ -73,18 +73,18 @@
   }
   $.set_detail_level = function (option_value) {
     $('.detail-level-option a').removeClass('active');
-    $('.view-biblio-search-api .views-field').hide();
+    $('.view-biblio-search-api.view-display-id-page .views-field').hide();
     var option_id = '#' + option_value;
     $(option_id).addClass('active');
     switch (option_value) {
       case 'short-detail':
-        $('.view-biblio-search-api .views-field-title').show();
+        $('.view-biblio-search-api.view-display-id-page .views-field-title').show();
         break;
       case 'medium-detail':
-        $('.view-biblio-search-api .views-field-title, .view-biblio-search-api .views-field-biblio-authors').show();
+        $('.view-biblio-search-api.view-display-id-page .views-field-title, .view-biblio-search-api.view-display-id-page .views-field-biblio-authors').show();
         break;
       case 'long-detail':
-        $('.view-biblio-search-api .views-field').show();
+        $('.view-biblio-search-api.view-display-id-page .views-field').show();
         break;
     }
   }

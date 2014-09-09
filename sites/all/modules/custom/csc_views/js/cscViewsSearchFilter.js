@@ -129,13 +129,16 @@
         $('.source-type-selected-filter').text('All');
         $('.field-selected-filter').text('');
         $('.year-selected-filter').text(', ' + publication_start_year + ' - ' + publication_end_year);
-        $('#edit-condition-option').val('all');
+        $('#edit-condition-option').val('all').change();
         set_default_date_slider()
         return false;
       });
       $('#edit-reset').click(function() {
         $('#edit-biblio-publication-type').val('').change();
-        $('#edit-biblio-authors, #edit-biblio-publisher, #edit-biblio-place-published, #edit-field-zotero-tags').val('');
+        $('#edit-biblio-authors').val('').change();
+        $('#edit-biblio-publisher').val('').change();
+        $('#edit-biblio-place-published').val('').change();
+        $('#edit-field-zotero-tags').val('').change();
         set_default_date_slider();
         return false;
       });
