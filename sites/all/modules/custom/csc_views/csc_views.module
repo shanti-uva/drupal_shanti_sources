@@ -93,9 +93,6 @@ function csc_views_form_alter(&$form, &$form_state, $form_id) {
       unset($form['search_text_biblio_abstract']);
       unset($form['search_text_zotero_tags']);
       $form['#validate'][] = 'csc_views_exposed_filter_validation';
-      $form['default_min_max_publication_year'] = array(
-        '#markup' => csc_views_get_unfiltered_min_max_year('views-attach'),
-      );
     }
   }
 }
@@ -235,10 +232,15 @@ function csc_views_search_api_property_sort_biblio_author_getter_callback($item)
  * Return only alphanumeric characters and remove specific words from sorting.
  */
 function csc_views_search_api_property_sort_stripped_node_title_getter_callback($item) {
-  $title = preg_replace('/[^A-Za-z0-9]/', '', $item->title);
-  $wordlist = array('a', 'an', 'the');
-  $stripped_title = str_ireplace($wordlist, '', $title);
-  return $stripped_title;
+  // Strip words with less than 3 letters
+  $stripped_title = preg_replace('/(\b.{1,2}\s)/', ' ', $item->title);
+  // Strip specific words with 3 letters
+  $wordlist = array('the', 'The');
+  foreach ($wordlist as &$word) $word = '/\b' . preg_quote($word, '/') . '\b/';
+  $word_replaced_stripped_title = preg_replace($wordlist, '', $stripped_title);
+  // Strip spaces
+  $no_space_title = preg_replace('/[^A-Za-z0-9]/', '', $word_replaced_stripped_title);
+  return $no_space_title;
 }
 
 /**
@@ -650,6 +652,9 @@ function csc_views_advanced_search_form($form, &$form_state) {
   $form['advanced_option']['clear'] = array(
     '#type' => 'submit',
     '#value' => t('Clear'),
+  );
+  $form['default_min_max_publication_year'] = array(
+    '#markup' => csc_views_get_unfiltered_min_max_year('views-attach'),
   );
   return $form;
 }
