@@ -332,6 +332,9 @@ function csc_views_block_info() {
   $blocks['custom_taxonomy_block'] = array(
     'info' => t('Custom taxonomy block'),
   );
+  $blocks['custom_taxonomy_flyout_block'] = array(
+    'info' => t('Custom taxonomy flyout block'),
+  );
   $blocks['custom_taxonomy_breadcrumb'] = array(
     'info' => t('Custom taxonomy breadcrumb'),
     'region' => 'content',
@@ -356,6 +359,10 @@ function csc_views_block_view($delta = '') {
       $block['content'] = (!search_landing_page()) ? theme('csc_views_custom_sort_field', array('value' => csc_views_custom_sort_block_content())) : '';
       break;
     case 'custom_taxonomy_block':
+      $block['subject'] = '';
+      $block['content'] = (search_landing_page()) ? csc_views_generate_list(csc_views_build_taxonomy_tree($vid, 0)) : '';
+      break;
+    case 'custom_taxonomy_flyout_block':
       $block['subject'] = '';
       $block['content'] = csc_views_generate_list(csc_views_build_taxonomy_tree($vid, 0));
       break;
