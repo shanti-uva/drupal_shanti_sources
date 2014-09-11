@@ -569,6 +569,7 @@ function csc_views_advanced_search_form($form, &$form_state) {
     '#type' => 'textfield',
     '#autocomplete_path' => 'biblio/titles/list_callback',
     '#suffix' => '<div class="selected-filter"><span class="source-type-selected-filter"></span><span class="field-selected-filter"></span><span class="year-selected-filter"></span></div><a href="#" class="advanced-search-filter-btn">+ Advanced</a>',
+    '#default_value' => $default_search_keyword,
   );
   $form['advanced_option'] = array(
     '#type' => 'fieldset', 

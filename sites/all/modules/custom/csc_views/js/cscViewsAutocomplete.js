@@ -28,7 +28,7 @@ Drupal.behaviors.cscViewsAutocomplete = {
           autocomplete_redirect('field_zotero_tags', filter_value);
           break;
       }
-      $('#edit-advanced-search-api-views-fulltext').css('color', 'white');
+      $('#edit-advanced-search-api-views-fulltext').val('');
     });
     // Redirect to selected auto complete search item
     function autocomplete_redirect(query_key, query_value) {

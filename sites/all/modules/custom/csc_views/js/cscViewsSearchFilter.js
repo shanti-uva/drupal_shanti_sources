@@ -25,11 +25,6 @@
           return false;  
         }
       });
-      // Auto clear search input field once opened
-      $('#edit-advanced-search-api-views-fulltext').focus(function(){
-        $('#edit-search-api-views-fulltext').val('');
-        $('#edit-search-api-views-fulltext').css('color', '#333333');
-      });
       $('div#edit-advanced-search-fieldset').appendTo('#edit-search-api-views-fulltext-wrapper');
       // Publication year
       $('#edit-advanced-search-publication-year .form-item label.option').click(function() {
