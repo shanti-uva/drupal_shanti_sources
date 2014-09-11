@@ -47,7 +47,6 @@
       });
       $('#block-csc-views-custom-taxonomy-flyout-block ul li a.expand-btn').click(function() {
         var adjusted_height = ($('.content-section').height() < $('.extruder-content').height()) ? parseInt($('.extruder-content').height()) + 100 : parseInt($('.extruder-content').height()) + 300;
-        alert(adjusted_height);
         $('.content-section').animate({
           height: adjusted_height + 'px',
         });
