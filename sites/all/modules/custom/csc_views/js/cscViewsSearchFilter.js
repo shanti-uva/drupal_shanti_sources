@@ -142,7 +142,20 @@
       // Open advanced search filter
       $('.advanced-search-filter-btn').click(function(e) {
         $('#edit-advanced-option').slideToggle();
-        ($(this).text() == '+ Advanced') ? $(this).text('- Advanced') : $(this).text('+ Advanced');
+        if ($(this).text() == '+ Advanced') {
+          $(this).text('- Advanced');
+          if ($('.content-section').height() < 1200) {
+            $('.content-section').animate({
+              height: '1400px',
+            });
+          }
+        }
+        else {
+          $(this).text('+ Advanced');
+          $('.content-section').animate({
+            height: '100%',
+          });
+        }
         e.preventDefault();
       });
       // Update dropdown button field text
