@@ -313,10 +313,12 @@ function csc_views_search_api_property_search_text_biblio_abstract_getter_callba
 function csc_views_search_api_property_search_text_zotero_tags_getter_callback($item) {
   $node = node_load($item->nid);
   $tags = '';
-  foreach ($node->field_zotero_tags['und'] as $tag) {
-    if (!empty($tag['tid'])) {
-      $term = taxonomy_term_load($tag['tid']);
-      $tags .= $term->name . ' ';
+  if (!empty($node->field_zotero_tags['und'])) {
+    foreach ($node->field_zotero_tags['und'] as $tag) {
+      if (!empty($tag['tid'])) {
+        $term = taxonomy_term_load($tag['tid']);
+        $tags .= $term->name . ' ';
+      }
     }
   }
   return $tags;

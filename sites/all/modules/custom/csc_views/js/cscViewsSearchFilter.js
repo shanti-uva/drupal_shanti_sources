@@ -27,8 +27,10 @@
       });
       $('div#edit-advanced-search-fieldset').appendTo('#edit-search-api-views-fulltext-wrapper');
       // Publication year
-      $('#edit-advanced-search-publication-year .form-item label.option').click(function() {
+      $('#edit-advanced-search-publication-year .form-item label.option').click(function(e) {
         $('#edit-advanced-search-publication-year .form-item label.option div.iradio_minimal-red').removeClass('checked');
+        $('#gen-search input[type="radio"]').prop('checked', false);
+        $(this).find('input[type="radio"].form-radio.icheck-input').prop('checked', true);
         $(this).find('div.iradio_minimal-red').addClass('checked');
         var year_value = $(this).find('input[type="radio"]').val();
         if (year_value != 'range') {
@@ -45,6 +47,7 @@
           $('#date-range-slider-dropdown .end-year-inner, #date-range-slider .end-year-inner').text(publication_end_year);
         }
         set_advanced_search_dropdown_year_text(year_value);
+        e.preventDefault();
       });
       $('#edit-advanced-search-start-year').keyup(function() {
         $('#edit-biblio-year').val($('#edit-advanced-search-start-year').val());
@@ -118,7 +121,7 @@
         $('.source-type-selected-filter').text(source_type);
       }
       // Set field values to default
-      $('#csc-views-advanced-search-form #edit-clear').click(function() {
+      $('#csc-views-advanced-search-form #edit-clear').click(function(e) {
         $('#edit-advanced-biblio-publication-type').val('').change();
         $('#csc-views-advanced-search-form .form-text, .field-selected-filter').val('');
         $('#edit-advanced-search-publication-year .form-item label.option div.iradio_minimal-red').removeClass('checked');
@@ -127,16 +130,18 @@
         $('.field-selected-filter').text('');
         $('.year-selected-filter').text(', ' + publication_start_year + ' - ' + publication_end_year);
         $('#edit-condition-option').val('all').change();
-        set_default_date_slider()
+        set_default_date_slider();
+        e.preventDefault();
         return false;
       });
-      $('#edit-reset').click(function() {
+      $('#edit-reset').click(function(e) {
         $('#edit-biblio-publication-type').val('').change();
         $('#edit-biblio-authors').val('').change();
         $('#edit-biblio-publisher').val('').change();
         $('#edit-biblio-place-published').val('').change();
         $('#edit-field-zotero-tags').val('').change();
         set_default_date_slider();
+        e.preventDefault();
         return false;
       });
       // Open advanced search filter
