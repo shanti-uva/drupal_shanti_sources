@@ -63,6 +63,13 @@ Drupal.behaviors.cscViewsCustomSort = {
         window.location.replace(new_sort_path);
       }
     }
+    // Set selected value text display on custom sort dropdown field
+    var selected_option_value = $('#custom-sort-form ul.dropdown-menu.selectpicker li.selected span.text').text();
+    var select_option_value = $('#custom-sort-form ul.dropdown-menu.selectpicker li.selected').attr('rel');
+    if (select_option_value == 'title_asc' || select_option_value == 'title_desc') var option_group_label = 'Title';
+    if(select_option_value == 'author_asc' || select_option_value == 'author_desc') var option_group_label = 'Author';
+    if(select_option_value == 'year_asc' || select_option_value == 'year_desc') var option_group_label = 'Year';    
+    $('#custom-sort-form span.filter-option').text('Sort By: ' + option_group_label + ' ' + selected_option_value);
   }
 };
 })(jQuery);
