@@ -141,6 +141,7 @@
         $('#edit-biblio-place-published').val('').change();
         $('#edit-field-zotero-tags').val('').change();
         set_default_date_slider();
+        $('.page-csc-search #edit-submit-biblio-search-api').trigger('click');
         e.preventDefault();
         return false;
       });

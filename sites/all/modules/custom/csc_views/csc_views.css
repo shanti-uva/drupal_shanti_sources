@@ -476,3 +476,12 @@
   background: url(./images/tags-group-icon.jpg) no-repeat;
   background-position: 5px 5px;
 }
+
+.form-item.form-item-view-mode {
+  display: none;
+}
+
+#block-csc-views-custom-taxonomy-breadcrumb span.collection-filtered-text {
+  color: #fff;
+  margin-left: 6px;
+}

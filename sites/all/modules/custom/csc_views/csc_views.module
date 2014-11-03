@@ -92,6 +92,12 @@ function csc_views_form_alter(&$form, &$form_state, $form_id) {
       unset($form['search_text_biblio_publish_place']);
       unset($form['search_text_biblio_abstract']);
       unset($form['search_text_zotero_tags']);
+      if (!empty($_GET['view_mode'])) {
+        $form['view_mode'] = array(
+          '#type' => 'textfield', 
+          '#value' => $_GET['view_mode'],
+        );
+      }
       $form['#validate'][] = 'csc_views_exposed_filter_validation';
     }
   }
@@ -463,7 +469,8 @@ function csc_views_generate_list($hierarchy) {
     $class_name = (!empty($term->children)) ? 'has-children' : '';
     $item = l(t($term->name), 'csc-search',  array(
       'query' => array(
-        'field_zotero_collections' => $term->tid
+        'field_zotero_collections' => $term->tid,
+        'view_mode' => 'collection',
       ),
       'attributes' => array(
         'class' => array($class_name)
@@ -512,7 +519,7 @@ function csc_views_breadcrumb_output($breadcrumb_content = NULL) {
   $search_result_text = '<span class="breadcrumb-item non-default-item current_breadcrumb">' . t('Search Results') . '</span>';
   $search_result_filtered_text = '<span class="breadcrumb-item non-default-item current_breadcrumb">' . t('Search Results (Filtered)') . '</span>';
   if (!empty($breadcrumb_content)) {
-    $breadcrumb_output = $breadcrumb_content;
+    $breadcrumb_output = csc_views_no_filters_set('search_result') ? $breadcrumb_content : $breadcrumb_content . '<span class="collection-filtered-text">' . t('(Filtered)') . '</span>';
   }
   else {
     $breadcrumb_output = $search_result_text;
@@ -540,17 +547,13 @@ function csc_views_no_filters_set($option) {
   $output = FALSE;
   switch ($option) {
     case 'search_result':
-      if (empty($_GET['biblio_publication_type']) && empty($_GET['biblio_authors']) && empty($_GET['biblio_publisher']) && empty($_GET['biblio_place_published'])
-        && empty($_GET['biblio_year']) && empty($_GET['biblio_year_1']) && empty($_GET['field_zotero_tags'])) {
+      if (empty($_GET['biblio_publication_type']) && empty($_GET['biblio_authors']) && empty($_GET['biblio_publisher']) && empty($_GET['biblio_place_published']) && empty($_GET['field_zotero_tags'])) {
         $output = TRUE;  
       }
       break;
     case 'breadcrumb_collection':
       $parameter = explode('&', $_SERVER['QUERY_STRING']);
-      if ((count($parameter) == 1 && current_path() == 'csc-search') || (current_path() == 'csc-search/biblio' && count($parameter) <= 3 &&
-        !empty($_GET['field_zotero_collections'])) || (count($parameter) <= 4 && !empty($_GET['sort_by']) && !empty($_GET['sort_order']))) {
-        $output = TRUE; 
-      }
+      if (!empty($_GET['view_mode']) && $_GET['view_mode'] == 'collection') $output = TRUE;
       break;
   }
   return $output;
