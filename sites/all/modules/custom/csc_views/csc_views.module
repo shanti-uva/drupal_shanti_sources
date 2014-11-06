@@ -400,7 +400,7 @@ function csc_views_custom_sort_block_content() {
 
 function csc_views_breadcrumb_library($vid) {
   $library_content = array(
-    'all_source_link' => l(t('View all sources'), 'csc-search', array('query' => array('field_zotero_collections' => 'All'))),
+    'all_source_link' => l(t('View all sources'), 'csc-search', array('query' => array('field_zotero_collections' => 'All', 'view_mode' => 'collection'))),
     'library_list' => csc_views_generate_list(csc_views_build_taxonomy_tree($vid, 0)),
   );
   return theme('csc_views_breadcrumb_library', array('value' => $library_content));
@@ -502,7 +502,7 @@ function csc_views_collection_breadcrumb($term_id) {
         if ($term_list) {
           $breadcrumb_items['term_name_link'] = l(t($term->name), '',  array('fragment' => '', 'attributes' => array('class' => 'breadcrumb-dropdown-cta')));
           $breadcrumb_items['breadcrumb_term_child'] = csc_views_generate_list($term_list);
-          $breadcrumb_items['all_sources_top_link'] = l(t('View all sources for ' . $term->name), 'csc-search', array('query' => array('field_zotero_collections' => $term->tid)));
+          $breadcrumb_items['all_sources_top_link'] = l(t('View all sources for ' . $term->name), 'csc-search', array('query' => array('field_zotero_collections' => $term->tid, 'view_mode' => 'collection')));
           $breadcrumb_items['all_sources_sub_top_link'] = l(t($term->name), current_path(), array('query' => array('field_zotero_collections' => $term->tid)));
         }
         else {
@@ -524,8 +524,8 @@ function csc_views_breadcrumb_output($breadcrumb_content = NULL) {
   else {
     $breadcrumb_output = $search_result_text;
     if (!empty($_GET['field_zotero_collections'])) {
-      if ($_GET['field_zotero_collections'] == 'All' && count(explode('&', $_SERVER['QUERY_STRING'])) <= 2) {
-        $breadcrumb_output = '';
+      if ($_GET['field_zotero_collections'] == 'All' && (!empty($_GET['view_mode']) && $_GET['view_mode'] == 'collection')) {
+        $breadcrumb_output = (count(explode('&', $_SERVER['QUERY_STRING'])) <= 2) ? '' : '<span class="breadcrumb-item non-default-item current_breadcrumb">' . t('Filtered') . '</span>';
       }
       else {
         $breadcrumb_output = (csc_views_no_filters_set('search_result')) ? $search_result_text : $search_result_filtered_text;
