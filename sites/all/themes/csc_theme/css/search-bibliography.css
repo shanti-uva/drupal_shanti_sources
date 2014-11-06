@@ -694,7 +694,7 @@ body.page-csc-search {
   text-transform: capitalize;
 }
 #edit-advanced-search-api-views-fulltext {
-  padding: 0 17px;
+  padding: 0 17px 0 20px;
   margin-right: 0;
   width: 100%;
   background: #fff;
