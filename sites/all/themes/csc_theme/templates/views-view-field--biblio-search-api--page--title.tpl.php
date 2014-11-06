@@ -22,13 +22,15 @@
  * the view is modified.
  */
 ?>
-<?php
-  $current_page = (!empty($_GET['page'])) ? intval($_GET['page']) : 0;
-  $page = $view->row_index + (25 * $current_page);
-  $query_strings = $_SERVER['QUERY_STRING'];
-  parse_str($query_strings, $query_string_values);
-  $parameters = array_replace($query_string_values, array('page' => $page));
-  $year = (!empty($row->_entity_properties['biblio_year'])) ? '(' . $row->_entity_properties['biblio_year'] . ')' : '';
-  $parameters['current_nid'] = $row->entity;
-  print l($row->_entity_properties['title'] . ' ' . $year, 'csc-search/biblio', array('query' => $parameters));
-?>
+<div class="<?php print 'source-icon-' . $row->_entity_properties['biblio_publication_type']; ?> title-link-container">
+  <?php
+    $current_page = (!empty($_GET['page'])) ? intval($_GET['page']) : 0;
+    $page = $view->row_index + (25 * $current_page);
+    $query_strings = $_SERVER['QUERY_STRING'];
+    parse_str($query_strings, $query_string_values);
+    $parameters = array_replace($query_string_values, array('page' => $page));
+    $year = (!empty($row->_entity_properties['biblio_year'])) ? '(' . $row->_entity_properties['biblio_year'] . ')' : '';
+    $parameters['current_nid'] = $row->entity;
+    print l($row->_entity_properties['title'] . ' ' . $year, 'csc-search/biblio', array('query' => $parameters));
+  ?>
+</div>

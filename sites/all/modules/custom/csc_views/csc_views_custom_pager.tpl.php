@@ -1,6 +1,6 @@
 <div class="custom-footer-pager">
   <div class="custom-footer-pager-left">
-    Displaying <?php print $value['current_row_list']; ?> of <?php print $value['total_items']; ?> found
+    <span>SOURCES </span>(Displaying <?php print $value['current_row_list']; ?> of <?php print $value['total_items']; ?>)
   </div>
   <div class="custom-footer-pager-right">
     <?php print $value['first_page_link'] . ' ' . $value['prev_page_link']; ?><span>Page</span>

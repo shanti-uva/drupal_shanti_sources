@@ -177,14 +177,16 @@ body.page-csc-search {
   text-transform: uppercase;
   font-family: museo-sans-900, sans-serif;
   font-size: 0.875em;
-  margin-top: 20px;
+  margin-top: 5px;
   font-weight: 700;
+  letter-spacing: 0.9px;
+  margin-bottom: 25px;
 }
 .page-csc-search .views-field-biblio-place-published {
   float: left;
   clear: right;
-  margin-bottom: 30px;
-  margin-top: 18px;
+  margin-bottom: 25px;
+  margin-top: 2px;
 }
 .page-csc-search .views-field-biblio-place-published span {
   font-family: museo-sans-300, sans-serif;
@@ -270,11 +272,13 @@ body.page-csc-search {
   background: #eaeceb;
 }
 .page-csc-search .views-row {
-  padding: 20px;
+  padding: 20px 20px 10px 67px;
   border-bottom: 1px dotted #333;
   overflow: hidden;
   border-top: none;
   min-height: 80px;
+  background: url(../images/essay-source-type.png) no-repeat;
+  background-position: 3.2% 17px;
 }
 .page-csc-search .views-row a {
   color: #008a96;
@@ -312,7 +316,7 @@ body.page-csc-search {
   font-weight: 700;
 }
 .page-csc-search .views-field-biblio-abst-e {
-  margin: 55px 0 25px 0;
+  margin: 0 0 10px 0;
 }
 .page-csc-search .views-field-biblio-abst-e span {
   font-size: 1em;
@@ -541,6 +545,7 @@ body.page-csc-search {
   color: #ccc;
   margin: 0;
   font-size: 2.30em;
+  letter-spacing: 5px;
 }
 #block-csc-views-custom-sort-filter .content .right-side {
   width: auto;
@@ -592,11 +597,14 @@ body.page-csc-search {
   margin: 0 2px;
   font-family: museo-sans-700, sans-serif;
 }
-.custom-footer-pager .custom-footer-pager-right span {
+.custom-footer-pager .custom-footer-pager-right span,
+.custom-footer-pager .custom-footer-pager-left span {
   font-weight: bold;
   text-transform: uppercase;
   margin: 0 2px;
   color: #333;
+  font-family: museo-sans-900, sans-serif;
+  letter-spacing: 1px;
 }
 .custom-footer-pager .custom-footer-pager-right #pager-input {
   min-width: 30px;
@@ -611,7 +619,7 @@ body.page-csc-search {
   font-size: 1em;
 }
 .custom-footer-pager .custom-footer-pager-left {
-  padding: 12px 55px 12px 0;
+  padding: 18px 55px 18px 0;
   border-right: 1px solid #FFF;
   font-family: museo-sans-300, sans-serif;
 }
@@ -1265,9 +1273,13 @@ a#long-detail.active {
   list-style: none;
   width: 92.9%;
   float: right;
+  margin: 0;
 }
 .view-display-id-biblio_full .views-field-field-zotero-collections ul li {
   width: auto;
   display: inline-block;
   float: left;
+}
+.view-display-id-biblio_full .views-row {
+  background-position: 2.2% 28px;
 }
