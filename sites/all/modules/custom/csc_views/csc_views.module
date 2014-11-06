@@ -503,7 +503,7 @@ function csc_views_collection_breadcrumb($term_id) {
           $breadcrumb_items['term_name_link'] = l(t($term->name), '',  array('fragment' => '', 'attributes' => array('class' => 'breadcrumb-dropdown-cta')));
           $breadcrumb_items['breadcrumb_term_child'] = csc_views_generate_list($term_list);
           $breadcrumb_items['all_sources_top_link'] = l(t('View all sources for ' . $term->name), 'csc-search', array('query' => array('field_zotero_collections' => $term->tid, 'view_mode' => 'collection')));
-          $breadcrumb_items['all_sources_sub_top_link'] = l(t($term->name), current_path(), array('query' => array('field_zotero_collections' => $term->tid)));
+          $breadcrumb_items['all_sources_sub_top_link'] = l(t($term->name), 'csc-search', array('query' => array('field_zotero_collections' => $term->tid, 'view_mode' => 'collection')));
         }
         else {
           $breadcrumb_items['term_name'] = $term->name;
