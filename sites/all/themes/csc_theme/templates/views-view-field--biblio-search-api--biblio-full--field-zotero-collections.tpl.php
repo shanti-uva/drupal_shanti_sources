@@ -25,10 +25,14 @@
 ?>
 <?php if(!empty($row->_entity_properties['field_zotero_collections'])): ?>
   <ul>
-    <?php foreach($row->_entity_properties['field_zotero_collections'] as $key => $tid): ?>
+    <?php
+      $collections = $row->_entity_properties['field_zotero_collections'];
+      end($collections);
+      $last_key = key($collections);
+      foreach($row->_entity_properties['field_zotero_collections'] as $key => $tid): ?>
       <?php $term = taxonomy_term_load($tid); ?>
-      <?php $comma = ($key > 0) ? ', ': '';?>
-      <li><?php print $comma . l($term->name, 'csc-search', array('query' => array('field_zotero_collections' => $tid))); ?></li>
+      <?php $comma = ($key != $last_key) ? ', ': '';?>
+      <li><?php print l($term->name . $comma, 'csc-search', array('query' => array('field_zotero_collections' => $tid))) . '&nbsp;'; ?></li>
     <?php endforeach;?>
   </ul>
 <?php endif;?>

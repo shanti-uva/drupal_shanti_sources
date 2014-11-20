@@ -368,7 +368,7 @@ function csc_views_block_view($delta = '') {
       break;
     case 'custom_taxonomy_block':
       $block['subject'] = '';
-      $block['content'] = (search_landing_page()) ? csc_views_generate_list(csc_views_build_taxonomy_tree($vid, 0)) : '';
+      $block['content'] = (search_landing_page()) ? '<div class="title-area"><h1>Browse</h1></div><div class="collection-library-container">'. l(t('Library'), 'csc-search', array('attributes' => array('class' => array('collection-library')),'query' => array('field_zotero_collections' => 'All', 'view_mode' => 'collection'))) .'</div>' . csc_views_generate_list(csc_views_build_taxonomy_tree($vid, 0)) : '';
       break;
     case 'custom_taxonomy_flyout_block':
       $block['subject'] = '';
