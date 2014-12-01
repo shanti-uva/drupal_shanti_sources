@@ -6,9 +6,6 @@
 .nav-justified>li.active a:focus{ background:#008a96;}
 .nav-justified>li.active:before{ color:#008a96;}
 
-.container{
-  background: #f1f3f2;
-}
 .titlearea.banner {
   background: #008a96 !important;
 }
