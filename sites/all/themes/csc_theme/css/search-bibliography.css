@@ -205,12 +205,12 @@ body.page-csc-search {
   display: block;
 }
 .page-csc-search .titlearea .page-title {
-  padding: 20px 12px 20px 24px;
+  padding: 7px 12px 5px 0;
   max-width: 56%;
 
 }
-.page-csc-search .titlearea .page-title .icon {
-  display: none;
+.page-csc-search .titlearea .page-title .icon:before {
+  content: "\e613";
 }
 .page-csc-search .titlearea .page-title span {
   color: #40adb6;
@@ -226,8 +226,8 @@ body.page-csc-search {
   margin: 0;
   position: inherit;
   right: 0;
-  background: #017c87;
-  padding: 20px 12px 0 24px;
+  background: none;
+  padding: 0 10px 0 24px;
 }
 .page-csc-search  .home-search-page {
   background: url(../images/home_icon.png) no-repeat;
@@ -327,8 +327,8 @@ body.page-csc-search {
 #block-csc-views-custom-taxonomy-block {
   padding: 12px 0 8px 45px;
 }
-#block-csc-views-custom-taxonomy-breadcrumb {
-  min-height: 40px;
+#block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-item {
+  height: 30px;
 }
 #block-csc-views-custom-taxonomy-breadcrumb a,
 #block-csc-views-custom-taxonomy-breadcrumb span,
