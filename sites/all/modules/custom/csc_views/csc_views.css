@@ -212,7 +212,7 @@
   display: none;
 }
 
-.page-csc-search .attachment-after,
+.page-csc-search .attachment-before,
 .page-csc-search .attachment-after {
   clear: both;
 }

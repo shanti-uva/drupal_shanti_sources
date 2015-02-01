@@ -732,7 +732,8 @@ function csc_views_views_pre_render(&$view) {
       'last_page_link' => $last_page_link,
       'min_max_year' => csc_views_get_min_max_year('biblio_search_api', 'page', 'views-attach'),
     );
-    $view->attachment_after = theme('csc_views_custom_pager', array('value' => $attachment_values));
+    $view->attachment_before = theme('csc_views_custom_pager_top', array('value' => $attachment_values));
+    $view->attachment_after = theme('csc_views_custom_pager_bottom', array('value' => $attachment_values));
   }
 }
 
@@ -972,7 +973,8 @@ function csc_views_views_pre_build(&$view) {
 function csc_views_theme($existing, $type, $theme, $path) {
   return array(
     'csc_views_custom_sort_field' => array('template' => 'csc_views_custom_sort_field'),
-    'csc_views_custom_pager' => array('template' => 'csc_views_custom_pager'),
+    'csc_views_custom_pager_top' => array('template' => 'csc_views_custom_pager_top'),
+    'csc_views_custom_pager_bottom' => array('template' => 'csc_views_custom_pager_bottom'),
     'csc_views_breadcrumb_output' => array('template' => 'csc_views_breadcrumb_output'),
     'csc_views_breadcrumb_item' => array('template' => 'csc_views_breadcrumb_item'),
     'csc_views_breadcrumb_library' => array('template' => 'csc_views_breadcrumb_library'),
