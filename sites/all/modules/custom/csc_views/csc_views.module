@@ -715,11 +715,11 @@ function csc_views_views_pre_render(&$view) {
     $first_row = ($view->query->pager->current_page != 0) ? ($view->query->pager->current_page * $view->query->pager->options['items_per_page']) + 1 : 1;
     $last_row = ($first_row + count($view->result)) - 1;
     $max_page = ceil($view->query->pager->total_items/$view->query->pager->options['items_per_page']);
-    $next_page_link = ($view->query->pager->current_page != ($max_page - 1)) ? csc_views_custom_pager_links($view, '>', $view->query->pager->current_page + 1) : '';
-    $prev_page_link = ($view->query->pager->current_page != 0) ? csc_views_custom_pager_links($view, '<', $view->query->pager->current_page - 1) : '';
+    $next_page_link = ($view->query->pager->current_page != ($max_page - 1)) ? csc_views_custom_pager_links($view, 'pager-next', $view->query->pager->current_page + 1) : '';
+    $prev_page_link = ($view->query->pager->current_page != 0) ? csc_views_custom_pager_links($view, 'pager-previous', $view->query->pager->current_page - 1) : '';
     $current_page = $view->query->pager->current_page + 1;
-    $first_page_link = ($view->query->pager->current_page != 0) ? csc_views_custom_pager_links($view, '<<', 0) : '';
-    $last_page_link = ($view->query->pager->current_page != ($max_page - 1)) ? csc_views_custom_pager_links($view, '>>', $max_page - 1) : '';
+    $first_page_link = ($view->query->pager->current_page != 0) ? csc_views_custom_pager_links($view, 'pager-first', 0) : '';
+    $last_page_link = ($view->query->pager->current_page != ($max_page - 1)) ? csc_views_custom_pager_links($view, 'pager-last', $max_page - 1) : '';
     $current_row_list = ($view->current_display != 'biblio_full') ? $first_row . ' - ' . $last_row : $first_row;    
     $attachment_values = array(
       'current_row_list' => $current_row_list,
@@ -752,14 +752,14 @@ function csc_views_preprocess_page(&$vars) {
 /**
  * Returns custom pager link.
  */
-function csc_views_custom_pager_links($view, $pager_text, $pager_link) {
+function csc_views_custom_pager_links($view, $class, $pager_link) {
   $query_strings = array();
   foreach ($view->exposed_input as $key => $value) {
     $query_strings[$key] = $value;
   }
   $pager = array('page' => $pager_link);
   array_push($query_strings, $pager);
-  $link_output = l($pager_text, current_path(), array('query' => $query_strings));
+  $link_output = l('<span class="icon"></span>', current_path(), array('query' => $query_strings, 'attributes' => array('class' => array($class)), 'html' => TRUE));
   return $link_output;
 }
 

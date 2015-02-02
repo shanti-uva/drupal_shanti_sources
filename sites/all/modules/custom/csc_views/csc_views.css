@@ -23,6 +23,10 @@
 .custom-footer-pager .custom-footer-pager-right a {
   margin: 0 5px;
 }
+.custom-footer-pager .custom-footer-pager-right a span.icon {
+  font-family: 'shanticon';
+  font-size: 1em;
+}
 .custom-footer-pager  .custom-footer-pager-right #pager-input {
   width: 15px;
   margin: 0 5px;
