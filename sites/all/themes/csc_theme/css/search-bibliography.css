@@ -211,6 +211,7 @@ body.page-csc-search {
 }
 .page-csc-search .titlearea .page-title .icon:before {
   content: "\e613";
+  font-family: 'shanticon';
 }
 .page-csc-search .titlearea .page-title span {
   color: #40adb6;
