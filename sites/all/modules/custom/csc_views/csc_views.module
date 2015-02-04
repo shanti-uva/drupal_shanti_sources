@@ -368,7 +368,7 @@ function csc_views_block_view($delta = '') {
       break;
     case 'custom_taxonomy_block':
       $block['subject'] = '';
-      $block['content'] = (search_landing_page()) ? '<div class="title-area"><h1>Browse</h1></div><div class="collection-library-container">'. l(t('Library'), 'csc-search', array('attributes' => array('class' => array('collection-library')),'query' => array('field_zotero_collections' => 'All', 'view_mode' => 'collection'))) .'</div>' . csc_views_generate_list(csc_views_build_taxonomy_tree($vid, 0)) : '';
+      $block['content'] = (search_landing_page()) ? '<div class="title-area"><h1>Browse</h1></div><div class="collection-library-container">'. l(t('Sources'), 'csc-search', array('attributes' => array('class' => array('collection-library')),'query' => array('field_zotero_collections' => 'All', 'view_mode' => 'collection'))) .'</div>' . csc_views_generate_list(csc_views_build_taxonomy_tree($vid, 0)) : '';
       break;
     case 'custom_taxonomy_flyout_block':
       $block['subject'] = '';
@@ -525,7 +525,7 @@ function csc_views_breadcrumb_output($breadcrumb_content = NULL) {
   else {
     $breadcrumb_output = $search_result_text;
     if (!empty($_GET['field_zotero_collections'])) {
-      if ($_GET['field_zotero_collections'] == 'All' && (!empty($_GET['view_mode']) && $_GET['view_mode'] == 'collection')) {
+      if ($_GET['field_zotero_collections'] == 'All' && ((!empty($_GET['view_mode']) && $_GET['view_mode'] == 'collection') || $query_parameter_count <= 2)) {
         $breadcrumb_output = (($query_parameter_count <= 2) || ($query_parameter_count <= 5 && !empty($_GET['sort_by']) && !empty($_GET['sort_order']))) ? '' : '<span class="breadcrumb-item non-default-item current_breadcrumb">' . t('Filtered') . '</span>';
       }
       else {
@@ -538,7 +538,7 @@ function csc_views_breadcrumb_output($breadcrumb_content = NULL) {
   }
   $output_links = array(
     'home_link' => l(t('Home'), 'csc-search', array('attributes' => array('class' => array('home-search-page')))) . '&nbsp;',
-    'library_link' => l(t('Library'), '', array('attributes' => array('id' => 'collection-library'), 'fragment' => '')),
+    'library_link' => l(t('Sources'), '', array('attributes' => array('id' => 'collection-library'), 'fragment' => '')),
     'breadcrumb_item' => $breadcrumb_output,
   );
   if (!empty($_SERVER['QUERY_STRING'])) return theme('csc_views_breadcrumb_output', array('value' => $output_links));

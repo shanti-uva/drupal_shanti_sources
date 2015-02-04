@@ -205,9 +205,12 @@ body.page-csc-search {
   display: block;
 }
 .page-csc-search .titlearea .page-title {
-  padding: 7px 12px 5px 0;
+  padding: 5px 12px 5px 0;
   max-width: 56%;
 
+}
+.page-csc-search .titlearea .page-title .icon {
+  font-size: 80%;
 }
 .page-csc-search .titlearea .page-title .icon:before {
   content: "\e613";
@@ -228,7 +231,7 @@ body.page-csc-search {
   position: inherit;
   right: 0;
   background: none;
-  padding: 0 10px 0 24px;
+  padding: 5px 10px 0 24px;
 }
 .page-csc-search  .home-search-page {
   background: url(../images/home_icon.png) no-repeat;
