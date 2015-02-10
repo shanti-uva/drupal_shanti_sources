@@ -783,7 +783,16 @@ body.page-csc-search {
   color: #333;
   line-height: 100%;
 }
-#edit-advanced-search-api-views-fulltext.throbbing {
+#edit-search-text-biblio-author {
+  background: #fff;
+  color: #333;
+  line-height: 100%;
+}
+#edit-search-text-biblio-author.throbbing {
+  padding-left: 20px;
+}
+#edit-advanced-search-api-views-fulltext.throbbing,
+#edit-search-text-biblio-author.throbbing {
   background: #fff url(../images/ajax-loader.gif) no-repeat;
   background-size: 5%;
   background-position: 2% center !important;

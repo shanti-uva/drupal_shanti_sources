@@ -14,6 +14,11 @@ function csc_views_menu() {
     'type' => MENU_CALLBACK,
     'access arguments' => array('access content'),
   );
+  $items['biblio/authors/list_callback'] = array(
+    'page callback' => 'biblio_author_list_callback',
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('access content'),
+  );
   return $items;
 }
 
@@ -104,7 +109,7 @@ function csc_views_form_alter(&$form, &$form_state, $form_id) {
 }
 
 /**
- * Returns auto complete search values
+ * Returns auto complete search values for content titles with info
  */
 function biblio_title_list_callback($string = '') {
   $string = ucfirst($string);
@@ -156,6 +161,23 @@ function biblio_title_list_callback($string = '') {
         $matches['tag=' . $tag->tid] = ($tag_key == 0) ? '<span class="result-item-type tags-group-label">' . t('Tags') . '</span><span class="tags-group">' . $tag->name . '</span>' : '<span class="tags-group">' . $tag->name . '</span>';
       }
     } 
+  }
+  drupal_json_output($matches);
+}
+
+/**
+ * Returns auto complete search values for content authors
+ */
+function biblio_author_list_callback($string = '') {
+  $string = ucfirst($string);
+  $matches = array();
+  if (!empty($string) && strlen($string) >= 3) {
+    $authors = db_query_range('SELECT DISTINCT value FROM {search_api_db_database_node_index_biblio_authors} WHERE value LIKE :value ORDER BY value ASC', 0, 3, array(':value' => db_like($string) . '%'));
+    if ($authors->rowCount() != 0) {
+      foreach ($authors as $author_key => $author) {
+        $matches['author=' . $author->value] = '<span class="authors-group">' . $author->value .'</span>';
+      }
+    }
   }
   drupal_json_output($matches);
 }
@@ -612,6 +634,7 @@ function csc_views_advanced_search_form($form, &$form_state) {
   );
   $form['advanced_option']['search_text_biblio_author'] = array(
     '#type' => 'textfield',
+    '#autocomplete_path' => 'biblio/authors/list_callback',
     '#title' => t('Author'),
     '#attributes' => array('class' => array('form-control')),
     '#default_value' => $default_author,
