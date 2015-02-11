@@ -495,7 +495,7 @@ function csc_views_generate_list($hierarchy) {
         'view_mode' => 'collection',
       ),
       'attributes' => array(
-        'class' => array($class_name)
+        'class' => array($class_name, 'collection-id-' . $term->tid)
       ),
     ));
     if (!empty($term->children)) {

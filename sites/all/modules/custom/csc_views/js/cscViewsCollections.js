@@ -65,6 +65,14 @@
           height: adjusted_height + 'px',
         });
       });
+      // Open collection lists up to the current collection item
+      var collectionClassId = '#block-csc-views-custom-taxonomy-flyout-block a.collection-id-' + $.get_query_string_val('field_zotero_collections');
+      $(collectionClassId).addClass('current-trail').css('color', '#40adb6');
+      $(collectionClassId).parentsUntil('#block-csc-views-custom-taxonomy-flyout-block div').addClass('active-trail');
+      $('ul.active-trail').show();
+      $('li.active-trail').children('.expand-btn').removeClass('glyphicon-plus-sign');
+      $('li.active-trail').children('.expand-btn').addClass('expanded glyphicon-minus-sign');
+      $('a.has-children.current-trail').parent().children('ul').show();
     }
   };
 })(jQuery);
