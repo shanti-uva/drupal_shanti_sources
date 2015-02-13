@@ -20,7 +20,9 @@ body.page-csc-search {
 #csc-views-advanced-search-form .selectpicker li.selected span.text,
 #csc-views-advanced-search-form .selectpicker li.selected span.text:hover
 #csc-views-advanced-search-form .selectpicker li a:hover
-#csc-views-advanced-search-form .selectpicker li span:hover {
+#csc-views-advanced-search-form .selectpicker li span:hover,
+#csc-views-advanced-search-form .selectpicker li span.text,
+#csc-views-advanced-search-form .selectpicker li span.text:hover {
   background: #008a96 !important;
   background-image: none;
   color: #fff;
@@ -1338,4 +1340,10 @@ a#long-detail.active {
 }
 .view-display-id-biblio_full .views-row {
   background-position: 2.2% 28px;
+}
+.main-content .selectpicker li:hover span.text,
+.main-content .selectpicker li a:hover span.text {
+  background: none !important;
+  color: #fff;
+  font-weight: bold;
 }

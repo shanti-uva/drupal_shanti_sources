@@ -6,8 +6,10 @@
 Drupal.behaviors.cscViewsCustomSort = {
   attach: function (context, settings) {
     // Default custom sort state
-    var sort_by = $('#edit-sort-by').val();
-    var sort_order = $('#edit-sort-order').val();
+    var default_sort_value = $.get_query_string_val('sort_by');
+    var defaul_sort_order = $.get_query_string_val('sort_order');
+    var sort_by = (default_sort_value !== '') ? default_sort_value : 'sort_stripped_node_title';
+    var sort_order = (defaul_sort_order !== '') ? defaul_sort_order : 'ASC';
     switch (sort_by) { 
       case 'sort_stripped_node_title':
         var default_sort_value = (sort_order == 'ASC') ? 'title_asc' : 'title_desc';
@@ -68,8 +70,14 @@ Drupal.behaviors.cscViewsCustomSort = {
     var select_option_value = $('#custom-sort-form ul.dropdown-menu.selectpicker li.selected').attr('rel');
     if (select_option_value == 'title_asc' || select_option_value == 'title_desc') var option_group_label = 'Title';
     if(select_option_value == 'author_asc' || select_option_value == 'author_desc') var option_group_label = 'Author';
-    if(select_option_value == 'year_asc' || select_option_value == 'year_desc') var option_group_label = 'Year';    
-    $('#custom-sort-form span.filter-option').text('Sort By: ' + option_group_label + ' ' + selected_option_value);
+    if(select_option_value == 'year_asc' || select_option_value == 'year_desc') var option_group_label = 'Year';
+    if (selected_option_value != '' && select_option_value != '') {
+      $('#custom-sort-form span.filter-option').text('Sort By: ' + option_group_label + ' ' + selected_option_value);
+    }
+    else {
+      $('#custom-sort-form span.filter-option').text('Sort By: ');
+    }
+    
   }
 };
 })(jQuery);
