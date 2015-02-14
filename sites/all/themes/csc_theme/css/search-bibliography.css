@@ -713,7 +713,7 @@ body.page-csc-search {
   max-width: 50px;
   width: 100%;
   margin: 0 5px;
-  height: 30px;
+  height: 20px;
   text-align: center;
   border: none;
   color: #008a96;
@@ -730,6 +730,11 @@ body.page-csc-search {
   padding: 12px 0 12px 20px;
   float: right;
   margin-right: 26%;
+}
+.attachment-before .custom-footer-pager .custom-footer-pager-left,
+.attachment-before .custom-footer-pager .custom-footer-pager-right,
+.attachment-after .custom-footer-pager .custom-footer-pager-left {
+  border: none;
 }
 .custom-footer-pager .custom-footer-pager-right.expanded,
 .page-csc-search.page-csc-search-biblio .custom-footer-pager .custom-footer-pager-right {

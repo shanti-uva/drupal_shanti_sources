@@ -23,6 +23,10 @@
 .custom-footer-pager .custom-footer-pager-right a {
   margin: 0 5px;
 }
+.custom-footer-pager .custom-footer-pager-right a span.icon {
+  font-family: 'shanticon';
+  font-size: 1em;
+}
 .custom-footer-pager  .custom-footer-pager-right #pager-input {
   width: 15px;
   margin: 0 5px;
@@ -212,7 +216,7 @@
   display: none;
 }
 
-.page-csc-search .attachment-after,
+.page-csc-search .attachment-before,
 .page-csc-search .attachment-after {
   clear: both;
 }
