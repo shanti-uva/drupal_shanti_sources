@@ -422,8 +422,8 @@ body.page-csc-search {
   box-shadow: 0px 10px 27px -10px rgba(46,46,46,1);
 }
 #block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-item.non-default-item .breadcrumb-child-top a,
-#block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-item.non-default-item .breadcrumb-child-sub-top a,
-#block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-item.non-default-item .breadcrumb-child a {
+#block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-item.non-default-item .breadcrumb-child a,
+#block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-item.non-default-item .breadcrumb-child-sub-top a {
   color: #333333;
   font-size: 1em;
   font-weight: 500;
@@ -554,7 +554,9 @@ body.page-csc-search {
 }
 #block-csc-views-custom-taxonomy-flyout-block ul li a.expand-btn,
 #block-csc-views-custom-taxonomy-breadcrumb ul li a.expand-btn,
-#block-csc-views-custom-taxonomy-block ul li a.expand-btn {
+#block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-item.non-default-item .breadcrumb-child a.expand-btn,
+#block-csc-views-custom-taxonomy-block ul li a.expand-btn,
+#block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-item.non-default-item .breadcrumb-child-sub-top a.expand-btn {
   font-family: 'Glyphicons Halflings';
   color: #40adb6;
   width: auto;
@@ -566,13 +568,20 @@ body.page-csc-search {
 }
 #block-csc-views-custom-taxonomy-block ul li a.expand-btn.glyphicon-plus-sign:before,
 #block-csc-views-custom-taxonomy-flyout-block ul li a.expand-btn.glyphicon-plus-sign:before,
-#block-csc-views-custom-taxonomy-breadcrumb ul li a.expand-btn.glyphicon-plus-sign:before {
+#block-csc-views-custom-taxonomy-breadcrumb ul li a.expand-btn.glyphicon-plus-sign:before,
+#block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-item.non-default-item .breadcrumb-child-sub-top a.expand-btn.glyphicon-plus-sign:before {
   content: "\e081";
 }
 #block-csc-views-custom-taxonomy-block ul li a.expand-btn.glyphicon-minus-sign:before,
 #block-csc-views-custom-taxonomy-flyout-block ul li a.expand-btn.glyphicon-minus-sign:before,
-#block-csc-views-custom-taxonomy-breadcrumb ul li a.expand-btn.glyphicon-minus-sign:before {
+#block-csc-views-custom-taxonomy-breadcrumb ul li a.expand-btn.glyphicon-minus-sign:before,
+#block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-item.non-default-item .breadcrumb-child-sub-top a.expand-btn.glyphicon-minus-sign:before {
   content: "\e082";
+}
+.breadcrumb-child-sub-top a.expand-btn,
+.breadcrumb-child-sub-top a.expand-btn.expanded {
+  text-indent: 1em;
+  background: none;
 }
 #block-csc-views-custom-taxonomy-block ul li a.expand-btn.expanded {
   background: none;
