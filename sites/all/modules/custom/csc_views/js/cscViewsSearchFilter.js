@@ -14,6 +14,7 @@
       set_advanced_search_dropdown_source_type_text();
       set_advanced_search_dropdown_filter_field_text();
       set_advanced_search_dropdown_year_text(default_year_published_option);
+      if ($.cookie('flyout-status') && $.cookie('flyout-status') == 'open') $("#search-flyout").openMbExtruder();
       // Advanced search drop down
       $('#edit-biblio-publication-type--2').keyup(function() {
         set_advanced_search_dropdown_source_type_text();
@@ -164,6 +165,12 @@
         }
         e.preventDefault();
       });
+      // Keep search flyout open
+      $('#search-flyout').click(function(e) {
+       ($(this).hasClass('isOpened')) ? $.cookie('flyout-status', 'open') : $.cookie('flyout-status', 'close');
+        e.preventDefault();
+      });
+      
       // Update dropdown button field text
       function set_advanced_search_dropdown_filter_field_text() {
         var text_fields = [

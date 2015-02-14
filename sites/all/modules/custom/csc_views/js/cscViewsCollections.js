@@ -8,12 +8,19 @@
       // Collections block
       $('#block-csc-views-custom-taxonomy-block .content .item-list a, #block-csc-views-custom-taxonomy-flyout-block .content .item-list a, #block-csc-views-custom-taxonomy-breadcrumb .content .item-list a').removeClass('active');
       $('#block-csc-views-custom-taxonomy-block ul li ul, #block-csc-views-custom-taxonomy-flyout-block ul li ul, #block-csc-views-custom-taxonomy-breadcrumb ul li ul').hide();
-      $('#block-csc-views-custom-taxonomy-block ul li a.has-children, #block-csc-views-custom-taxonomy-flyout-block ul li a.has-children, #block-csc-views-custom-taxonomy-breadcrumb ul li a.has-children').after('<a href="#" class="expand-btn">[+]</a>');
+      $('#block-csc-views-custom-taxonomy-block ul li a.has-children, #block-csc-views-custom-taxonomy-flyout-block ul li a.has-children, #block-csc-views-custom-taxonomy-breadcrumb ul li a.has-children').after('<a href="#" class="expand-btn glyphicon-plus-sign"></a>');
       $('#block-csc-views-custom-taxonomy-block .expand-btn, #block-csc-views-custom-taxonomy-flyout-block .expand-btn, #block-csc-views-custom-taxonomy-breadcrumb .expand-btn').click(function(e) {
         e.stopPropagation();
         e.preventDefault();
         $(this).next('ul').toggle();
-        ($(this).next('ul').is(':visible')) ? $(this).addClass('expanded') : $(this).removeClass('expanded');
+        if ($(this).next('ul').is(':visible')) {
+          $(this).removeClass('glyphicon-plus-sign');
+          $(this).addClass('expanded glyphicon-minus-sign');
+        }
+        else {
+          $(this).addClass('glyphicon-plus-sign');
+          $(this).removeClass('expanded glyphicon-minus-sign');
+        }
       });
       // Breadcrumb child links
       $('#collection-library').click(function(e) {
@@ -32,12 +39,19 @@
         ($(this).next('.breadcrumb-child-container').is(':visible')) ? $(this).addClass('active') : $('#collection-library, a.breadcrumb-dropdown-cta').removeClass('active');
       });
       // Attach collapsible links to each breadcrumb link with child links
-      $('.breadcrumb-child-sub-top a').after('<a href="#" class="expand-btn expanded">[ - ]</a>');
+      $('.breadcrumb-child-sub-top a').after('<a href="#" class="expand-btn expanded glyphicon-minus-sign"></a>');
       $('.breadcrumb-child-sub-top a.expand-btn').click(function(e) {
         e.stopPropagation();
         e.preventDefault();
         $(this).parent().next('div.breadcrumb-child').toggle();
-        ($(this).parent().next('div.breadcrumb-child').is(':visible')) ? $(this).addClass('expanded') : $(this).removeClass('expanded');
+        if ($(this).parent().next('div.breadcrumb-child').is(':visible')) {
+          $(this).removeClass('glyphicon-plus-sign');
+          $(this).addClass('expanded glyphicon-minus-sign');
+        }
+        else {
+          $(this).addClass('glyphicon-plus-sign');
+          $(this).removeClass('expanded glyphicon-minus-sign');
+        }
       });
       // Close shown containers if a user clicks anywhere on the page.
       $('body').click(function(e) {
@@ -51,6 +65,14 @@
           height: adjusted_height + 'px',
         });
       });
+      // Open collection lists up to the current collection item
+      var collectionClassId = '#block-csc-views-custom-taxonomy-flyout-block a.collection-id-' + $.get_query_string_val('field_zotero_collections');
+      $(collectionClassId).addClass('current-trail').css('color', '#40adb6');
+      $(collectionClassId).parentsUntil('#block-csc-views-custom-taxonomy-flyout-block div').addClass('active-trail');
+      $('ul.active-trail').show();
+      $('li.active-trail').children('.expand-btn').removeClass('glyphicon-plus-sign');
+      $('li.active-trail').children('.expand-btn').addClass('expanded glyphicon-minus-sign');
+      $('a.has-children.current-trail').parent().children('ul').show();
     }
   };
 })(jQuery);

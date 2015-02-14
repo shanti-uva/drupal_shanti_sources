@@ -528,7 +528,7 @@ body.page-csc-search {
   font-family: museo-sans-300, sans-serif;
 }
 #block-csc-views-custom-taxonomy-block ul li a {
-  width: 97%;
+  width: 95%;
 }
 #block-csc-views-custom-taxonomy-flyout-block ul li a  {
   width: 90%;
@@ -536,28 +536,54 @@ body.page-csc-search {
   float: right;
 }
 #block-csc-views-custom-taxonomy-flyout-block ul li a.expand-btn {
-  text-indent: -999em;
   height: 15px;
   float: left;
   display: inline-block;
   text-decoration: none;
+
+}
+#block-csc-views-custom-taxonomy-breadcrumb ul li a.expand-btn.expanded,
+#block-csc-views-custom-taxonomy-breadcrumb ul li a.expand-btn {
+  background: none;
+  text-indent: 1em;
+  width: auto;
+  font-family: 'Glyphicons Halflings';
+}
+#block-csc-views-custom-taxonomy-breadcrumb ul li a {
+  width: 85%;
+}
+#block-csc-views-custom-taxonomy-flyout-block ul li a.expand-btn,
+#block-csc-views-custom-taxonomy-breadcrumb ul li a.expand-btn,
+#block-csc-views-custom-taxonomy-block ul li a.expand-btn {
+  font-family: 'Glyphicons Halflings';
+  color: #40adb6;
+  width: auto;
+  border: none;
 }
 #block-csc-views-custom-taxonomy-block ul li a.expand-btn {
-  margin-top: 13px;
+  background: none;
+  text-indent: 1em;
 }
-#block-csc-views-custom-taxonomy-block ul li a.expand-btn,
-#block-csc-views-custom-taxonomy-flyout-block ul li a.expand-btn, 
-#block-csc-views-custom-taxonomy-breadcrumb ul li a.expand-btn,
+#block-csc-views-custom-taxonomy-block ul li a.expand-btn.glyphicon-plus-sign:before,
+#block-csc-views-custom-taxonomy-flyout-block ul li a.expand-btn.glyphicon-plus-sign:before,
+#block-csc-views-custom-taxonomy-breadcrumb ul li a.expand-btn.glyphicon-plus-sign:before {
+  content: "\e081";
+}
+#block-csc-views-custom-taxonomy-block ul li a.expand-btn.glyphicon-minus-sign:before,
+#block-csc-views-custom-taxonomy-flyout-block ul li a.expand-btn.glyphicon-minus-sign:before,
+#block-csc-views-custom-taxonomy-breadcrumb ul li a.expand-btn.glyphicon-minus-sign:before {
+  content: "\e082";
+}
+#block-csc-views-custom-taxonomy-block ul li a.expand-btn.expanded {
+  background: none;
+  text-indent: 1em;
+  border: none
+}
 .breadcrumb-child-sub-top a.expand-btn {
-  background: url(../images/expand_menu_btn.png) no-repeat;
   width: 15px;
   background-position: center center;
 }
-#block-csc-views-custom-taxonomy-block ul li a.expand-btn.expanded,
-#block-csc-views-custom-taxonomy-flyout-block ul li a.expand-btn.expanded,
-#block-csc-views-custom-taxonomy-breadcrumb ul li a.expand-btn.expanded,
 .breadcrumb-child-sub-top a.expand-btn.expanded {
-  background: url(../images/close_menu_btn.png) no-repeat;
   background-position: center center;
 }
 #block-csc-views-custom-sort-filter {
@@ -780,7 +806,16 @@ body.page-csc-search {
   color: #333;
   line-height: 100%;
 }
-#edit-advanced-search-api-views-fulltext.throbbing {
+#edit-search-text-biblio-author {
+  background: #fff;
+  color: #333;
+  line-height: 100%;
+}
+#edit-search-text-biblio-author.throbbing {
+  padding-left: 20px;
+}
+#edit-advanced-search-api-views-fulltext.throbbing,
+#edit-search-text-biblio-author.throbbing {
   background: #fff url(../images/ajax-loader.gif) no-repeat;
   background-size: 5%;
   background-position: 2% center !important;
@@ -1292,6 +1327,26 @@ a#long-detail.active {
   display: block;
   height: 20px;
   text-transform: capitalize;
+}
+#csc-views-advanced-search-form .form-item.form-item-advanced-search-publication-year label.option,
+#csc-views-advanced-search-form .form-item.form-item-advanced-search-publication-year label.radio-inline {
+  width: auto;
+  float: left;
+}
+#csc-views-advanced-search-form .form-item.form-item-advanced-search-publication-year label.option {
+  clear: right;
+}
+#csc-views-advanced-search-form .form-item.form-item-advanced-search-publication-year label.radio-inline {
+  clear: left;
+  padding-left: 10px;
+}
+#csc-views-advanced-search-form .form-item.form-item-advanced-search-publication-year .form-item-advanced-search-publication-year,
+#csc-views-advanced-search-form .form-item.form-item-advanced-search-publication-year .form-item-advanced-search-publication-year,
+#csc-views-advanced-search-form .form-item.form-item-advanced-search-publication-year .form-item-advanced-search-publication-year {
+  margin-top: 5px;
+  overflow: hidden;
+  height: auto;
+  padding-top: 5px;
 }
 #csc-views-advanced-search-form label.option div {
   z-index: 0;
