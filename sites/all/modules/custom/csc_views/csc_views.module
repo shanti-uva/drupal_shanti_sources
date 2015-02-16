@@ -673,7 +673,7 @@ function csc_views_advanced_search_form($form, &$form_state) {
   );
   $form['advanced_option']['search_text_biblio_abstract'] = array(
     '#type' => 'textfield',
-    '#title' => t('Enter words in abstract'),
+    '#title' => t('Words in abstract'),
     '#attributes' => array('class' => array('form-control')),
     '#default_value' => $default_abstract,
   );
