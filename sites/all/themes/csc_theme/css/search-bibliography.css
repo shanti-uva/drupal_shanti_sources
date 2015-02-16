@@ -168,8 +168,6 @@ body.page-csc-search {
   max-width: 100%;
 }
 .page-csc-search .views-field-biblio-authors {
-  display: inline-block;
-  float: left;
   margin-right: 5px;
   text-transform: uppercase;
   font-family: museo-sans-900, sans-serif;
@@ -177,7 +175,7 @@ body.page-csc-search {
   margin-top: 5px;
   font-weight: 700;
   letter-spacing: 0.9px;
-  margin-bottom: 25px;
+  overflow: hidden;
 }
 .page-csc-search .views-field-biblio-authors ul {
   padding: 0;
@@ -337,7 +335,7 @@ body.page-csc-search {
   font-weight: 700;
 }
 .page-csc-search .views-field-biblio-abst-e {
-  margin: 0 0 10px 0;
+  margin: 25px 0 10px 0;
 }
 .page-csc-search .views-field-biblio-abst-e span {
   font-size: 1em;

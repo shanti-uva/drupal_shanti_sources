@@ -223,18 +223,25 @@ function csc_biblio_search_views_default_views() {
   $handler->display->display_options['fields']['biblio_authors']['field'] = 'biblio_authors';
   $handler->display->display_options['fields']['biblio_authors']['label'] = '';
   $handler->display->display_options['fields']['biblio_authors']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['biblio_authors']['hide_empty'] = TRUE;
+  $handler->display->display_options['fields']['biblio_authors']['empty_zero'] = TRUE;
   $handler->display->display_options['fields']['biblio_authors']['link_to_entity'] = 0;
   /* Field: Indexed Node: biblio_publisher */
   $handler->display->display_options['fields']['biblio_publisher']['id'] = 'biblio_publisher';
   $handler->display->display_options['fields']['biblio_publisher']['table'] = 'search_api_index_database_node_index';
   $handler->display->display_options['fields']['biblio_publisher']['field'] = 'biblio_publisher';
   $handler->display->display_options['fields']['biblio_publisher']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['biblio_publisher']['hide_empty'] = TRUE;
+  $handler->display->display_options['fields']['biblio_publisher']['empty_zero'] = TRUE;
+  $handler->display->display_options['fields']['biblio_publisher']['link_to_entity'] = 0;
   /* Field: Indexed Node: biblio_place_published */
   $handler->display->display_options['fields']['biblio_place_published']['id'] = 'biblio_place_published';
   $handler->display->display_options['fields']['biblio_place_published']['table'] = 'search_api_index_database_node_index';
   $handler->display->display_options['fields']['biblio_place_published']['field'] = 'biblio_place_published';
   $handler->display->display_options['fields']['biblio_place_published']['label'] = '';
   $handler->display->display_options['fields']['biblio_place_published']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['biblio_place_published']['hide_empty'] = TRUE;
+  $handler->display->display_options['fields']['biblio_place_published']['empty_zero'] = TRUE;
   $handler->display->display_options['fields']['biblio_place_published']['link_to_entity'] = 0;
   /* Field: Indexed Node: biblio_abst_e */
   $handler->display->display_options['fields']['biblio_abst_e']['id'] = 'biblio_abst_e';
@@ -242,6 +249,9 @@ function csc_biblio_search_views_default_views() {
   $handler->display->display_options['fields']['biblio_abst_e']['field'] = 'biblio_abst_e';
   $handler->display->display_options['fields']['biblio_abst_e']['label'] = '';
   $handler->display->display_options['fields']['biblio_abst_e']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['biblio_abst_e']['hide_empty'] = TRUE;
+  $handler->display->display_options['fields']['biblio_abst_e']['empty_zero'] = TRUE;
+  $handler->display->display_options['fields']['biblio_abst_e']['link_to_entity'] = 0;
   /* Field: Indexed Node: Zotero Tags */
   $handler->display->display_options['fields']['field_zotero_tags']['id'] = 'field_zotero_tags';
   $handler->display->display_options['fields']['field_zotero_tags']['table'] = 'search_api_index_database_node_index';
@@ -250,6 +260,7 @@ function csc_biblio_search_views_default_views() {
   $handler->display->display_options['fields']['field_zotero_tags']['element_label_type'] = 'strong';
   $handler->display->display_options['fields']['field_zotero_tags']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['field_zotero_tags']['hide_empty'] = TRUE;
+  $handler->display->display_options['fields']['field_zotero_tags']['empty_zero'] = TRUE;
   $handler->display->display_options['fields']['field_zotero_tags']['link_to_entity'] = 1;
   $handler->display->display_options['fields']['field_zotero_tags']['view_mode'] = 'full';
   $handler->display->display_options['fields']['field_zotero_tags']['bypass_access'] = 0;
@@ -260,6 +271,7 @@ function csc_biblio_search_views_default_views() {
   $handler->display->display_options['fields']['field_zotero_collections']['exclude'] = TRUE;
   $handler->display->display_options['fields']['field_zotero_collections']['element_label_type'] = 'strong';
   $handler->display->display_options['fields']['field_zotero_collections']['hide_empty'] = TRUE;
+  $handler->display->display_options['fields']['field_zotero_collections']['empty_zero'] = TRUE;
   $handler->display->display_options['fields']['field_zotero_collections']['link_to_entity'] = 1;
   $handler->display->display_options['fields']['field_zotero_collections']['view_mode'] = 'full';
   $handler->display->display_options['fields']['field_zotero_collections']['bypass_access'] = 0;
@@ -457,7 +469,7 @@ function csc_biblio_search_views_default_views() {
   $handler->display->display_options['filters']['search_text_biblio_abstract']['group'] = 1;
   $handler->display->display_options['filters']['search_text_biblio_abstract']['exposed'] = TRUE;
   $handler->display->display_options['filters']['search_text_biblio_abstract']['expose']['operator_id'] = 'search_text_biblio_abstract_op';
-  $handler->display->display_options['filters']['search_text_biblio_abstract']['expose']['label'] = 'Abstract';
+  $handler->display->display_options['filters']['search_text_biblio_abstract']['expose']['label'] = 'Enter words in abstract';
   $handler->display->display_options['filters']['search_text_biblio_abstract']['expose']['operator'] = 'search_text_biblio_abstract_op';
   $handler->display->display_options['filters']['search_text_biblio_abstract']['expose']['identifier'] = 'search_text_biblio_abstract';
   $handler->display->display_options['filters']['search_text_biblio_abstract']['expose']['remember_roles'] = array(
@@ -634,6 +646,8 @@ function csc_biblio_search_views_default_views() {
   $handler->display->display_options['fields']['biblio_authors']['field'] = 'biblio_authors';
   $handler->display->display_options['fields']['biblio_authors']['label'] = '';
   $handler->display->display_options['fields']['biblio_authors']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['biblio_authors']['hide_empty'] = TRUE;
+  $handler->display->display_options['fields']['biblio_authors']['empty_zero'] = TRUE;
   $handler->display->display_options['fields']['biblio_authors']['link_to_entity'] = 0;
   /* Field: Indexed Node: biblio_publisher */
   $handler->display->display_options['fields']['biblio_publisher']['id'] = 'biblio_publisher';
@@ -1157,7 +1171,7 @@ function csc_biblio_search_views_default_views() {
   $handler->display->display_options['filters']['search_text_biblio_abstract']['group'] = 1;
   $handler->display->display_options['filters']['search_text_biblio_abstract']['exposed'] = TRUE;
   $handler->display->display_options['filters']['search_text_biblio_abstract']['expose']['operator_id'] = 'search_text_biblio_abstract_op';
-  $handler->display->display_options['filters']['search_text_biblio_abstract']['expose']['label'] = 'Abstract';
+  $handler->display->display_options['filters']['search_text_biblio_abstract']['expose']['label'] = 'Enter words in abstract';
   $handler->display->display_options['filters']['search_text_biblio_abstract']['expose']['operator'] = 'search_text_biblio_abstract_op';
   $handler->display->display_options['filters']['search_text_biblio_abstract']['expose']['identifier'] = 'search_text_biblio_abstract';
   $handler->display->display_options['filters']['search_text_biblio_abstract']['expose']['remember_roles'] = array(
