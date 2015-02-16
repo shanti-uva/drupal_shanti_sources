@@ -489,15 +489,27 @@ function csc_views_generate_list($hierarchy) {
   $items = array();
   foreach ($hierarchy as $term) {
     $class_name = (!empty($term->children)) ? 'has-children' : '';
-    $item = l(t($term->name), 'csc-search',  array(
-      'query' => array(
+    if (csc_views_sort_criteria_set()) {
+      $query_values = array(
         'field_zotero_collections' => $term->tid,
         'view_mode' => 'collection',
-      ),
+        'sort_by' => $_GET['sort_by'],
+        'sort_order' => $_GET['sort_order'],
+      );
+    }
+    else {
+      $query_values = array(
+        'field_zotero_collections' => $term->tid,
+        'view_mode' => 'collection',
+      );
+    }
+    $item = l(t($term->name), 'csc-search',  array(
+      'query' => $query_values,
       'attributes' => array(
         'class' => array($class_name, 'collection-id-' . $term->tid)
       ),
     ));
+
     if (!empty($term->children)) {
       $item .= csc_views_generate_list($term->children);
     }
@@ -524,8 +536,16 @@ function csc_views_collection_breadcrumb($term_id) {
         if ($term_list) {
           $breadcrumb_items['term_name_link'] = l(t($term->name), '',  array('fragment' => '', 'attributes' => array('class' => 'breadcrumb-dropdown-cta')));
           $breadcrumb_items['breadcrumb_term_child'] = csc_views_generate_list($term_list);
-          $breadcrumb_items['all_sources_top_link'] = l(t('View all sources for ' . $term->name), 'csc-search', array('query' => array('field_zotero_collections' => $term->tid, 'view_mode' => 'collection')));
-          $breadcrumb_items['all_sources_sub_top_link'] = l(t($term->name), 'csc-search', array('query' => array('field_zotero_collections' => $term->tid, 'view_mode' => 'collection')));
+          if (csc_views_sort_criteria_set()) {
+            $all_sources_top_link_query_values = array('field_zotero_collections' => $term->tid, 'view_mode' => 'collection', 'sort_by' => $_GET['sort_by'], 'sort_order' => $_GET['sort_order']);
+            $all_sources_sub_top_link_query_values = array('field_zotero_collections' => $term->tid, 'view_mode' => 'collection', 'sort_by' => $_GET['sort_by'], 'sort_order' => $_GET['sort_order']);
+          }
+          else {
+            $all_sources_top_link_query_values = array('field_zotero_collections' => $term->tid, 'view_mode' => 'collection');
+            $all_sources_sub_top_link_query_values = array('field_zotero_collections' => $term->tid, 'view_mode' => 'collection');
+          }
+          $breadcrumb_items['all_sources_top_link'] = l(t('View all sources for ' . $term->name), 'csc-search', array('query' => $all_sources_top_link_query_values));
+          $breadcrumb_items['all_sources_sub_top_link'] = l(t($term->name), 'csc-search', array('query' => $all_sources_sub_top_link_query_values));
         }
         else {
           $breadcrumb_items['term_name'] = $term->name;
@@ -1002,4 +1022,12 @@ function csc_views_theme($existing, $type, $theme, $path) {
     'csc_views_breadcrumb_item' => array('template' => 'csc_views_breadcrumb_item'),
     'csc_views_breadcrumb_library' => array('template' => 'csc_views_breadcrumb_library'),
   );
+}
+
+/**
+ *  Returns TRUE if sort criteria has been set.
+ */
+function csc_views_sort_criteria_set() {
+  $status = (!empty($_GET['sort_by']) && !empty($_GET['sort_order'])) ? TRUE : FALSE;
+  return $status;
 }
