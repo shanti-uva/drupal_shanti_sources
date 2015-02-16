@@ -19,10 +19,7 @@ body.page-csc-search {
 #csc-views-advanced-search-form .selectpicker li.selected a:hover,
 #csc-views-advanced-search-form .selectpicker li.selected span.text,
 #csc-views-advanced-search-form .selectpicker li.selected span.text:hover
-#csc-views-advanced-search-form .selectpicker li a:hover
-#csc-views-advanced-search-form .selectpicker li span:hover,
-#csc-views-advanced-search-form .selectpicker li span.text,
-#csc-views-advanced-search-form .selectpicker li span.text:hover {
+#csc-views-advanced-search-form .selectpicker li span:hover {
   background: #008a96 !important;
   background-image: none;
   color: #fff;
