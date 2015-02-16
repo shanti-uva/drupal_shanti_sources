@@ -237,6 +237,7 @@ body.page-csc-search {
   font-size: 1em;
   text-transform: uppercase;
   font-family: museo-sans-900, sans-serif;
+  background: none;
 }
 .page-csc-search .breadcrumbs-wrapper {
   display: none;
