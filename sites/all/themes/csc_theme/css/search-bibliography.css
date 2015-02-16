@@ -822,8 +822,6 @@ body.page-csc-search {
   background: #fff;
   color: #333;
   line-height: 100%;
-}
-#edit-search-text-biblio-author.throbbing {
   padding-left: 20px;
 }
 #edit-advanced-search-api-views-fulltext.throbbing,
