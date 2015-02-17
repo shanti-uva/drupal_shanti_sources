@@ -19,11 +19,24 @@ body.page-csc-search {
 #csc-views-advanced-search-form .selectpicker li.selected a:hover,
 #csc-views-advanced-search-form .selectpicker li.selected span.text,
 #csc-views-advanced-search-form .selectpicker li.selected span.text:hover
-#csc-views-advanced-search-form .selectpicker li span:hover {
+#csc-views-advanced-search-form .selectpicker li span:hover,
+#edit-advanced-option .selectpicker li a:hover {
   background: #008a96 !important;
   background-image: none;
   color: #fff;
   font-weight: bold;
+}
+#edit-advanced-option .selectpicker li a {
+  padding: 0;
+}
+#edit-advanced-option .selectpicker li a span.text {
+  background: none;
+  display: block;
+  height: auto !important;
+  padding: 3px 20px;
+}
+#edit-advanced-option .selectpicker li a span.text:hover {
+  color: #FFF;
 }
 .main-content .selectpicker li a:hover,
 .main-content .selectpicker li.selected a:hover {
