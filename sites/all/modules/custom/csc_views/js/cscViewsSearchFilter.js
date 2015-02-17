@@ -14,7 +14,13 @@
       set_advanced_search_dropdown_source_type_text();
       set_advanced_search_dropdown_filter_field_text();
       set_advanced_search_dropdown_year_text(default_year_published_option);
-      if ($.cookie('flyout-status') && $.cookie('flyout-status') == 'open') $("#search-flyout").openMbExtruder();
+      if ($.cookie('flyout-status') && $.cookie('flyout-status') == 'open') {
+        $("#search-flyout").openMbExtruder();
+        $('.page-csc-search .main-content .content-section .view-content, #block-csc-views-custom-sort-filter, .view-biblio-search-api .attachment').css('width', '74%');
+      }
+      else {
+        $('.page-csc-search .main-content .content-section .view-content, #block-csc-views-custom-sort-filter, .view-biblio-search-api .attachment').css('width', '100%');
+      }
       // Advanced search drop down
       $('#edit-biblio-publication-type--2').keyup(function() {
         set_advanced_search_dropdown_source_type_text();
@@ -165,7 +171,16 @@
       });
       // Keep search flyout open
       $('#search-flyout .flap').click(function(e) {
-        ($('#search-flyout').hasClass('isOpened') === true) ? $.cookie('flyout-status', 'open') : $.cookie('flyout-status', 'close');
+        if ($('#search-flyout').hasClass('isOpened') === true) {
+          var flyout_status = 'open';
+          $('.page-csc-search .main-content .content-section .view-content, #block-csc-views-custom-sort-filter,.view-biblio-search-api .attachment').animate({width: '74%'});
+        }
+        else {
+          var flyout_status = 'close';
+          $('.page-csc-search .main-content .content-section .view-content, #block-csc-views-custom-sort-filter,.view-biblio-search-api .attachment').animate({width: '100%'});
+        }
+        $.removeCookie('flyout-status');
+        $.cookie('flyout-status', flyout_status);
         e.preventDefault();
       });
       
