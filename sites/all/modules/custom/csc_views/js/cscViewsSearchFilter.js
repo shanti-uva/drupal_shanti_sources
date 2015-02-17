@@ -164,8 +164,8 @@
         e.preventDefault();
       });
       // Keep search flyout open
-      $('#search-flyout').click(function(e) {
-       ($(this).hasClass('isOpened')) ? $.cookie('flyout-status', 'open') : $.cookie('flyout-status', 'close');
+      $('#search-flyout .flap').click(function(e) {
+        ($('#search-flyout').hasClass('isOpened') === true) ? $.cookie('flyout-status', 'open') : $.cookie('flyout-status', 'close');
         e.preventDefault();
       });
       
