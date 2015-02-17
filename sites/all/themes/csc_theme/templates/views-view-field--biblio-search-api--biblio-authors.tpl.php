@@ -22,8 +22,7 @@
  * the view is modified.
  */
 ?>
-<?php //print $output; ?>
-<?php if(!empty($row->_entity_properties['biblio_authors'])): ?>
+<?php if(!empty($output)): ?>
   <ul>
     <?php
       $collections = $row->_entity_properties['biblio_authors'];

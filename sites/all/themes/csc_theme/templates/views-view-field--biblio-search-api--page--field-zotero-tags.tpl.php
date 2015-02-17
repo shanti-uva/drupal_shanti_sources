@@ -23,7 +23,7 @@
  */
 
 ?>
-<?php if(!empty($row->_entity_properties['field_zotero_tags'])): ?>
+<?php if(!empty($output)): ?>
   <ul>
     <?php
       $tags = $row->_entity_properties['field_zotero_tags'];

@@ -23,7 +23,7 @@
  */
 
 ?>
-<?php if(!empty($row->_entity_properties['field_zotero_collections'])): ?>
+<?php if(!empty($output)): ?>
   <ul>
     <?php
       $collections = $row->_entity_properties['field_zotero_collections'];

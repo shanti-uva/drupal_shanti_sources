@@ -210,7 +210,7 @@ body.page-csc-search {
 .page-csc-search .views-field-biblio-place-published {
   float: left;
   clear: right;
-  margin-bottom: 25px;
+  margin-bottom: 5px;
   margin-top: 2px;
 }
 .page-csc-search .views-field-biblio-place-published span {
