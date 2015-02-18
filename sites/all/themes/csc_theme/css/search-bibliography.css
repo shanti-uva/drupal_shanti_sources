@@ -341,8 +341,7 @@ body.page-csc-search {
   width: auto;
   float: left;
 }
-.page-csc-search .views-field-field-zotero-tags a,
-.page-csc-search.page-csc-search-biblio a {
+.page-csc-search .views-field-field-zotero-tags a {
   font-family: museo-sans-700, sans-serif;
   font-size: 0.9em;
   font-weight: 700;
