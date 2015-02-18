@@ -34,7 +34,15 @@ i.thumbtype {
 .shanticon-google {
   color:#32ccca;
 }
-
+.navbar-brand img.site-logo {
+  display: inline-block;
+  float: left;
+}
+.navbar-brand  .site-title {
+  float: left;
+  margin-top: 22px;
+  padding-left: 0;
+}
 /*------------------------------*/
 /*----- BEGIN RESPONSIVE -------*/
 /*------------------------------*/

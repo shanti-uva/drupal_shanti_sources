@@ -244,11 +244,10 @@ body.page-csc-search {
   font-family: 'shanticon';
 }
 .page-csc-search .titlearea .page-title span {
-  color: #40adb6;
+  color: #FFF;
   font-size: 1em;
-  text-transform: uppercase;
-  font-family: museo-sans-900, sans-serif;
-  background: none;
+  text-transform: capitalize;
+  font-family: museo-sans-300, sans-serif;
 }
 .page-csc-search .breadcrumbs-wrapper {
   display: none;
@@ -361,15 +360,20 @@ body.page-csc-search {
 #block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-item {
   height: 30px;
 }
-#block-csc-views-custom-taxonomy-breadcrumb a,
 #block-csc-views-custom-taxonomy-breadcrumb span,
 #block-csc-views-custom-taxonomy-breadcrumb {
   font-size: 1em;
-  color: #40adb6;
+  color: #FFF;
   font-family: museo-sans-700, sans-serif;
 }
-#block-csc-views-custom-taxonomy-breadcrumb a.active {
-  color: #84f8ff;
+#block-csc-views-custom-taxonomy-breadcrumb a {
+  font-size: .92em;
+  color: #FFF;
+  font-family: museo-sans-300, sans-serif;
+}
+#block-csc-views-custom-taxonomy-breadcrumb a.active,
+#block-csc-views-custom-taxonomy-breadcrumb a:hover {
+  color: #FFF;
   text-decoration: underline;
 }
 #block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-child-container a,
