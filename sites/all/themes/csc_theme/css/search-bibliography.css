@@ -831,14 +831,22 @@ body.page-csc-search {
   color: #333;
   line-height: 100%;
 }
-#edit-search-text-biblio-author {
+#edit-search-text-biblio-author,
+#edit-title,
+#edit-search-text-biblio-publisher,
+#edit-search-text-biblio-publish-place,
+#edit-search-text-zotero-tags {
   background: #fff;
   color: #333;
   line-height: 100%;
   padding-left: 20px;
 }
 #edit-advanced-search-api-views-fulltext.throbbing,
-#edit-search-text-biblio-author.throbbing {
+#edit-search-text-biblio-author.throbbing,
+#edit-title.throbbing,
+#edit-search-text-biblio-publisher.throbbing,
+#edit-search-text-biblio-publish-place.throbbing,
+#edit-search-text-zotero-tags.throbbing {
   background: #fff url(../images/ajax-loader.gif) no-repeat;
   background-size: 5%;
   background-position: 2% center !important;
