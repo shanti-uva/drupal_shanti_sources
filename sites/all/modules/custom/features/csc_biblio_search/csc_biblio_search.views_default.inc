@@ -205,7 +205,7 @@ function csc_biblio_search_views_default_views() {
   $handler->display->display_options['fields']['title']['field'] = 'title';
   $handler->display->display_options['fields']['title']['label'] = '';
   $handler->display->display_options['fields']['title']['alter']['alter_text'] = TRUE;
-  $handler->display->display_options['fields']['title']['alter']['text'] = '[counter] [title] [biblio_year]';
+  $handler->display->display_options['fields']['title']['alter']['text'] = '[biblio_publication_type] [title] [biblio_year]';
   $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['title']['link_to_entity'] = 1;
   /* Field: Indexed Node: Node ID */
@@ -937,7 +937,7 @@ function csc_biblio_search_views_default_views() {
   $handler->display->display_options['fields']['biblio_citekey']['id'] = 'biblio_citekey';
   $handler->display->display_options['fields']['biblio_citekey']['table'] = 'search_api_index_database_node_index';
   $handler->display->display_options['fields']['biblio_citekey']['field'] = 'biblio_citekey';
-  $handler->display->display_options['fields']['biblio_citekey']['label'] = 'Citation Key';
+  $handler->display->display_options['fields']['biblio_citekey']['label'] = 'Source ID';
   $handler->display->display_options['fields']['biblio_citekey']['hide_empty'] = TRUE;
   $handler->display->display_options['fields']['biblio_citekey']['empty_zero'] = TRUE;
   $handler->display->display_options['fields']['biblio_citekey']['link_to_entity'] = 0;
@@ -975,6 +975,7 @@ function csc_biblio_search_views_default_views() {
   $handler->display->display_options['fields']['field_biblio_long_language']['id'] = 'field_biblio_long_language';
   $handler->display->display_options['fields']['field_biblio_long_language']['table'] = 'search_api_index_database_node_index';
   $handler->display->display_options['fields']['field_biblio_long_language']['field'] = 'field_biblio_long_language';
+  $handler->display->display_options['fields']['field_biblio_long_language']['label'] = 'Language(s)';
   $handler->display->display_options['fields']['field_biblio_long_language']['hide_empty'] = TRUE;
   $handler->display->display_options['fields']['field_biblio_long_language']['empty_zero'] = TRUE;
   $handler->display->display_options['defaults']['sorts'] = FALSE;

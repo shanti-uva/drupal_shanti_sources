@@ -14,12 +14,14 @@
       set_advanced_search_dropdown_source_type_text();
       set_advanced_search_dropdown_filter_field_text();
       set_advanced_search_dropdown_year_text(default_year_published_option);
-      if ($.cookie('flyout-status') && $.cookie('flyout-status') == 'open') {
-        $("#search-flyout").openMbExtruder();
-        $('.page-csc-search .main-content .content-section .view-content, #block-csc-views-custom-sort-filter, .view-biblio-search-api .attachment').css('width', '74%');
-      }
-      else {
-        $('.page-csc-search .main-content .content-section .view-content, #block-csc-views-custom-sort-filter, .view-biblio-search-api .attachment').css('width', '100%');
+      if ($("#search-flyout").length) {
+        if ($.cookie('flyout-status') && $.cookie('flyout-status') == 'open') {
+          $("#search-flyout").openMbExtruder();
+          $('.page-csc-search .main-content .content-section .view-content, #block-csc-views-custom-sort-filter, .view-biblio-search-api .attachment').css('width', '74%');
+        }
+        else {
+          $('.page-csc-search .main-content .content-section .view-content, #block-csc-views-custom-sort-filter, .view-biblio-search-api .attachment').css('width', '100%');
+        }
       }
       // Advanced search drop down
       $('#edit-biblio-publication-type--2').keyup(function() {

@@ -360,14 +360,14 @@ body.page-csc-search {
 #block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-item {
   height: 30px;
 }
-#block-csc-views-custom-taxonomy-breadcrumb span,
 #block-csc-views-custom-taxonomy-breadcrumb {
   font-size: 1em;
   color: #FFF;
   font-family: museo-sans-700, sans-serif;
 }
+#block-csc-views-custom-taxonomy-breadcrumb span,
 #block-csc-views-custom-taxonomy-breadcrumb a {
-  font-size: .92em;
+  font-size: 1em;
   color: #FFF;
   font-family: museo-sans-300, sans-serif;
 }
