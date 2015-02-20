@@ -392,6 +392,9 @@ body.page-csc-search {
 #block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-item.current_breadcrumb {
   color: #fff;
 }
+#block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-item.current_breadcrumb {
+  font-family: museo-sans-300, sans-serif;
+}
 #block-csc-views-custom-taxonomy-breadcrumb .library-dropdown,
 #block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-child-container {
   box-shadow: none;
