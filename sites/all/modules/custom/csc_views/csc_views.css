@@ -101,9 +101,7 @@
   background-position: left 2px;
   text-indent: -999em;
 }
-#block-csc-views-custom-taxonomy-block,
-#block-csc-views-custom-sort-filter,
-#csc-custom-search-form {
+#block-csc-views-custom-sort-filter {
   display: none;
 }
 #block-csc-views-custom-taxonomy-block ul li .item-list,

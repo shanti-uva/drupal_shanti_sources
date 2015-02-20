@@ -58,7 +58,7 @@
         $('.page-csc-search .attachment.attachment-after, .page-csc-search .main-content .content-section .view-content, #block-csc-views-custom-sort-filter').removeClass('expanded');
         $.cookie('content-expand', 'false');
       });
-      $('#block-csc-views-custom-taxonomy-block, #block-csc-views-custom-sort-filter, #csc-custom-search-form').show();
+      $('#block-csc-views-custom-sort-filter').show();
     }
   };
   // Returns query string value.
