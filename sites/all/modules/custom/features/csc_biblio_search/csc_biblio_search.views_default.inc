@@ -844,14 +844,8 @@ function csc_biblio_search_views_default_views() {
   $handler->display->display_options['fields']['biblio_notes']['field'] = 'biblio_notes';
   $handler->display->display_options['fields']['biblio_notes']['label'] = 'Notes';
   $handler->display->display_options['fields']['biblio_notes']['hide_empty'] = TRUE;
+  $handler->display->display_options['fields']['biblio_notes']['empty_zero'] = TRUE;
   $handler->display->display_options['fields']['biblio_notes']['link_to_entity'] = 0;
-  /* Field: Indexed Node: biblio_short_title */
-  $handler->display->display_options['fields']['biblio_short_title']['id'] = 'biblio_short_title';
-  $handler->display->display_options['fields']['biblio_short_title']['table'] = 'search_api_index_database_node_index';
-  $handler->display->display_options['fields']['biblio_short_title']['field'] = 'biblio_short_title';
-  $handler->display->display_options['fields']['biblio_short_title']['label'] = 'Short Title';
-  $handler->display->display_options['fields']['biblio_short_title']['hide_empty'] = TRUE;
-  $handler->display->display_options['fields']['biblio_short_title']['link_to_entity'] = 0;
   /* Field: Indexed Node: biblio_alternate_title */
   $handler->display->display_options['fields']['biblio_alternate_title']['id'] = 'biblio_alternate_title';
   $handler->display->display_options['fields']['biblio_alternate_title']['table'] = 'search_api_index_database_node_index';
@@ -970,6 +964,7 @@ function csc_biblio_search_views_default_views() {
   $handler->display->display_options['fields']['field_biblio_long_title']['id'] = 'field_biblio_long_title';
   $handler->display->display_options['fields']['field_biblio_long_title']['table'] = 'search_api_index_database_node_index';
   $handler->display->display_options['fields']['field_biblio_long_title']['field'] = 'field_biblio_long_title';
+  $handler->display->display_options['fields']['field_biblio_long_title']['label'] = 'Title';
   $handler->display->display_options['fields']['field_biblio_long_title']['hide_empty'] = TRUE;
   $handler->display->display_options['fields']['field_biblio_long_title']['empty_zero'] = TRUE;
   /* Field: Indexed Node: Biblio Long Language */
