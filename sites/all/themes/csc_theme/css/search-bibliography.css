@@ -162,15 +162,10 @@ body.page-csc-search {
   float: left;
   display: inline-block;
   max-width: 100%;
-  min-height: 890px;
 }
 .page-csc-search .main-content .content-section .view-empty p {
   text-align: center;
   font-size: 1.43em;
-}
-.page-csc-search.page-csc-search-biblio .main-content .content-section .view-content,
-.page-csc-search.page-csc-search-biblio .main-content .content-section .view-empty {
-  min-height: 680px;
 }
 .page-csc-search .main-content .content-section .view-content.expanded {
   width: 100%;
