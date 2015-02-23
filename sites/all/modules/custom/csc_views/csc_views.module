@@ -248,10 +248,12 @@ function biblio_publisher_list_callback($string = '') {
 function biblio_place_published_list_callback($string = '') {
   $string = ucfirst($string);
   $matches = array();
-  $placed_published = db_query_range('SELECT DISTINCT value FROM {search_api_db_database_node_index_biblio_place_published} WHERE value LIKE :value ORDER BY value ASC', 0, 3, array(':value' => db_like($string) . '%'));
-  if ($placed_published->rowCount() != 0) {
-    foreach ($placed_published as $placed_published_key => $place) {
-      $matches['publishplace=' . $place->value] = '<span class="place-published-group">' . $place->value . '</span>';
+  if (!empty($string) && strlen($string) >= 3) {
+    $placed_published = db_query_range('SELECT DISTINCT value FROM {search_api_db_database_node_index_biblio_place_published} WHERE value LIKE :value ORDER BY value ASC', 0, 3, array(':value' => db_like($string) . '%'));
+    if ($placed_published->rowCount() != 0) {
+      foreach ($placed_published as $placed_published_key => $place) {
+        $matches['publishplace=' . $place->value] = '<span class="place-published-group">' . $place->value . '</span>';
+      }
     }
   }
   drupal_json_output($matches);
@@ -263,12 +265,14 @@ function biblio_place_published_list_callback($string = '') {
 function biblio_tags_list_callback($string = '') {
   $string = ucfirst($string);
   $matches = array();
-  $zotero_vocabulary = taxonomy_vocabulary_machine_name_load('zotero_tags');
-  $vid = $zotero_vocabulary->vid;
-  $tags = db_query_range('SELECT name, tid FROM {taxonomy_term_data} WHERE name LIKE :name and vid = :vid_val ORDER BY name ASC', 0, 3, array(':name' => db_like($string) . '%', ':vid_val' => $vid));
-  if ($tags->rowCount() != 0) {
-    foreach ($tags as $tag_key => $tag) {
-      $matches['tag=' . $tag->tid] = '<span class="tags-group">' . $tag->name . '</span>';
+  if (!empty($string) && strlen($string) >= 3) {
+    $zotero_vocabulary = taxonomy_vocabulary_machine_name_load('zotero_tags');
+    $vid = $zotero_vocabulary->vid;
+    $tags = db_query_range('SELECT name, tid FROM {taxonomy_term_data} WHERE name LIKE :name and vid = :vid_val ORDER BY name ASC', 0, 3, array(':name' => db_like($string) . '%', ':vid_val' => $vid));
+    if ($tags->rowCount() != 0) {
+      foreach ($tags as $tag_key => $tag) {
+        $matches['tag=' . $tag->tid] = '<span class="tags-group">' . $tag->name . '</span>';
+      }
     }
   }
   drupal_json_output($matches);
