@@ -916,7 +916,7 @@ function csc_biblio_search_views_default_views() {
   $handler->display->display_options['fields']['biblio_research_notes']['id'] = 'biblio_research_notes';
   $handler->display->display_options['fields']['biblio_research_notes']['table'] = 'search_api_index_database_node_index';
   $handler->display->display_options['fields']['biblio_research_notes']['field'] = 'biblio_research_notes';
-  $handler->display->display_options['fields']['biblio_research_notes']['label'] = 'Reseach Notes';
+  $handler->display->display_options['fields']['biblio_research_notes']['label'] = 'Research Notes';
   $handler->display->display_options['fields']['biblio_research_notes']['hide_empty'] = TRUE;
   $handler->display->display_options['fields']['biblio_research_notes']['empty_zero'] = TRUE;
   $handler->display->display_options['fields']['biblio_research_notes']['link_to_entity'] = 0;
