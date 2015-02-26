@@ -1,6 +1,9 @@
 .container{
   background: #f1f3f2;
 }
+.container.collections {
+  background: #4c4b51;
+}
 .titlearea.banner {
   background: #008a96 !important;
 }
@@ -42,6 +45,9 @@ i.thumbtype {
   float: left;
   margin-top: 22px;
   padding-left: 0;
+}
+.navbar-header a.navbar-brand {
+  display: block;
 }
 /*------------------------------*/
 /*----- BEGIN RESPONSIVE -------*/
