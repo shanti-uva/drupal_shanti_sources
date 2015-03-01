@@ -6,6 +6,7 @@
 }
 .titlearea.banner {
   background: #008a96 !important;
+  height: auto;
 }
 fieldset {
   border: none;
