@@ -888,12 +888,12 @@ function csc_views_views_pre_render(&$view) {
  * Implements hook_preprocess_page().
  */
 function csc_views_preprocess_page(&$vars) {
-  drupal_add_js(drupal_get_path('module', 'csc_views') . '/js/csc_views.js', array('scope' => 'footer'));
-  drupal_add_js(drupal_get_path('module', 'csc_views') . '/js/cscViewsCollections.js', array('scope' => 'footer'));
-  drupal_add_js(drupal_get_path('module', 'csc_views') . '/js/cscViewsAutocomplete.js', array('scope' => 'footer'));
-  drupal_add_js(drupal_get_path('module', 'csc_views') . '/js/cscViewsCustomSort.js', array('scope' => 'footer'));
-  drupal_add_js(drupal_get_path('module', 'csc_views') . '/js/cscViewsSearchFilter.js', array('scope' => 'footer'));
-  drupal_add_js(drupal_get_path('module', 'csc_views') . '/js/cscViewsCustomPager.js', array('scope' => 'footer'));
+  drupal_add_js(drupal_get_path('module', 'csc_views') . '/js/csc_views.js');
+  drupal_add_js(drupal_get_path('module', 'csc_views') . '/js/cscViewsCollections.js');
+  drupal_add_js(drupal_get_path('module', 'csc_views') . '/js/cscViewsAutocomplete.js');
+  drupal_add_js(drupal_get_path('module', 'csc_views') . '/js/cscViewsCustomSort.js');
+  drupal_add_js(drupal_get_path('module', 'csc_views') . '/js/cscViewsSearchFilter.js');
+  drupal_add_js(drupal_get_path('module', 'csc_views') . '/js/cscViewsCustomPager.js');
 }
 
 /**
