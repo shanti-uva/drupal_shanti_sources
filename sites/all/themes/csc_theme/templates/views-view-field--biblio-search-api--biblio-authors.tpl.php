@@ -30,7 +30,7 @@
       $last_key = key($collections);
       foreach($row->_entity_properties['biblio_authors'] as $key => $author_name): ?>
       <?php $comma = ($key != $last_key) ? ', ': '';?>
-      <li><?php print l($author_name . $comma, 'csc-search', array('query' => array('biblio_authors' => $author_name, 'view_mode' => 'author'))) . '&nbsp;'; ?></li>
+      <li><?php print l($author_name . $comma, 'csc-search', array('query' => array('search_text_biblio_author' => $author_name, 'view_mode' => 'author'))) . '&nbsp;'; ?></li>
     <?php endforeach;?>
   </ul>
 <?php endif;?>
