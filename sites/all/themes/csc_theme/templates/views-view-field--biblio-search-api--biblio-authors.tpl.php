@@ -21,18 +21,16 @@
  * regardless of any changes in the aliasing that might happen if
  * the view is modified.
  */
-
 ?>
 <?php if(!empty($output)): ?>
   <ul>
     <?php
-      $collections = $row->_entity_properties['field_zotero_collections'];
+      $collections = $row->_entity_properties['biblio_authors'];
       end($collections);
       $last_key = key($collections);
-      foreach($row->_entity_properties['field_zotero_collections'] as $key => $tid): ?>
-      <?php $term = taxonomy_term_load($tid); ?>
+      foreach($row->_entity_properties['biblio_authors'] as $key => $author_name): ?>
       <?php $comma = ($key != $last_key) ? ', ': '';?>
-      <li><?php print l($term->name . $comma, 'csc-search', array('query' => array('field_zotero_collections' => $tid, 'view_mode' => 'collection'))) . '&nbsp;'; ?></li>
+      <li><?php print l($author_name . $comma, 'csc-search', array('query' => array('search_text_biblio_author' => $author_name, 'view_mode' => 'author'))) . '&nbsp;'; ?></li>
     <?php endforeach;?>
   </ul>
 <?php endif;?>

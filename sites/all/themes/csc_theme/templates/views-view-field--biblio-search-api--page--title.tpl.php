@@ -31,6 +31,7 @@
     $parameters = array_replace($query_string_values, array('page' => $page));
     $year = (!empty($row->_entity_properties['biblio_year'])) ? '(' . $row->_entity_properties['biblio_year'] . ')' : '';
     $parameters['current_nid'] = $row->entity;
-    print l($row->_entity_properties['title'] . ' ' . $year, 'csc-search/biblio', array('query' => $parameters));
+    $publication_type = (!empty($row->_entity_properties['entity object']->biblio_type_name)) ? $row->_entity_properties['entity object']->biblio_type_name . ':': '';
+    print l($publication_type . ' '. $row->_entity_properties['title'] . ' ' . $year, 'csc-search/biblio', array('query' => $parameters));
   ?>
 </div>

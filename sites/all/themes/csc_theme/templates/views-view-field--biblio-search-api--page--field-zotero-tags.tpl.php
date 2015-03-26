@@ -23,12 +23,16 @@
  */
 
 ?>
-<?php if(!empty($row->_entity_properties['field_zotero_tags'])): ?>
+<?php if(!empty($output)): ?>
   <ul>
-    <?php foreach($row->_entity_properties['field_zotero_tags'] as $key => $tid): ?>
+    <?php
+      $tags = $row->_entity_properties['field_zotero_tags'];
+      end($tags);
+      $last_key = key($tags);
+      foreach($row->_entity_properties['field_zotero_tags'] as $key => $tid): ?>
       <?php $term = taxonomy_term_load($tid); ?>
-      <?php $comma = ($key > 0) ? ', ': '';?>
-      <li><?php print $comma . l($term->name, current_path(), array('query' => array('field_zotero_tags' => $tid))); ?></li>
+      <?php $comma = ($key != $last_key) ? ',': '';?>
+      <li><?php print l($term->name . $comma, current_path(), array('query' => array('field_zotero_tags' => $tid))) . '&nbsp;'; ?></li>
     <?php endforeach;?>
   </ul>
 <?php endif;?>

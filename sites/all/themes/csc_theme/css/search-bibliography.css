@@ -1,18 +1,12 @@
 body.page-csc-search {
   font-family: museo-sans-300, sans-serif;
 }
-.page-csc-search .container,
-.page-csc-search .footer,
-.page-csc-search .header-banner {
-  min-width: 1250px;
-}
 .page-csc-search div#block-system-main.block.block-system {
   float: none;
 }
 .page-csc-search input[type="text"] {
   font-size: 0.9em;
 }
-
 .page-csc-search .main-content .selectpicker li.selected,
 .page-csc-search .main-content .selectpicker li.selected a,
 .page-csc-search .main-content .selectpicker li.selected a:hover,
@@ -25,12 +19,24 @@ body.page-csc-search {
 #csc-views-advanced-search-form .selectpicker li.selected a:hover,
 #csc-views-advanced-search-form .selectpicker li.selected span.text,
 #csc-views-advanced-search-form .selectpicker li.selected span.text:hover
-#csc-views-advanced-search-form .selectpicker li a:hover
-#csc-views-advanced-search-form .selectpicker li span:hover {
+#csc-views-advanced-search-form .selectpicker li span:hover,
+#edit-advanced-option .selectpicker li a:hover {
   background: #008a96 !important;
   background-image: none;
   color: #fff;
   font-weight: bold;
+}
+#edit-advanced-option .selectpicker li a {
+  padding: 0;
+}
+#edit-advanced-option .selectpicker li a span.text {
+  background: none;
+  display: block;
+  height: auto !important;
+  padding: 3px 20px;
+}
+#edit-advanced-option .selectpicker li a span.text:hover {
+  color: #FFF;
 }
 .main-content .selectpicker li a:hover,
 .main-content .selectpicker li.selected a:hover {
@@ -156,11 +162,10 @@ body.page-csc-search {
   float: left;
   display: inline-block;
   max-width: 100%;
-  min-height: 890px;
 }
-.page-csc-search.page-csc-search-biblio .main-content .content-section .view-content,
-.page-csc-search.page-csc-search-biblio .main-content .content-section .view-empty {
-  min-height: 680px;
+.page-csc-search .main-content .content-section .view-empty p {
+  text-align: center;
+  font-size: 1.43em;
 }
 .page-csc-search .main-content .content-section .view-content.expanded {
   width: 100%;
@@ -171,8 +176,6 @@ body.page-csc-search {
   max-width: 100%;
 }
 .page-csc-search .views-field-biblio-authors {
-  display: inline-block;
-  float: left;
   margin-right: 5px;
   text-transform: uppercase;
   font-family: museo-sans-900, sans-serif;
@@ -180,12 +183,29 @@ body.page-csc-search {
   margin-top: 5px;
   font-weight: 700;
   letter-spacing: 0.9px;
-  margin-bottom: 25px;
+  overflow: hidden;
+}
+.page-csc-search .views-field-biblio-authors ul {
+  padding: 0;
+  margin: 0;
+  display: block;
+}
+.page-csc-search .views-field-biblio-authors ul li {
+  display: inline;
+  float: left;
+}
+.page-csc-search .views-field-biblio-authors ul li a {
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  font-family: museo-sans-900, sans-serif;
+  font-size: 1em;
+  color: #333;
 }
 .page-csc-search .views-field-biblio-place-published {
   float: left;
   clear: right;
-  margin-bottom: 25px;
+  margin-bottom: 5px;
   margin-top: 2px;
 }
 .page-csc-search .views-field-biblio-place-published span {
@@ -207,18 +227,22 @@ body.page-csc-search {
   display: block;
 }
 .page-csc-search .titlearea .page-title {
-  padding: 20px 12px 20px 24px;
+  padding: 5px 12px 5px 0;
   max-width: 56%;
 
 }
 .page-csc-search .titlearea .page-title .icon {
-  display: none;
+  font-size: 80%;
+}
+.page-csc-search .titlearea .page-title .icon:before {
+  content: "\e613";
+  font-family: 'shanticon';
 }
 .page-csc-search .titlearea .page-title span {
-  color: #40adb6;
+  color: #FFF;
   font-size: 1em;
-  text-transform: uppercase;
-  font-family: museo-sans-900, sans-serif;
+  text-transform: capitalize;
+  font-family: museo-sans-300, sans-serif;
 }
 .page-csc-search .breadcrumbs-wrapper {
   display: none;
@@ -228,8 +252,8 @@ body.page-csc-search {
   margin: 0;
   position: inherit;
   right: 0;
-  background: #017c87;
-  padding: 20px 12px 0 24px;
+  background: none;
+  padding: 5px 10px 0 24px;
 }
 .page-csc-search  .home-search-page {
   background: url(../images/home_icon.png) no-repeat;
@@ -276,9 +300,10 @@ body.page-csc-search {
   border-bottom: 1px dotted #333;
   overflow: hidden;
   border-top: none;
-  min-height: 80px;
-  background: url(../images/essay-source-type.png) no-repeat;
-  background-position: 3.2% 17px;
+  min-height: 60px;
+  background-image: url(../images/essay-source-type.png);
+  background-repeat: no-repeat;
+  background-position: 28px 17px;
 }
 .page-csc-search .views-row a {
   color: #008a96;
@@ -303,40 +328,47 @@ body.page-csc-search {
   list-style: none;
   overflow: hidden;
   padding-left: 0;
+  margin-top: 15px;
 }
 .page-csc-search .views-field-field-zotero-tags ul li {
   display: inline-block;
   width: auto;
   float: left;
 }
-.page-csc-search .views-field-field-zotero-tags a,
-.page-csc-search.page-csc-search-biblio a {
+.page-csc-search .views-field-field-zotero-tags a {
   font-family: museo-sans-700, sans-serif;
   font-size: 0.9em;
   font-weight: 700;
 }
 .page-csc-search .views-field-biblio-abst-e {
-  margin: 0 0 10px 0;
+  margin: 25px 0 10px 0;
 }
 .page-csc-search .views-field-biblio-abst-e span {
   font-size: 1em;
 }
-#block-csc-views-custom-taxonomy-block,
 #block-csc-views-custom-taxonomy-flyout-block {
   padding: 12px 0 8px 12px;
 }
-#block-csc-views-custom-taxonomy-breadcrumb {
-  min-height: 40px;
+#block-csc-views-custom-taxonomy-block {
+  padding: 12px 0 8px 45px;
 }
-#block-csc-views-custom-taxonomy-breadcrumb a,
-#block-csc-views-custom-taxonomy-breadcrumb span,
+#block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-item {
+  height: 30px;
+}
 #block-csc-views-custom-taxonomy-breadcrumb {
   font-size: 1em;
-  color: #40adb6;
+  color: #FFF;
   font-family: museo-sans-700, sans-serif;
 }
-#block-csc-views-custom-taxonomy-breadcrumb a.active {
-  color: #84f8ff;
+#block-csc-views-custom-taxonomy-breadcrumb span,
+#block-csc-views-custom-taxonomy-breadcrumb a {
+  font-size: 1em;
+  color: #FFF;
+  font-family: museo-sans-300, sans-serif;
+}
+#block-csc-views-custom-taxonomy-breadcrumb a.active,
+#block-csc-views-custom-taxonomy-breadcrumb a:hover {
+  color: #FFF;
   text-decoration: underline;
 }
 #block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-child-container a,
@@ -354,6 +386,9 @@ body.page-csc-search {
 #block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-item.current_breadcrumb a,
 #block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-item.current_breadcrumb {
   color: #fff;
+}
+#block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-item.current_breadcrumb {
+  font-family: museo-sans-300, sans-serif;
 }
 #block-csc-views-custom-taxonomy-breadcrumb .library-dropdown,
 #block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-child-container {
@@ -397,8 +432,8 @@ body.page-csc-search {
   box-shadow: 0px 10px 27px -10px rgba(46,46,46,1);
 }
 #block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-item.non-default-item .breadcrumb-child-top a,
-#block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-item.non-default-item .breadcrumb-child-sub-top a,
-#block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-item.non-default-item .breadcrumb-child a {
+#block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-item.non-default-item .breadcrumb-child a,
+#block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-item.non-default-item .breadcrumb-child-sub-top a {
   color: #333333;
   font-size: 1em;
   font-weight: 500;
@@ -429,10 +464,35 @@ body.page-csc-search {
 .view-all-library-container {
   border-bottom: 2px solid #f1f3f2;
 }
+#block-csc-views-custom-taxonomy-block .title-area h1 {
+  font-family: museo-sans-900, sans-serif;
+  text-transform: uppercase;
+  color: #ccc;
+  margin: 0;
+  font-size: 2.30em;
+  letter-spacing: 5px;
+  padding: 25px 0 20px 0;
+}
+#block-csc-views-custom-taxonomy-block .collection-library-container {
+  border-bottom: 1px dotted #333;
+  padding: 10px 0 10px 10px;
+}
+#block-csc-views-custom-taxonomy-block a.collection-library {
+  background: url(../images/home_icon.png) no-repeat;
+  width: 100%;
+  height: auto;
+  padding-left: 35px;
+  color: #40adb6;
+  font-family: museo-sans-700, sans-serif;
+  font-size: 1.56em;
+}
 #block-csc-views-custom-taxonomy-block ul,
 #block-csc-views-custom-taxonomy-flyout-block ul,
 #block-csc-views-custom-taxonomy-breadcrumb ul {
   clear: left;
+}
+#block-csc-views-custom-taxonomy-block ul {
+  margin-top: 5px;
 }
 #block-csc-views-custom-taxonomy-flyout-block ul {
   padding: 0;
@@ -445,17 +505,40 @@ body.page-csc-search {
   width: 100%;
   padding: 6px 0;
 }
-#block-csc-views-custom-taxonomy-block ul li ul,
-#block-csc-views-custom-taxonomy-flyout-block ul li ul {
-  margin-left: 10px;
+#block-csc-views-custom-taxonomy-block ul li {
+  border-top: 1px dotted #333;
+  padding-left: 10px;
 }
-#block-csc-views-custom-taxonomy-block ul li a,
+#block-csc-views-custom-taxonomy-block ul li.first {
+  border: none;
+}
+#block-csc-views-custom-taxonomy-block ul li a {
+  font-family: droidserif, sans-serif;
+  padding: 10px 0;
+  font-size: 1.56em;
+  color: #333;
+}
+#block-csc-views-custom-taxonomy-block ul li ul {
+  clear: both;
+}
+#block-csc-views-custom-taxonomy-block ul li ul li.first {
+  border-top: 1px dotted #333;
+}
+#block-csc-views-custom-taxonomy-block ul li ul li:nth-child(odd){
+  background: #eaeceb;
+}
+#block-csc-views-custom-taxonomy-block ul li ul li:nth-child(even){
+  background: #f1f3f2;
+}
+#block-csc-views-custom-taxonomy-flyout-block ul li ul {
+  padding-left: 10px;
+}
 #block-csc-views-custom-taxonomy-flyout-block ul li a  {
   color: #333;
   font-family: museo-sans-300, sans-serif;
 }
 #block-csc-views-custom-taxonomy-block ul li a {
-  width: 97%;
+  width: 95%;
 }
 #block-csc-views-custom-taxonomy-flyout-block ul li a  {
   width: 90%;
@@ -463,25 +546,63 @@ body.page-csc-search {
   float: right;
 }
 #block-csc-views-custom-taxonomy-flyout-block ul li a.expand-btn {
-  text-indent: -999em;
   height: 15px;
   float: left;
   display: inline-block;
   text-decoration: none;
+
 }
-#block-csc-views-custom-taxonomy-block ul li a.expand-btn,
-#block-csc-views-custom-taxonomy-flyout-block ul li a.expand-btn, 
+#block-csc-views-custom-taxonomy-breadcrumb ul li a.expand-btn.expanded,
+#block-csc-views-custom-taxonomy-breadcrumb ul li a.expand-btn {
+  background: none;
+  text-indent: 1em;
+  width: auto;
+  font-family: 'Glyphicons Halflings';
+}
+#block-csc-views-custom-taxonomy-breadcrumb ul li a {
+  width: 85%;
+}
+#block-csc-views-custom-taxonomy-flyout-block ul li a.expand-btn,
 #block-csc-views-custom-taxonomy-breadcrumb ul li a.expand-btn,
+#block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-item.non-default-item .breadcrumb-child a.expand-btn,
+#block-csc-views-custom-taxonomy-block ul li a.expand-btn,
+#block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-item.non-default-item .breadcrumb-child-sub-top a.expand-btn {
+  font-family: 'Glyphicons Halflings';
+  color: #40adb6;
+  width: auto;
+  border: none;
+}
+#block-csc-views-custom-taxonomy-block ul li a.expand-btn {
+  background: none;
+  text-indent: 1em;
+}
+#block-csc-views-custom-taxonomy-block ul li a.expand-btn.glyphicon-plus-sign:before,
+#block-csc-views-custom-taxonomy-flyout-block ul li a.expand-btn.glyphicon-plus-sign:before,
+#block-csc-views-custom-taxonomy-breadcrumb ul li a.expand-btn.glyphicon-plus-sign:before,
+#block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-item.non-default-item .breadcrumb-child-sub-top a.expand-btn.glyphicon-plus-sign:before {
+  content: "\e081";
+}
+#block-csc-views-custom-taxonomy-block ul li a.expand-btn.glyphicon-minus-sign:before,
+#block-csc-views-custom-taxonomy-flyout-block ul li a.expand-btn.glyphicon-minus-sign:before,
+#block-csc-views-custom-taxonomy-breadcrumb ul li a.expand-btn.glyphicon-minus-sign:before,
+#block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-item.non-default-item .breadcrumb-child-sub-top a.expand-btn.glyphicon-minus-sign:before {
+  content: "\e082";
+}
+.breadcrumb-child-sub-top a.expand-btn,
+.breadcrumb-child-sub-top a.expand-btn.expanded {
+  text-indent: 1em;
+  background: none;
+}
+#block-csc-views-custom-taxonomy-block ul li a.expand-btn.expanded {
+  background: none;
+  text-indent: 1em;
+  border: none
+}
 .breadcrumb-child-sub-top a.expand-btn {
-  background: url(../images/expand_menu_btn.png) no-repeat;
   width: 15px;
   background-position: center center;
 }
-#block-csc-views-custom-taxonomy-block ul li a.expand-btn.expanded,
-#block-csc-views-custom-taxonomy-flyout-block ul li a.expand-btn.expanded,
-#block-csc-views-custom-taxonomy-breadcrumb ul li a.expand-btn.expanded,
 .breadcrumb-child-sub-top a.expand-btn.expanded {
-  background: url(../images/close_menu_btn.png) no-repeat;
   background-position: center center;
 }
 #block-csc-views-custom-sort-filter {
@@ -611,7 +732,7 @@ body.page-csc-search {
   max-width: 50px;
   width: 100%;
   margin: 0 5px;
-  height: 30px;
+  height: 20px;
   text-align: center;
   border: none;
   color: #008a96;
@@ -627,7 +748,11 @@ body.page-csc-search {
   border-left: 1px solid #FFF;
   padding: 12px 0 12px 20px;
   float: right;
-  margin-right: 26%;
+}
+.attachment-before .custom-footer-pager .custom-footer-pager-left,
+.attachment-before .custom-footer-pager .custom-footer-pager-right,
+.attachment-after .custom-footer-pager .custom-footer-pager-left {
+  border: none;
 }
 .custom-footer-pager .custom-footer-pager-right.expanded,
 .page-csc-search.page-csc-search-biblio .custom-footer-pager .custom-footer-pager-right {
@@ -686,6 +811,9 @@ body.page-csc-search {
   text-transform: uppercase;
   font-size: 1em;
 }
+#csc-views-advanced-search-form .form-item label.publication-year-label {
+  margin-top: 10px;
+}
 .page-csc-search #block-views-exp-biblio-search-api-page #edit-advanced-search-fieldset label.option {
   font-weight: normal;
   font-family: museo-sans-300, sans-serif;
@@ -701,7 +829,22 @@ body.page-csc-search {
   color: #333;
   line-height: 100%;
 }
-#edit-advanced-search-api-views-fulltext.throbbing {
+#edit-search-text-biblio-author,
+#edit-title,
+#edit-search-text-biblio-publisher,
+#edit-search-text-biblio-publish-place,
+#edit-search-text-zotero-tags {
+  background: #fff;
+  color: #333;
+  line-height: 100%;
+  padding-left: 20px;
+}
+#edit-advanced-search-api-views-fulltext.throbbing,
+#edit-search-text-biblio-author.throbbing,
+#edit-title.throbbing,
+#edit-search-text-biblio-publisher.throbbing,
+#edit-search-text-biblio-publish-place.throbbing,
+#edit-search-text-zotero-tags.throbbing {
   background: #fff url(../images/ajax-loader.gif) no-repeat;
   background-size: 5%;
   background-position: 2% center !important;
@@ -730,7 +873,7 @@ body.page-csc-search {
   display: none;
 }
 .page-csc-search .inner-filer-container .views-exposed-widget {
-  padding: 20px 0 0 20px;
+  padding: 20px 20px 0 20px;
 }
 .page-csc-search .views-widget-sort-by,
 .page-csc-search .views-widget-sort-order {
@@ -873,7 +1016,7 @@ body.page-csc-search {
 }
 #date-range-slider,
 #date-range-slider-dropdown {
-  margin-top: 10px;
+  margin-top: 35px;
   height: 15px;
   background: #fff url(../images/date_range_arrow.png) no-repeat;
   background-position: center center;
@@ -884,7 +1027,7 @@ body.page-csc-search {
 }
 #date-range-slider {
   width: 275px;
-  margin-left: 10px;
+  margin-left: 3px;
 }
 #date-range-slider-dropdown {
   width: 97%;
@@ -1214,6 +1357,26 @@ a#long-detail.active {
   height: 20px;
   text-transform: capitalize;
 }
+#csc-views-advanced-search-form .form-item.form-item-advanced-search-publication-year label.option,
+#csc-views-advanced-search-form .form-item.form-item-advanced-search-publication-year label.radio-inline {
+  width: auto;
+  float: left;
+}
+#csc-views-advanced-search-form .form-item.form-item-advanced-search-publication-year label.option {
+  clear: right;
+}
+#csc-views-advanced-search-form .form-item.form-item-advanced-search-publication-year label.radio-inline {
+  clear: left;
+  padding-left: 10px;
+}
+#csc-views-advanced-search-form .form-item.form-item-advanced-search-publication-year .form-item-advanced-search-publication-year,
+#csc-views-advanced-search-form .form-item.form-item-advanced-search-publication-year .form-item-advanced-search-publication-year,
+#csc-views-advanced-search-form .form-item.form-item-advanced-search-publication-year .form-item-advanced-search-publication-year {
+  margin-top: 5px;
+  overflow: hidden;
+  height: auto;
+  padding-top: 5px;
+}
 #csc-views-advanced-search-form label.option div {
   z-index: 0;
 }
@@ -1271,7 +1434,7 @@ a#long-detail.active {
   padding: 0;
   display: inline-block;
   list-style: none;
-  width: 92.9%;
+  width: 90%;
   float: right;
   margin: 0;
 }
@@ -1281,5 +1444,11 @@ a#long-detail.active {
   float: left;
 }
 .view-display-id-biblio_full .views-row {
-  background-position: 2.2% 28px;
+  background-position: 28px 28px;
+}
+.main-content .selectpicker li:hover span.text,
+.main-content .selectpicker li a:hover span.text {
+  background: none !important;
+  color: #fff;
+  font-weight: bold;
 }

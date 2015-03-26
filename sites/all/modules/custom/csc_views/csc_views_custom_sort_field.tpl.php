@@ -1,6 +1,5 @@
 <div class="left-side">
   <div class="csc-search-title-container">
-    <h1>Sources</h1>
   </div>
 </div>
 <div class="right-side">

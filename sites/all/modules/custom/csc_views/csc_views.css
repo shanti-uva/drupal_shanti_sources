@@ -23,6 +23,10 @@
 .custom-footer-pager .custom-footer-pager-right a {
   margin: 0 5px;
 }
+.custom-footer-pager .custom-footer-pager-right a span.icon {
+  font-family: 'shanticon';
+  font-size: 1em;
+}
 .custom-footer-pager  .custom-footer-pager-right #pager-input {
   width: 15px;
   margin: 0 5px;
@@ -66,7 +70,7 @@
 
 #block-csc-views-custom-taxonomy-breadcrumb ul li a,
 .breadcrumb-child-sub-top a {
-  width: 92%;
+  width: 86%;
 }
 
 #block-csc-views-custom-taxonomy-block ul li a {
@@ -97,9 +101,7 @@
   background-position: left 2px;
   text-indent: -999em;
 }
-#block-csc-views-custom-taxonomy-block,
-#block-csc-views-custom-sort-filter,
-#csc-custom-search-form {
+#block-csc-views-custom-sort-filter {
   display: none;
 }
 #block-csc-views-custom-taxonomy-block ul li .item-list,
@@ -212,7 +214,7 @@
   display: none;
 }
 
-.page-csc-search .attachment-after,
+.page-csc-search .attachment-before,
 .page-csc-search .attachment-after {
   clear: both;
 }

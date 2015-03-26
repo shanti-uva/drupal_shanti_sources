@@ -1,5 +1,12 @@
+.container{
+  background: #f1f3f2;
+}
+.container.collections {
+  background: #4c4b51;
+}
 .titlearea.banner {
   background: #008a96 !important;
+  height: auto;
 }
 fieldset {
   border: none;
@@ -18,9 +25,6 @@ ul.ss-full-tabs>li.active>a:after {
 i.thumbtype {
   background-color: rgba(50,204,202, 0.8);
 }
-.breadwrap ol li .icon {
-  background:#32ccca;
-}
 .ss-full-tabs.nav-tabs>li.active,
 .ss-full-tabs.nav-tabs>li.active:hover {
   background:#32ccca;
@@ -30,4 +34,186 @@ i.thumbtype {
 .shanticon-email,
 .shanticon-google {
   color:#32ccca;
+}
+.navbar-brand img.site-logo {
+  display: inline-block;
+  float: left;
+}
+.navbar-brand  .site-title {
+  float: left;
+  margin-top: 22px;
+  padding-left: 0;
+}
+.navbar-header a.navbar-brand {
+  display: block;
+}
+/*------------------------------*/
+/*----- BEGIN RESPONSIVE -------*/
+/*------------------------------*/
+
+@media screen and (max-width: 414px) {
+  .page-csc-search .titlearea .banner-content {
+    padding: 20px 12px;
+  }
+  #block-csc-views-custom-sort-filter .content .right-side {
+    width: 100%;
+    display: block;
+    float: none;
+  }
+  #block-csc-views-custom-sort-filter .content .left-side {
+    width: 100%;
+    float: none;
+    display: block;
+    padding-bottom: 10px;
+  }
+  #block-csc-views-custom-sort-filter .content .left-side .csc-search-title-container {
+    text-align: left;
+  }
+  #block-csc-views-custom-sort-filter .content .right-side .detail-level-container {
+    float: left;
+    width: auto;
+    clear: right;
+    padding-bottom: 17px;
+    overflow: hidden;
+    height: 100%;  
+  }
+  #block-csc-views-custom-sort-filter .content .right-side .custom-sort-container {
+    float: left;
+    width: auto;
+    text-align: left;
+    clear: left;
+    display: block;  
+  }
+  #block-csc-views-custom-sort-filter .content .right-side .detail-level-container .detail-level-option {
+    margin-left: 15px;
+  }
+  .page-csc-search .views-row {
+    padding: 20px 20px 10px 40px;
+  }
+  #block-csc-views-custom-sort-filter {
+    display: block;
+    width: 100% !important;
+    padding: 10px 22px 20px 22px;
+  }
+  .page-csc-search #block-views-exp-biblio-search-api-page {
+    position: relative;
+    width: 100%;
+    height: 39px;
+    z-index: 0;
+  }
+  .content-section a.toggle-filter-btn-open {
+    padding: 5px 10px;
+    margin-top: 0px;  
+  }
+  #date-range-slider {
+    margin-top: 57px;
+    width: 100%;
+    margin-left: 0;
+  }
+  .page-csc-search #views-exposed-form-biblio-search-api-page .views-exposed-form label {
+    float: left;
+  }
+  #block-csc-views-custom-sort-filter.expanded {
+    z-index: 0;
+  }
+  #block-csc-views-custom-taxonomy-breadcrumb .breadcrumb-child-container {
+    z-index: 9999;
+    display: block;
+    margin: 0px;
+    left: 0;
+    width: 100%;
+  }
+  .custom-footer-pager .custom-footer-pager-left {
+    padding: 18px 0;
+    width: 100%;
+    border: none;
+    display: block;
+    text-align: center;
+    float: none;  
+  }
+  .custom-footer-pager .custom-footer-pager-right {
+    width: 100%;
+    border: none;
+    display: block;
+    text-align: center;
+    padding: 15px 0;
+    float: none;
+  }
+  .page-csc-search .main-content .content-section .view-content {
+    width: 100% !important;
+  }
+  .page-csc-search.page-csc-search-biblio .views-label {
+    display: block;
+  }
+  .view-display-id-biblio_full .views-field-field-zotero-collections ul {
+    float: none;
+  }
+  .page-csc-search .main-content .content-section .view-content,
+  .page-csc-search .main-content .content-section .view-empty {
+    padding: 12px 12px 8px 12px;
+  }
+  .page-csc-search .views-field-field-zotero-tags {
+    margin: 0;
+    padding-left: 0;
+    padding-top: 25px;
+  }
+  .breadcrumb-item {
+    height: 35px;
+  }
+  #block-csc-views-custom-taxonomy-block ul li a {
+    width: 89%;
+  }
+  #block-csc-views-custom-taxonomy-block {
+    padding: 12px 10px;
+  }
+}
+
+@media screen and (min-width: 568px) and (max-width: 768px) {
+  #search-flyout.extruder.right.isOpened .extruder-content {
+    margin-right: -38px;
+  }
+  #block-csc-views-custom-sort-filter .content .left-side {
+    width: 100%;
+    float: none;
+    display: block;
+    padding-bottom: 10px;
+  }
+  #block-csc-views-custom-sort-filter .content .left-side .csc-search-title-container {
+    text-align: left;
+  }
+  #block-csc-views-custom-sort-filter .content .right-side {
+    width: 100%;
+    display: block;
+    float: none;
+  }
+  #block-csc-views-custom-taxonomy-block ul li a {
+    width: 93%;
+  }
+  .page-csc-search #block-views-exp-biblio-search-api-page {
+    position: relative;
+    z-index: 0;
+    width: 322px;
+    height: 78px;
+  }
+  #block-csc-views-custom-sort-filter {
+    width: 85% !important;
+    padding: 20px 28px;
+  }
+  .page-csc-search .main-content .content-section .view-content,
+  .page-csc-search .main-content .content-section .view-empty {
+    width: 100% !important;
+    padding: 10px 12px;
+  }
+  .page-csc-search .views-row {
+    padding: 20px 20px 10px 55px;
+  }
+  #block-csc-views-custom-sort-filter.expanded {
+    z-index: 0;
+  }
+  .custom-footer-pager .custom-footer-pager-right {
+    margin: 0;
+  }
+  .page-csc-search.page-csc-search-biblio .views-label {
+    display: block;
+  }
 }
