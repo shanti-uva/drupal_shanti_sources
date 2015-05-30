@@ -110,6 +110,38 @@ csc-search/biblio',
     'visibility' => 1,
   );
 
+  $export['explore_menu-explore_menu_block'] = array(
+    'cache' => 1,
+    'custom' => 0,
+    'delta' => 'explore_menu_block',
+    'module' => 'explore_menu',
+    'node_types' => array(),
+    'pages' => '',
+    'roles' => array(),
+    'themes' => array(
+      'bartik' => array(
+        'region' => '',
+        'status' => 0,
+        'theme' => 'bartik',
+        'weight' => 0,
+      ),
+      'csc_theme' => array(
+        'region' => 'header',
+        'status' => 1,
+        'theme' => 'csc_theme',
+        'weight' => -17,
+      ),
+      'responsive_bartik' => array(
+        'region' => '',
+        'status' => 0,
+        'theme' => 'responsive_bartik',
+        'weight' => 0,
+      ),
+    ),
+    'title' => '',
+    'visibility' => 0,
+  );
+
   $export['system-main'] = array(
     'cache' => -1,
     'custom' => 0,
