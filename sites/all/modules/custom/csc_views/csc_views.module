@@ -1,8 +1,12 @@
 <?php
 /**
  * @file
- * Custom views functionalities for CSC site.
+ * Custom views functionalities for Shanti Sources site.
  */
+function csc_views_init() {
+  module_load_include('inc', 'csc_views', 'breadcrumbs');
+  module_load_include('inc', 'csc_views', 'biblio');
+}
 
 /**
  * Implements hook_menu().
@@ -125,165 +129,6 @@ function csc_views_form_alter(&$form, &$form_state, $form_id) {
       }
       $form['#validate'][] = 'csc_views_exposed_filter_validation';
     }
-  }
-}
-
-/**
- * Returns auto complete search values for content titles with info
- */
-function biblio_title_list_callback($string = '') {
-  $string = ucfirst($string);
-  $matches = array();
-  if (!empty($string) && strlen($string) >= 3) {
-    $titles = db_query_range('SELECT n.title, n.nid, y.value FROM {node} as n LEFT JOIN {search_api_db_database_node_index_biblio_year} as y ON n.nid = y.item_id WHERE n.title LIKE :value ORDER BY title ASC', 0, 3, array(':value' => db_like($string) . '%'));
-    if ($titles->rowCount() != 0) {
-      // Load views for biblio full content
-      $biblio_full_results = csc_views_get_views_results('biblio_search_api', 'biblio_full');
-      foreach ($titles as $title_key => $node) {
-        $title_authors = db_query_range('SELECT value FROM {search_api_db_database_node_index_biblio_authors} WHERE item_id = :nid', 0, 3, array(':nid' => $node->nid));
-        $title_author = '';
-        // Attach current biblio item page
-        foreach ($biblio_full_results as $biblio_full_result_key => $value) {
-          if ($value->entity == $node->nid) $current_page = $biblio_full_result_key;
-        }
-        // Attach authors
-        foreach ($title_authors as $author_data_key => $author_data) {
-          $title_author .= ($author_data_key != 0) ? ', ' . $author_data->value : $author_data->value;
-        }
-        // Attach publication year
-        $year = ($node->value != 0) ? '(' . $node->value . ')': '';
-        $matches['node=' . $node->nid . '=' . $current_page] = ($title_key == 0) ? '<span class="result-item-type title-group-label">' . t('Titles') . '</span><span class="title-group">' . $node->title . ' ' . $year . '<br/>' . $title_author . '</span>' : '<span class="title-group">' . $node->title . ' ' . $year . '<br/>' . $title_author . '</span>';
-      }
-    }
-    $authors = db_query_range('SELECT DISTINCT value FROM {search_api_db_database_node_index_biblio_authors} WHERE value LIKE :value ORDER BY value ASC', 0, 3, array(':value' => db_like($string) . '%'));
-    if ($authors->rowCount() != 0) {
-      foreach ($authors as $author_key => $author) {
-        $matches['author=' . $author->value] = ($author_key == 0) ? '<span class="result-item-type authors-group-label">' . t('Authors') . '</span><span class="authors-group">' . $author->value . '</span>' : '<span class="authors-group">' . $author->value . '</span>';
-      }
-    }
-    $publishers = db_query_range('SELECT DISTINCT value FROM {search_api_db_database_node_index_biblio_publisher} WHERE value LIKE :value ORDER BY value ASC', 0, 3, array(':value' => db_like($string) . '%'));
-    if ($publishers->rowCount() != 0) {
-      foreach ($publishers as $publisher_key => $publisher) {
-        $matches['publisher=' . $publisher->value] = ($publisher_key == 0) ? '<span class="result-item-type publishers-group-label">' . t('Publishers') . '</span><span class="publishers-group">' . $publisher->value . '</span>' : '<span class="publishers-group">' . $publisher->value . '</span>';
-      }
-    }
-    $placed_published = db_query_range('SELECT DISTINCT value FROM {search_api_db_database_node_index_biblio_place_published} WHERE value LIKE :value ORDER BY value ASC', 0, 3, array(':value' => db_like($string) . '%'));
-    if ($placed_published->rowCount() != 0) {
-      foreach ($placed_published as $placed_published_key => $place) {
-        $matches['publishplace=' . $place->value] = ($placed_published_key == 0) ? '<span class="result-item-type place_published-group-label">' . t('Place of Publication') . '</span><span class="place-published-group">' . $place->value . '</span>' : '<span class="place-published-group">' . $place->value . '</span>';
-      }
-    }
-    $zotero_vocabulary = taxonomy_vocabulary_machine_name_load('zotero_tags');
-    $vid = $zotero_vocabulary->vid;
-    $tags = db_query_range('SELECT name, tid FROM {taxonomy_term_data} WHERE name LIKE :name and vid = :vid_val ORDER BY name ASC', 0, 3, array(':name' => db_like($string) . '%', ':vid_val' => $vid));
-    if ($tags->rowCount() != 0) {
-      foreach ($tags as $tag_key => $tag) {
-        $matches['tag=' . $tag->tid] = ($tag_key == 0) ? '<span class="result-item-type tags-group-label">' . t('Tags') . '</span><span class="tags-group">' . $tag->name . '</span>' : '<span class="tags-group">' . $tag->name . '</span>';
-      }
-    }
-  }
-  drupal_json_output($matches);
-}
-
-/**
- * Returns auto complete search values for plain titles
- */
-function biblio_plain_title_list_callback($string = '') {
-  $string = ucfirst($string);
-  $matches = array();
-  // Load views for biblio full content
-  $biblio_full_results = csc_views_get_views_results('biblio_search_api', 'biblio_full');
-  if (!empty($string) && strlen($string) >= 3) {
-    $titles = db_query_range('SELECT title, nid FROM {node} WHERE title LIKE :value ORDER BY title ASC', 0, 3, array(':value' => db_like($string) . '%'));
-    if ($titles->rowCount() != 0) {
-      foreach ($titles as $title_key => $node) {
-        // Attach current biblio item page
-        foreach ($biblio_full_results as $biblio_full_result_key => $value) {
-          if ($value->entity == $node->nid) $current_page = $biblio_full_result_key;
-        }
-        $matches['node=' . $node->nid . '=' . $current_page] = '<span class="title-group">' . $node->title . '</span>';
-      }
-    }
-  }
-  drupal_json_output($matches);
-}
-
-/**
- * Returns auto complete search values for content authors
- */
-function biblio_author_list_callback($string = '') {
-  $string = ucfirst($string);
-  $matches = array();
-  if (!empty($string) && strlen($string) >= 3) {
-    $authors = db_query_range('SELECT DISTINCT value FROM {search_api_db_database_node_index_biblio_authors} WHERE value LIKE :value ORDER BY value ASC', 0, 3, array(':value' => db_like($string) . '%'));
-    if ($authors->rowCount() != 0) {
-      foreach ($authors as $author_key => $author) {
-        $matches['author=' . $author->value] = '<span class="authors-group">' . $author->value . '</span>';
-      }
-    }
-  }
-  drupal_json_output($matches);
-}
-
-/**
- * Returns auto complete search values for content publishers
- */
-function biblio_publisher_list_callback($string = '') {
-  $string = ucfirst($string);
-  $matches = array();
-  if (!empty($string) && strlen($string) >= 3) {
-    $publishers = db_query_range('SELECT DISTINCT value FROM {search_api_db_database_node_index_biblio_publisher} WHERE value LIKE :value ORDER BY value ASC', 0, 3, array(':value' => db_like($string) . '%'));
-    if ($publishers->rowCount() != 0) {
-      foreach ($publishers as $publisher_key => $publisher) {
-        $matches['publisher=' . $publisher->value] = '<span class="publishers-group">' . $publisher->value . '</span>';
-      }
-    }
-  }
-  drupal_json_output($matches);
-}
-
-/**
- * Returns auto complete search values for content published places
- */
-function biblio_place_published_list_callback($string = '') {
-  $string = ucfirst($string);
-  $matches = array();
-  if (!empty($string) && strlen($string) >= 3) {
-    $placed_published = db_query_range('SELECT DISTINCT value FROM {search_api_db_database_node_index_biblio_place_published} WHERE value LIKE :value ORDER BY value ASC', 0, 3, array(':value' => db_like($string) . '%'));
-    if ($placed_published->rowCount() != 0) {
-      foreach ($placed_published as $placed_published_key => $place) {
-        $matches['publishplace=' . $place->value] = '<span class="place-published-group">' . $place->value . '</span>';
-      }
-    }
-  }
-  drupal_json_output($matches);
-}
-
-/**
- * Returns auto complete search values for content abstracts
- */
-function biblio_tags_list_callback($string = '') {
-  $string = ucfirst($string);
-  $matches = array();
-  if (!empty($string) && strlen($string) >= 3) {
-    $zotero_vocabulary = taxonomy_vocabulary_machine_name_load('zotero_tags');
-    $vid = $zotero_vocabulary->vid;
-    $tags = db_query_range('SELECT name, tid FROM {taxonomy_term_data} WHERE name LIKE :name and vid = :vid_val ORDER BY name ASC', 0, 3, array(':name' => db_like($string) . '%', ':vid_val' => $vid));
-    if ($tags->rowCount() != 0) {
-      foreach ($tags as $tag_key => $tag) {
-        $matches['tag=' . $tag->tid] = '<span class="tags-group">' . $tag->name . '</span>';
-      }
-    }
-  }
-  drupal_json_output($matches);
-}
-
-function csc_views_exposed_filter_validation($form, &$form_state) {
-  if ($form_state['values']['biblio_year'] > $form_state['values']['biblio_year_1']) {
-    form_set_error('biblio_year', '"From" year value should be lower than "To" year value');
-  }
-  if ($form_state['values']['biblio_year_1'] < $form_state['values']['biblio_year']) {
-    form_set_error('biblio_year_1', '"To" year value should be higher than "From" year value');
   }
 }
 
@@ -493,8 +338,8 @@ function csc_views_block_view($delta = '') {
       $block['content'] = csc_views_generate_list(csc_views_build_taxonomy_tree($vid, 0));
       break;
     case 'custom_taxonomy_breadcrumb':
-      $block['subject'] = t('CSC: Taxonomy Block');
-      $block['content'] = (!empty($_GET['field_zotero_collections'])) ? csc_views_collection_breadcrumb($_GET['field_zotero_collections']) . ' ' . csc_views_breadcrumb_library($vid) : csc_views_breadcrumb_output() . '' . csc_views_breadcrumb_library($vid);
+      $block['subject'] = '';
+      $block['content'] = csc_views_get_breadcrumb_dropdowns();
       break;
     case 'advanced_search_filter':
       $block['subject'] = t('CSC: Advanced CSC Search Filter');
@@ -516,13 +361,6 @@ function csc_views_custom_sort_block_content() {
   return $custom_sort_block_values;
 }
 
-function csc_views_breadcrumb_library($vid) {
-  $library_content = array(
-    'all_source_link' => l(t('View all sources'), 'csc-search', array('query' => array('field_zotero_collections' => 'All', 'view_mode' => 'collection'))),
-    'library_list' => csc_views_generate_list(csc_views_build_taxonomy_tree($vid, 0)),
-  );
-  return theme('csc_views_breadcrumb_library', array('value' => $library_content));
-}
 
 /**
  * Generates & returns a nested array of taxonomy terms for the specified vocabulary id.
@@ -584,27 +422,7 @@ function csc_views_nest_taxonomy_terms_child(&$terms, $parent_tid, $child) {
 function csc_views_generate_list($hierarchy) {
   $items = array();
   foreach ($hierarchy as $term) {
-    $class_name = (!empty($term->children)) ? 'has-children' : '';
-    if (csc_views_sort_criteria_set()) {
-      $query_values = array(
-        'field_zotero_collections' => $term->tid,
-        'view_mode' => 'collection',
-        'sort_by' => $_GET['sort_by'],
-        'sort_order' => $_GET['sort_order'],
-      );
-    }
-    else {
-      $query_values = array(
-        'field_zotero_collections' => $term->tid,
-        'view_mode' => 'collection',
-      );
-    }
-    $item = l(t($term->name), 'csc-search',  array(
-      'query' => $query_values,
-      'attributes' => array(
-        'class' => array($class_name, 'collection-id-' . $term->tid)
-      ),
-    ));
+    $item = csc_views_get_collection_link($term);
 
     if (!empty($term->children)) {
       $item .= csc_views_generate_list($term->children);
@@ -614,89 +432,161 @@ function csc_views_generate_list($hierarchy) {
   return theme('item_list', array('items' => $items));
 }
 
-/**
- *  Returns breadcrumb links.
- */
-function csc_views_collection_breadcrumb($term_id) {
-  if (csc_views_no_filters_set('breadcrumb_collection')) {
-    if ($term_id != 'All') {
-      $vocabulary = taxonomy_vocabulary_machine_name_load('collections');
-      $vid  = $vocabulary->vid;
-      $get_parents = taxonomy_get_parents_all($term_id);
-      $taxonomy_term = array_reverse($get_parents);
-      $breadcrumb  = '';
-      foreach ($taxonomy_term as $key => $term) {
-        $current_breadcrumb = ((count($taxonomy_term) - 1) == $key) ? 'current_breadcrumb' : '' ;
-        $term_list = csc_views_build_taxonomy_tree($vid, $term->tid);
-        $breadcrumb_items = array('current_breadcrumb_class' => $current_breadcrumb);
-        if ($term_list) {
-          $breadcrumb_items['term_name_link'] = l(t($term->name), '',  array('fragment' => '', 'attributes' => array('class' => 'breadcrumb-dropdown-cta')));
-          $breadcrumb_items['breadcrumb_term_child'] = csc_views_generate_list($term_list);
-          if (csc_views_sort_criteria_set()) {
-            $all_sources_top_link_query_values = array('field_zotero_collections' => $term->tid, 'view_mode' => 'collection', 'sort_by' => $_GET['sort_by'], 'sort_order' => $_GET['sort_order']);
-            $all_sources_sub_top_link_query_values = array('field_zotero_collections' => $term->tid, 'view_mode' => 'collection', 'sort_by' => $_GET['sort_by'], 'sort_order' => $_GET['sort_order']);
-          }
-          else {
-            $all_sources_top_link_query_values = array('field_zotero_collections' => $term->tid, 'view_mode' => 'collection');
-            $all_sources_sub_top_link_query_values = array('field_zotero_collections' => $term->tid, 'view_mode' => 'collection');
-          }
-          $breadcrumb_items['all_sources_top_link'] = l(t('View all sources for ' . $term->name), 'csc-search', array('query' => $all_sources_top_link_query_values));
-          $breadcrumb_items['all_sources_sub_top_link'] = l(t($term->name), 'csc-search', array('query' => $all_sources_sub_top_link_query_values));
-        }
-        else {
-          $breadcrumb_items['term_name'] = $term->name;
-        }
-        $breadcrumb .= theme('csc_views_breadcrumb_item', array('value' => $breadcrumb_items));
-      }
-    }
-  }
-  return (!empty($breadcrumb)) ? csc_views_breadcrumb_output($breadcrumb) : csc_views_breadcrumb_output();
-}
-
-function csc_views_breadcrumb_output($breadcrumb_content = NULL) {
-  $search_result_text = '<span class="breadcrumb-item non-default-item current_breadcrumb">' . t('Search Results') . '</span>';
-  $search_result_filtered_text = '<span class="breadcrumb-item non-default-item current_breadcrumb">' . t('Search Results (Filtered)') . '</span>';
-  $query_parameter_count = count(explode('&', $_SERVER['QUERY_STRING']));
-  if (!empty($breadcrumb_content)) {
-    $breadcrumb_output = csc_views_no_filters_set('search_result') ? $breadcrumb_content : $breadcrumb_content . '<span class="collection-filtered-text">' . t('(Filtered)') . '</span>';
+function csc_views_get_collection_link($term) {
+  $class_name = (!empty($term->children)) ? 'has-children' : '';
+  if (csc_views_sort_criteria_set()) {
+    $query_values = array(
+      'field_zotero_collections' => $term->tid,
+      'view_mode' => 'collection',
+      'sort_by' => $_GET['sort_by'],
+      'sort_order' => $_GET['sort_order'],
+    );
   }
   else {
-    $breadcrumb_output = $search_result_text;
-    if (!empty($_GET['field_zotero_collections'])) {
-      if ($_GET['field_zotero_collections'] == 'All' && ((!empty($_GET['view_mode']) && $_GET['view_mode'] == 'collection') || $query_parameter_count <= 2)) {
-        $breadcrumb_output = (($query_parameter_count <= 2) || ($query_parameter_count <= 5 && !empty($_GET['sort_by']) && !empty($_GET['sort_order']))) ? '' : '<span class="breadcrumb-item non-default-item current_breadcrumb">' . t('Filtered') . '</span>';
-      }
-      else {
-        $breadcrumb_output = (csc_views_no_filters_set('search_result')) ? $search_result_text : $search_result_filtered_text;
-      }
-    }
-    if(!empty($_GET['biblio_authors']) && ((!empty($_GET['view_mode']) && $_GET['view_mode'] == 'author') || $query_parameter_count <= 2)) $breadcrumb_output = '';
-    if ((count(explode('&', $_SERVER['QUERY_STRING'])) <= 3) && (!empty($_GET['field_zotero_tags']) || !empty($_GET['biblio_publisher'])) || !empty($_GET['biblio_place_published']) 
-    || (!empty($_GET['biblio_authors']) && empty($_GET['view_mode'])) || !empty($_GET['search_text_biblio_author'])) $breadcrumb_output = $search_result_filtered_text;
+    $query_values = array(
+      'field_zotero_collections' => $term->tid,
+      'view_mode' => 'collection',
+    );
   }
-  $output_links = array(
-    'home_link' => l(t('Home'), 'csc-search', array('attributes' => array('class' => array('home-search-page')))) . '&nbsp;',
-    'library_link' => l(t('Sources'), '', array('attributes' => array('id' => 'collection-library'), 'fragment' => '')),
-    'breadcrumb_item' => $breadcrumb_output,
-  );
-  if (!empty($_SERVER['QUERY_STRING'])) return theme('csc_views_breadcrumb_output', array('value' => $output_links));
+  $item = l(t($term->name), 'csc-search',  array(
+    'query' => $query_values,
+    'attributes' => array(
+      'class' => array($class_name, 'collection-id-' . $term->tid),
+    ),
+  ));
+  return $item;
+
 }
 
-function csc_views_no_filters_set($option) {
-  $output = FALSE;
-  switch ($option) {
-    case 'search_result':
-      if (empty($_GET['biblio_publication_type']) && empty($_GET['biblio_authors']) && empty($_GET['biblio_publisher']) && empty($_GET['biblio_place_published']) && empty($_GET['field_zotero_tags'])) {
-        $output = TRUE;  
-      }
-      break;
-    case 'breadcrumb_collection':
-      $parameter = explode('&', $_SERVER['QUERY_STRING']);
-      if (!empty($_GET['view_mode']) && $_GET['view_mode'] == 'collection') $output = TRUE;
-      break;
-  }
-  return $output;
+
+
+function csc_views_get_selected_collection() {
+  $selected_collection = csc_views_get_page_argument('field_zotero_collections');
+  return $selected_collection;
 }
+
+/*
+ *  Get a URL argument i.e ?field_zotero_collections=All
+ */
+function csc_views_get_page_argument($key) {
+  if (isset($_GET[$key]) && !empty($_GET[$key])) {
+    return $_GET[$key]; 
+  }
+  return FALSE;
+}
+
+/*
+ * Get all URL arguments
+ */
+function csc_views_get_page_arguments($keys) {
+  $page_arguments = array();
+  foreach ($keys as $key) { 
+    if ($page_argument = csc_views_get_page_argument($key)) {
+      $page_arguments[$key] = $page_argument;
+    }
+  }
+  return $page_arguments;
+}
+
+/*
+ *  Get arguments to append to the URL
+ *  based on currently set sort, order URL params, and collection term
+ */
+function csc_views_get_sources_link_query_values($term) {
+  $sort_by    = isset($_GET['sort_by'])    ? $_GET['sort_by']    : null;
+  $sort_order = isset($_GET['sort_order']) ? $_GET['sort_order'] : null;
+
+  $query_values = array('field_zotero_collections' => $term->tid, 'view_mode' => 'collection');
+  
+  if (csc_views_sort_criteria_set()) {
+    $query_values['sort_by']    = $sort_by;
+    $query_values['sort_order'] = $sort_order;
+  }
+  return $query_values;
+}
+
+/*
+ *  View all sources link for provided collection taxonomy term
+ */
+function csc_views_get_all_sources_top_link($term) {
+  $query_values = csc_views_get_sources_link_query_values($term);
+  return l(t('View all sources for ' . $term->name), 'csc-search', array('query' => $query_values));
+}
+
+function csc_views_get_all_sources_sub_top_link($taxonomy_term) {
+  $query_values = csc_views_get_sources_link_query_values($term);
+  return l(t($taxonomy_term->name), 'csc-search', array('query' => $query_values));
+}
+
+
+
+/*
+ * We designate certain filters as 'searching' although they are all technically views filters
+ * This allows us to display 'search results' in the UI if user enters text for
+ * an author name, but *not* display 'search results' if user merely filters by publication date
+ *
+ */
+function csc_views_search_criteria() {
+  $criteria = array(
+    'search' => array(
+      'biblio_authors' => t("Biblio Author?"),
+      'title' => t("Title"),
+      'search_text_biblio_abstract' => t("Words in Abstract"),
+      'search_api_views_fulltext' => t(""),
+      'search_text_biblio_author' => t("Author"),
+    ),
+    'filter' => array(
+      'search_text_zotero_tags' => t("Tags"),
+      //'advanced_search_publication_year' => t(""),
+      'advanced_search_start_year' => t(""),
+      'advanced_search_end_year' => t(""),
+      'biblio_year' => t(""),
+      'biblio_year_1' => t(""),
+      'biblio_publication_type' => t(""),
+      'biblio_publisher' => t(""),
+      'biblio_place_published' => t(""),
+      'field_zotero_tags' => t(""),
+      'condition_option' => t(""),
+      'advanced_biblio_publication_type' => t(""),
+      'search_text_biblio_publisher' => t(""),
+      'search_text_biblio_publish_place' => t("")
+    ),
+    'sort' => array(
+      'sort_by' => t("Sort By"),
+      'sort_order' => t("Order By")
+    ),
+    'browse' => array(
+      'field_zotero_collections' => t("")
+    )
+  );
+
+  return $criteria;
+
+}
+
+
+function csc_views_arg_type_is_set($type) {
+  $criteria = csc_views_search_criteria();
+  $filter_keys = array_keys($criteria[$type]);
+  $args = csc_views_get_page_arguments($filter_keys);
+  return !empty($args);
+}
+
+/*
+ * Return true if user is searching on the CSC Search view
+ */
+function csc_views_is_search() {
+  return csc_views_arg_type_is_set('search');
+}
+
+/*
+ * Return true if user has filtered results on the CSC Search view
+ */
+function csc_views_is_filtered() {
+  return csc_views_arg_type_is_set('filter');
+}
+
+
 
 /**
  * Advanced biblio search form().
@@ -827,8 +717,9 @@ function csc_views_advanced_search_form_submit($form, &$form_state) {
   $biblio_authors = (!empty($_GET['biblio_authors'])) ? $_GET['biblio_authors'] : '';
   $biblio_publisher = (!empty($_GET['biblio_publisher'])) ? $_GET['biblio_publisher'] : '';
   $biblio_place_published = (!empty($_GET['biblio_place_published'])) ? $_GET['biblio_place_published'] : '';
-  $field_zotero_tags =(!empty($_GET['field_zotero_tags'])) ? $_GET['field_zotero_tags'] : '';
-  drupal_goto('csc-search', array('query' => array(
+  $field_zotero_tags = !empty($_GET['field_zotero_tags']) ? $_GET['field_zotero_tags'] : '';
+
+  $query_params = array(
     'field_zotero_collections' => 'All',
     'sort_by' => 'sort_stripped_node_title',
     'sort_order' => 'ASC',
@@ -851,7 +742,16 @@ function csc_views_advanced_search_form_submit($form, &$form_state) {
     'advanced_search_publication_year' => $form_state['values']['advanced_search_publication_year'],
     'advanced_search_start_year' => $form_state['values']['advanced_search_start_year'],
     'advanced_search_end_year' => $form_state['values']['advanced_search_end_year'],
-  )));
+  );
+
+  //Remove blank values from the URL
+  foreach ($query_params as $key => $value) { 
+    if ($value === '') {
+      unset($query_params[$key]);
+    } 
+  }
+
+  drupal_goto('csc-search', array('query' => $query_params));
 }
 
 /**
@@ -894,6 +794,78 @@ function csc_views_preprocess_page(&$vars) {
   drupal_add_js(drupal_get_path('module', 'csc_views') . '/js/cscViewsCustomSort.js');
   drupal_add_js(drupal_get_path('module', 'csc_views') . '/js/cscViewsSearchFilter.js');
   drupal_add_js(drupal_get_path('module', 'csc_views') . '/js/cscViewsCustomPager.js');
+  drupal_add_js(drupal_get_path('module', 'csc_views') . '/js/cscViewsBreadcrumb.js');
+  drupal_add_js(drupal_get_path('module', 'csc_views') . '/js/cscViewsSlider.js');
+
+  csc_views_set_page_title();
+
+}
+
+function csc_views_set_page_title() {
+  $current_nid = isset($_GET['current_nid']) ? $_GET['current_nid'] : FALSE;
+  $field_zotero_tags = isset($_GET['field_zotero_tags']) ? $_GET['field_zotero_tags'] : FALSE;
+
+  if ($current_nid) {
+    $current_node = node_load($current_nid);
+    $title = $current_node->title;
+  }
+  else if (csc_views_is_search()) {
+    $title = csc_views_get_search_page_title();
+  }
+  else if ($field_zotero_tags) {
+    $term = taxonomy_term_load($field_zotero_tags);
+    $title = $term->name;
+  }
+
+  drupal_set_title($title);
+}
+
+function csc_views_get_search_page_title() {
+  $criteria      = csc_views_search_criteria();
+  $search_args   = $criteria['search'] + $criteria['filter'];
+  $search_values = csc_views_get_page_arguments(array_keys($search_args));
+  $title = 'Search Results: ';
+  if (isset($search_values['search_api_views_fulltext'])) {
+    $title .= $search_values['search_api_views_fulltext'] .', '; 
+  }
+  if (isset($search_values['title'])) {
+    $title .= "title: ". $search_values['title'] .', '; 
+  }
+  if (isset($search_values['search_text_zotero_tags'])) {
+    $title .= "tagged with ". $search_values['search_text_zotero_tags'] .', '; 
+  }
+  if (isset($search_values['advanced_biblio_publication_type'])) {
+    $publication_type = csc_views_get_publication_type($search_values['advanced_biblio_publication_type']);
+    $title .= $publication_type .', '; 
+  }
+  if (isset($search_values['search_text_biblio_abstract'])) {
+    $title .= "abstract: ". $search_values['search_text_biblio_abstract'] .', '; 
+  }
+  if (isset($search_values['biblio_authors'])) {
+    $title .= "author: ". $search_values['biblio_authors'] .', '; 
+  }
+  if (isset($search_values['biblio_publisher'])) {
+    $title .= "publisher: ". $search_values['biblio_publisher'] .', '; 
+  }
+  if (isset($search_values['biblio_place_published'])) {
+    $title .= $search_values['biblio_place_published'] .', '; 
+  }
+  if (isset($search_values['biblio_year'])) {
+    $title .= $search_values['biblio_year'] .' - '. $search_values['biblio_year_1'].', '; 
+  }
+
+  $title = substr($title, 0, -2);
+
+  return $title;
+}
+
+function csc_views_get_publication_type($numeric_type) {
+  $display_type = '';
+  $display_types = array(
+    '100' => 'books',
+    '129' => 'misc'
+  );
+  return $display_types[$numeric_type];
 }
 
 /**
@@ -906,8 +878,8 @@ function csc_views_custom_pager_links($view, $class, $pager_link) {
   }
   $pager = array('page' => $pager_link);
   array_push($query_strings, $pager);
-  $link_output = l('<span class="icon"></span>', current_path(), array('query' => $query_strings, 'attributes' => array('class' => array($class)), 'html' => TRUE));
-  return $link_output;
+  $link = l('<span class="icon"></span>', current_path(), array('query' => $query_strings, 'attributes' => array('class' => array($class)), 'html' => TRUE));
+  return $link;
 }
 
 /**
@@ -1122,9 +1094,10 @@ function csc_views_theme($existing, $type, $theme, $path) {
     'csc_views_custom_sort_field' => array('template' => 'csc_views_custom_sort_field'),
     'csc_views_custom_pager_top' => array('template' => 'csc_views_custom_pager_top'),
     'csc_views_custom_pager_bottom' => array('template' => 'csc_views_custom_pager_bottom'),
-    'csc_views_breadcrumb_output' => array('template' => 'csc_views_breadcrumb_output'),
-    'csc_views_breadcrumb_item' => array('template' => 'csc_views_breadcrumb_item'),
-    'csc_views_breadcrumb_library' => array('template' => 'csc_views_breadcrumb_library'),
+    'csc_views_breadcrumb' => array('template' => 'csc_views_breadcrumb'),
+    'csc_views_breadcrumbs' => array('function' => 'csc_views_theme_breadcrumbs'),
+    'csc_views_all_sources_dropdown' => array('template' => 'csc_views_all_sources_dropdown'),
+    'csc_views_breadcrumb_dropdown' => array('template' => 'csc_views_breadcrumb_dropdown'),
   );
 }
 

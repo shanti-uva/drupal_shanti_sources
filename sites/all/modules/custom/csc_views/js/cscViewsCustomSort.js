@@ -7,9 +7,9 @@ Drupal.behaviors.cscViewsCustomSort = {
   attach: function (context, settings) {
     // Default custom sort state
     var default_sort_value = $.get_query_string_val('sort_by');
-    var defaul_sort_order = $.get_query_string_val('sort_order');
+    var default_sort_order = $.get_query_string_val('sort_order');
     var sort_by = (default_sort_value !== '') ? default_sort_value : 'sort_stripped_node_title';
-    var sort_order = (defaul_sort_order !== '') ? defaul_sort_order : 'ASC';
+    var sort_order = (default_sort_order !== '') ? default_sort_order : 'ASC';
     switch (sort_by) { 
       case 'sort_stripped_node_title':
         var default_sort_value = (sort_order == 'ASC') ? 'title_asc' : 'title_desc';

@@ -3,38 +3,125 @@
  * Custom javascript functionalities for CSC custom views autocomplete field.
  */
 (function ($) {
-Drupal.behaviors.cscViewsAutocomplete = {
+
+//Store all criteria 
+var search_criteria = {};
+
+//If we are in the process of redirecting
+//Used to prevent submit on enter
+var redirect_in_progress = false;
+
+/*
+ * For the main search box (non-advanced) autocomplete
+ * which allows user to select different categories (Title, Author, etc)
+ * In the dropdown
+ */
+Drupal.behaviors.cscViewsQuickSearchAutocomplete = {
   attach: function (context, settings) {
-    // Show autocomplete search result
-    $('input#edit-advanced-search-api-views-fulltext, input#edit-title, input#edit-search-text-biblio-author, #edit-search-text-biblio-publisher, #edit-search-text-biblio-publish-place, #edit-search-text-zotero-tags', context).bind('autocompleteSelect', function() {
-      var autocomplete_value = $(this).val().split('=');
-      var filter_type  = autocomplete_value[0];
-      var filter_value = autocomplete_value[1];
-      var filter_page = autocomplete_value[2];
-      switch (filter_type) {
-        case 'node':
-          window.location.replace(location.protocol + '//' + location.host + '/csc-search/biblio?page=' + filter_page + '&current_nid=' + filter_value);
-          break;
-        case 'author':
-          autocomplete_redirect('search_text_biblio_author', filter_value);
-          break;
-        case 'publisher':
-          autocomplete_redirect('biblio_publisher', filter_value);
-          break;
-        case 'publishplace':
-          autocomplete_redirect('biblio_place_published', filter_value);
-          break;
-        case 'tag':
-          autocomplete_redirect('field_zotero_tags', filter_value);
-          break;
-      }
-      $('#edit-advanced-search-api-views-fulltext, input#edit-title, #edit-search-text-biblio-author, #edit-search-text-biblio-publisher, #edit-search-text-biblio-publish-place, #edit-search-text-zotero-tags').val('');
+    var selector = 'input#edit-advanced-search-api-views-fulltext';
+
+    preventSubmitOnEnter(selector);
+
+    //Add our own handler, after autocompleteSelect fires
+    quick_search_submit_on_enter(selector);
+
+    $(selector, context).bind('autocompleteSelect', function() {
+      quick_search_autocomplete_select_handler($(this));
     });
-    // Redirect to selected auto complete search item
-    function autocomplete_redirect(query_key, query_value) {
-      var filter_path = location.protocol + '//' + location.host + location.pathname + '?' + query_key + '=' + query_value;
-      window.location.replace(filter_path);
-    }
+
   }
 };
+
+/*
+ * Do not automatically submit form if user presses the 
+ * Enter key on the provided input element 
+ * we will handle this manually on a case-by-case basis
+ */
+function preventSubmitOnEnter(element) {
+  $(element).bind('keydown', function(e) {
+    if (e.which == 13) {
+      e.preventDefault();
+    }
+  });
+}
+
+/*
+ * For the main search box, we submit immediately on autocomplete select
+ */
+function quick_search_autocomplete_select_handler(autocomplete_element) {
+  redirect_in_progress = true;
+  var autocomplete_value = $(autocomplete_element).val().split('=');
+
+  //clear node=123 from search input
+  $(autocomplete_element).val('');
+
+  var redirect_url;
+  var filter_type  = autocomplete_value[0];
+  var filter_value = autocomplete_value[1];
+  var filter_page  = autocomplete_value[2];
+
+  var query_keys = {
+    author: 'search_text_biblio_author',
+    publisher: 'biblio_publisher',
+    publishplace: 'biblio_place_published',
+    tag: 'field_zotero_tags'
+  }
+
+  if (filter_type === 'node') {
+    redirect_url = location.protocol + '//' + location.host + '/csc-search/biblio?page=' + filter_page + '&current_nid=' + filter_value;
+  }
+  else {
+    var query_key    = query_keys[filter_type];
+    var redirect_url = location.protocol + '//' + location.host + location.pathname + '?' + query_key + '=' + filter_value;
+  }
+  window.location.assign(redirect_url);
+}
+
+/*
+ * Bind submit to keyup on enter, so autocompleteSelect has a chance to fire
+ */
+function quick_search_submit_on_enter(autocomplete_element) {
+  $(autocomplete_element).on('keyup', function(e) {
+    //We have to set timeout to get around closing autocomplete event
+    //which somehow squelches submit
+    if (e.which == 13) {
+      setTimeout(function() {
+        if (!redirect_in_progress) {
+          $('#block-csc-views-advanced-search-filter form').submit();
+        }
+      }, 500)
+    }
+  });
+}
+
+/*
+ * For other autocomplete fields (views filters) on the advanced search form
+ */
+Drupal.behaviors.cscViewsAutocomplete = {
+  attach: function (context, settings) {
+
+   var widget_elements = [
+      'input#edit-title',
+      'input#edit-search-text-biblio-author',
+      '#edit-search-text-biblio-publisher',
+      '#edit-search-text-biblio-publish-place',
+      '#edit-search-text-zotero-tags',
+    ];
+
+    var selector = widget_elements.join(', ');
+
+    //preventSubmitOnEnter(selector);
+
+
+    $('#block-csc-views-advanced-search-filter form').bind('submit', function(e) {
+      console.log(JSON.stringify(search_criteria));
+    });
+
+  }
+};
+
+
+
 })(jQuery);
+
+
