@@ -576,10 +576,11 @@ function csc_biblio_search_views_default_views() {
   $handler->display->display_options['title'] = 'Sources';
   $handler->display->display_options['defaults']['sorts'] = FALSE;
 
-  /* Display: Page */
-  $handler = $view->new_display('page', 'Page', 'biblio_full');
+  /* Display: Individual Content Page */
+  $handler = $view->new_display('page', 'Individual Content Page', 'biblio_full');
   $handler->display->display_options['defaults']['title'] = FALSE;
   $handler->display->display_options['title'] = 'Sources';
+  $handler->display->display_options['display_description'] = 'Shows one piece of content / source in detail on it\'s dedicated page';
   $handler->display->display_options['defaults']['exposed_form'] = FALSE;
   $handler->display->display_options['exposed_form']['type'] = 'basic';
   $handler->display->display_options['defaults']['pager'] = FALSE;
@@ -646,6 +647,8 @@ function csc_biblio_search_views_default_views() {
   $handler->display->display_options['fields']['biblio_authors']['table'] = 'search_api_index_database_node_index';
   $handler->display->display_options['fields']['biblio_authors']['field'] = 'biblio_authors';
   $handler->display->display_options['fields']['biblio_authors']['label'] = '';
+  $handler->display->display_options['fields']['biblio_authors']['alter']['trim_whitespace'] = TRUE;
+  $handler->display->display_options['fields']['biblio_authors']['alter']['strip_tags'] = TRUE;
   $handler->display->display_options['fields']['biblio_authors']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['biblio_authors']['hide_empty'] = TRUE;
   $handler->display->display_options['fields']['biblio_authors']['empty_zero'] = TRUE;
@@ -974,6 +977,12 @@ function csc_biblio_search_views_default_views() {
   $handler->display->display_options['fields']['field_biblio_long_language']['label'] = 'Language(s)';
   $handler->display->display_options['fields']['field_biblio_long_language']['hide_empty'] = TRUE;
   $handler->display->display_options['fields']['field_biblio_long_language']['empty_zero'] = TRUE;
+  /* Field: Content: Edit link */
+  $handler->display->display_options['fields']['edit_node']['id'] = 'edit_node';
+  $handler->display->display_options['fields']['edit_node']['table'] = 'views_entity_node';
+  $handler->display->display_options['fields']['edit_node']['field'] = 'edit_node';
+  $handler->display->display_options['fields']['edit_node']['label'] = '';
+  $handler->display->display_options['fields']['edit_node']['element_label_colon'] = FALSE;
   $handler->display->display_options['defaults']['sorts'] = FALSE;
   /* Sort criterion: Indexed Node: Sorting Stripped Node Title */
   $handler->display->display_options['sorts']['sort_stripped_node_title']['id'] = 'sort_stripped_node_title';
