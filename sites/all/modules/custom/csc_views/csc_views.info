@@ -1,6 +1,0 @@
-name = CSC custom views module
-description = Custom views module for CSC site.
-package = CSC
-core = 7.x
-stylesheets[all][] = csc_views.css
-
