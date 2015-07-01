@@ -276,19 +276,19 @@ function sources_biblio_search_views_default_views() {
   $handler->display->display_options['fields']['field_zotero_collections']['view_mode'] = 'full';
   $handler->display->display_options['fields']['field_zotero_collections']['bypass_access'] = 0;
   $handler->display->display_options['defaults']['sorts'] = FALSE;
-  /* Sort criterion: Broken/missing handler */
+  /* Sort criterion: Indexed Node: Sorting Stripped Node Title */
   $handler->display->display_options['sorts']['sort_stripped_node_title']['id'] = 'sort_stripped_node_title';
   $handler->display->display_options['sorts']['sort_stripped_node_title']['table'] = 'search_api_index_database_node_index';
   $handler->display->display_options['sorts']['sort_stripped_node_title']['field'] = 'sort_stripped_node_title';
   $handler->display->display_options['sorts']['sort_stripped_node_title']['exposed'] = TRUE;
   $handler->display->display_options['sorts']['sort_stripped_node_title']['expose']['label'] = 'Stripped Node Title';
-  /* Sort criterion: Broken/missing handler */
+  /* Sort criterion: Indexed Node: Sorting Biblio Author */
   $handler->display->display_options['sorts']['sort_biblio_author']['id'] = 'sort_biblio_author';
   $handler->display->display_options['sorts']['sort_biblio_author']['table'] = 'search_api_index_database_node_index';
   $handler->display->display_options['sorts']['sort_biblio_author']['field'] = 'sort_biblio_author';
   $handler->display->display_options['sorts']['sort_biblio_author']['exposed'] = TRUE;
   $handler->display->display_options['sorts']['sort_biblio_author']['expose']['label'] = 'Biblio Author';
-  /* Sort criterion: Broken/missing handler */
+  /* Sort criterion: Indexed Node: Sorting Custom Publication Year */
   $handler->display->display_options['sorts']['sort_custom_publication_year']['id'] = 'sort_custom_publication_year';
   $handler->display->display_options['sorts']['sort_custom_publication_year']['table'] = 'search_api_index_database_node_index';
   $handler->display->display_options['sorts']['sort_custom_publication_year']['field'] = 'sort_custom_publication_year';
@@ -350,7 +350,7 @@ function sources_biblio_search_views_default_views() {
     4 => 0,
   );
   $handler->display->display_options['filters']['field_zotero_collections']['expose']['reduce'] = 0;
-  /* Filter criterion: Broken/missing handler */
+  /* Filter criterion: Indexed Node: Publication Type */
   $handler->display->display_options['filters']['biblio_publication_type']['id'] = 'biblio_publication_type';
   $handler->display->display_options['filters']['biblio_publication_type']['table'] = 'search_api_index_database_node_index';
   $handler->display->display_options['filters']['biblio_publication_type']['field'] = 'biblio_publication_type';
@@ -446,7 +446,7 @@ function sources_biblio_search_views_default_views() {
     3 => 0,
     4 => 0,
   );
-  /* Filter criterion: Broken/missing handler */
+  /* Filter criterion: Indexed Node: Search text biblio authors */
   $handler->display->display_options['filters']['search_text_biblio_author']['id'] = 'search_text_biblio_author';
   $handler->display->display_options['filters']['search_text_biblio_author']['table'] = 'search_api_index_database_node_index';
   $handler->display->display_options['filters']['search_text_biblio_author']['field'] = 'search_text_biblio_author';
@@ -462,7 +462,7 @@ function sources_biblio_search_views_default_views() {
     3 => 0,
     4 => 0,
   );
-  /* Filter criterion: Broken/missing handler */
+  /* Filter criterion: Indexed Node: Search text abstract */
   $handler->display->display_options['filters']['search_text_biblio_abstract']['id'] = 'search_text_biblio_abstract';
   $handler->display->display_options['filters']['search_text_biblio_abstract']['table'] = 'search_api_index_database_node_index';
   $handler->display->display_options['filters']['search_text_biblio_abstract']['field'] = 'search_text_biblio_abstract';
@@ -478,7 +478,7 @@ function sources_biblio_search_views_default_views() {
     3 => 0,
     4 => 0,
   );
-  /* Filter criterion: Broken/missing handler */
+  /* Filter criterion: Indexed Node: Search text publish place */
   $handler->display->display_options['filters']['search_text_biblio_publish_place']['id'] = 'search_text_biblio_publish_place';
   $handler->display->display_options['filters']['search_text_biblio_publish_place']['table'] = 'search_api_index_database_node_index';
   $handler->display->display_options['filters']['search_text_biblio_publish_place']['field'] = 'search_text_biblio_publish_place';
@@ -494,7 +494,7 @@ function sources_biblio_search_views_default_views() {
     3 => 0,
     4 => 0,
   );
-  /* Filter criterion: Broken/missing handler */
+  /* Filter criterion: Indexed Node: Search text publisher */
   $handler->display->display_options['filters']['search_text_biblio_publisher']['id'] = 'search_text_biblio_publisher';
   $handler->display->display_options['filters']['search_text_biblio_publisher']['table'] = 'search_api_index_database_node_index';
   $handler->display->display_options['filters']['search_text_biblio_publisher']['field'] = 'search_text_biblio_publisher';
@@ -510,7 +510,7 @@ function sources_biblio_search_views_default_views() {
     3 => 0,
     4 => 0,
   );
-  /* Filter criterion: Broken/missing handler */
+  /* Filter criterion: Indexed Node: Search text zotero tags */
   $handler->display->display_options['filters']['search_text_zotero_tags']['id'] = 'search_text_zotero_tags';
   $handler->display->display_options['filters']['search_text_zotero_tags']['table'] = 'search_api_index_database_node_index';
   $handler->display->display_options['filters']['search_text_zotero_tags']['field'] = 'search_text_zotero_tags';
@@ -984,19 +984,19 @@ function sources_biblio_search_views_default_views() {
   $handler->display->display_options['fields']['edit_node']['label'] = '';
   $handler->display->display_options['fields']['edit_node']['element_label_colon'] = FALSE;
   $handler->display->display_options['defaults']['sorts'] = FALSE;
-  /* Sort criterion: Broken/missing handler */
+  /* Sort criterion: Indexed Node: Sorting Stripped Node Title */
   $handler->display->display_options['sorts']['sort_stripped_node_title']['id'] = 'sort_stripped_node_title';
   $handler->display->display_options['sorts']['sort_stripped_node_title']['table'] = 'search_api_index_database_node_index';
   $handler->display->display_options['sorts']['sort_stripped_node_title']['field'] = 'sort_stripped_node_title';
   $handler->display->display_options['sorts']['sort_stripped_node_title']['exposed'] = TRUE;
   $handler->display->display_options['sorts']['sort_stripped_node_title']['expose']['label'] = 'Stripped Node Title';
-  /* Sort criterion: Broken/missing handler */
+  /* Sort criterion: Indexed Node: Sorting Biblio Author */
   $handler->display->display_options['sorts']['sort_biblio_author']['id'] = 'sort_biblio_author';
   $handler->display->display_options['sorts']['sort_biblio_author']['table'] = 'search_api_index_database_node_index';
   $handler->display->display_options['sorts']['sort_biblio_author']['field'] = 'sort_biblio_author';
   $handler->display->display_options['sorts']['sort_biblio_author']['exposed'] = TRUE;
   $handler->display->display_options['sorts']['sort_biblio_author']['expose']['label'] = 'Biblio Author';
-  /* Sort criterion: Broken/missing handler */
+  /* Sort criterion: Indexed Node: Sorting Custom Publication Year */
   $handler->display->display_options['sorts']['sort_custom_publication_year']['id'] = 'sort_custom_publication_year';
   $handler->display->display_options['sorts']['sort_custom_publication_year']['table'] = 'search_api_index_database_node_index';
   $handler->display->display_options['sorts']['sort_custom_publication_year']['field'] = 'sort_custom_publication_year';
@@ -1058,7 +1058,7 @@ function sources_biblio_search_views_default_views() {
     4 => 0,
   );
   $handler->display->display_options['filters']['field_zotero_collections']['expose']['reduce'] = 0;
-  /* Filter criterion: Broken/missing handler */
+  /* Filter criterion: Indexed Node: Publication Type */
   $handler->display->display_options['filters']['biblio_publication_type']['id'] = 'biblio_publication_type';
   $handler->display->display_options['filters']['biblio_publication_type']['table'] = 'search_api_index_database_node_index';
   $handler->display->display_options['filters']['biblio_publication_type']['field'] = 'biblio_publication_type';
@@ -1154,7 +1154,7 @@ function sources_biblio_search_views_default_views() {
     3 => 0,
     4 => 0,
   );
-  /* Filter criterion: Broken/missing handler */
+  /* Filter criterion: Indexed Node: Search text biblio authors */
   $handler->display->display_options['filters']['search_text_biblio_author']['id'] = 'search_text_biblio_author';
   $handler->display->display_options['filters']['search_text_biblio_author']['table'] = 'search_api_index_database_node_index';
   $handler->display->display_options['filters']['search_text_biblio_author']['field'] = 'search_text_biblio_author';
@@ -1170,7 +1170,7 @@ function sources_biblio_search_views_default_views() {
     3 => 0,
     4 => 0,
   );
-  /* Filter criterion: Broken/missing handler */
+  /* Filter criterion: Indexed Node: Search text abstract */
   $handler->display->display_options['filters']['search_text_biblio_abstract']['id'] = 'search_text_biblio_abstract';
   $handler->display->display_options['filters']['search_text_biblio_abstract']['table'] = 'search_api_index_database_node_index';
   $handler->display->display_options['filters']['search_text_biblio_abstract']['field'] = 'search_text_biblio_abstract';
@@ -1186,7 +1186,7 @@ function sources_biblio_search_views_default_views() {
     3 => 0,
     4 => 0,
   );
-  /* Filter criterion: Broken/missing handler */
+  /* Filter criterion: Indexed Node: Search text publish place */
   $handler->display->display_options['filters']['search_text_biblio_publish_place']['id'] = 'search_text_biblio_publish_place';
   $handler->display->display_options['filters']['search_text_biblio_publish_place']['table'] = 'search_api_index_database_node_index';
   $handler->display->display_options['filters']['search_text_biblio_publish_place']['field'] = 'search_text_biblio_publish_place';
@@ -1202,7 +1202,7 @@ function sources_biblio_search_views_default_views() {
     3 => 0,
     4 => 0,
   );
-  /* Filter criterion: Broken/missing handler */
+  /* Filter criterion: Indexed Node: Search text publisher */
   $handler->display->display_options['filters']['search_text_biblio_publisher']['id'] = 'search_text_biblio_publisher';
   $handler->display->display_options['filters']['search_text_biblio_publisher']['table'] = 'search_api_index_database_node_index';
   $handler->display->display_options['filters']['search_text_biblio_publisher']['field'] = 'search_text_biblio_publisher';
@@ -1218,7 +1218,7 @@ function sources_biblio_search_views_default_views() {
     3 => 0,
     4 => 0,
   );
-  /* Filter criterion: Broken/missing handler */
+  /* Filter criterion: Indexed Node: Search text zotero tags */
   $handler->display->display_options['filters']['search_text_zotero_tags']['id'] = 'search_text_zotero_tags';
   $handler->display->display_options['filters']['search_text_zotero_tags']['table'] = 'search_api_index_database_node_index';
   $handler->display->display_options['filters']['search_text_zotero_tags']['field'] = 'search_text_zotero_tags';
@@ -1411,7 +1411,7 @@ function sources_biblio_search_views_default_views() {
     3 => 0,
     4 => 0,
   );
-  /* Filter criterion: Broken/missing handler */
+  /* Filter criterion: Indexed Node: Publication Type */
   $handler->display->display_options['filters']['biblio_publication_type']['id'] = 'biblio_publication_type';
   $handler->display->display_options['filters']['biblio_publication_type']['table'] = 'search_api_index_database_node_index';
   $handler->display->display_options['filters']['biblio_publication_type']['field'] = 'biblio_publication_type';

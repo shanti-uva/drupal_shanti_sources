@@ -18,7 +18,16 @@ var redirect_in_progress = false;
  */
 Drupal.behaviors.sourcesViewsQuickSearchAutocomplete = {
   attach: function (context, settings) {
-    var selector = 'input#edit-advanced-search-api-views-fulltext';
+    var widget_elements = [
+      'input#edit-advanced-search-api-views-fulltext',
+      'input#edit-title',
+      'input#edit-search-text-biblio-author',
+      '#edit-search-text-biblio-publisher',
+      '#edit-search-text-biblio-publish-place',
+      '#edit-search-text-zotero-tags',
+    ];
+
+    var selector = widget_elements.join(', ');
 
     preventSubmitOnEnter(selector);
 
@@ -28,7 +37,6 @@ Drupal.behaviors.sourcesViewsQuickSearchAutocomplete = {
     $(selector, context).bind('autocompleteSelect', function() {
       quick_search_autocomplete_select_handler($(this));
     });
-
   }
 };
 
@@ -71,8 +79,8 @@ function quick_search_autocomplete_select_handler(autocomplete_element) {
     redirect_url = location.protocol + '//' + location.host + '/sources-search/biblio?page=' + filter_page + '&current_nid=' + filter_value;
   }
   else {
-    var query_key    = query_keys[filter_type];
-    var redirect_url = location.protocol + '//' + location.host + location.pathname + '?' + query_key + '=' + filter_value;
+    var query_key = query_keys[filter_type];
+    var redirect_url = location.protocol + '//' + location.host + '/sources-search?' + query_key + '=' + filter_value;
   }
   window.location.assign(redirect_url);
 }
@@ -93,34 +101,6 @@ function quick_search_submit_on_enter(autocomplete_element) {
     }
   });
 }
-
-/*
- * For other autocomplete fields (views filters) on the advanced search form
- */
-Drupal.behaviors.sourcesViewsAutocomplete = {
-  attach: function (context, settings) {
-
-   var widget_elements = [
-      'input#edit-title',
-      'input#edit-search-text-biblio-author',
-      '#edit-search-text-biblio-publisher',
-      '#edit-search-text-biblio-publish-place',
-      '#edit-search-text-zotero-tags',
-    ];
-
-    var selector = widget_elements.join(', ');
-
-    //preventSubmitOnEnter(selector);
-
-
-    $('#block-sources-views-advanced-search-filter form').bind('submit', function(e) {
-      console.log(JSON.stringify(search_criteria));
-    });
-
-  }
-};
-
-
 
 })(jQuery);
 

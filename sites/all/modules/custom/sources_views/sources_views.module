@@ -133,6 +133,18 @@ function sources_views_form_alter(&$form, &$form_state, $form_id) {
 }
 
 /**
+ * Implements custom validation for exposed form
+ */
+function sources_views_exposed_filter_validation($form, &$form_state) {
+  if ($form_state['values']['biblio_year'] > $form_state['values']['biblio_year_1']) {
+    form_set_error('biblio_year', '"From" year value should be lower than "To" year value');
+  }
+  if ($form_state['values']['biblio_year_1'] < $form_state['values']['biblio_year']) {
+    form_set_error('biblio_year_1', '"To" year value should be higher than "From" year value');
+  }
+}
+
+/**
  * Implements hook_entity_property_info_alter().
  */
 function sources_views_entity_property_info_alter(&$info) {
@@ -331,7 +343,7 @@ function sources_views_block_view($delta = '') {
       break;
     case 'custom_taxonomy_block':
       $block['subject'] = '';
-      $block['content'] = (search_landing_page()) ? '<div class="title-area"><h1>Browse</h1></div><div class="collection-library-container">'. l(t('Sources'), 'sources-search', array('attributes' => array('class' => array('collection-library')),'query' => array('field_zotero_collections' => 'All', 'view_mode' => 'collection'))) .'</div>' . sources_views_generate_list(sources_views_build_taxonomy_tree($vid, 0)) : '';
+      $block['content'] = sources_custom_taxonomy_block_content($vid);
       break;
     case 'custom_taxonomy_flyout_block':
       $block['subject'] = '';
@@ -361,6 +373,19 @@ function sources_views_custom_sort_block_content() {
   return $custom_sort_block_values;
 }
 
+/**
+ * Returns list of srouces collections.
+ */
+function sources_custom_taxonomy_block_content($vid) {
+  if (search_landing_page()) {
+    $link = l(t('Sources'), 'sources-search', array(
+      'attributes' => array('class' => array('collection-library')),
+      'query' => array('field_zotero_collections' => 'All', 'view_mode' => 'collection')
+    ));
+    $taxonomy_list = sources_views_generate_list(sources_views_build_taxonomy_tree($vid, 0));
+    return '<div class="title-area"><h1>Browse</h1></div><div class="collection-library-container">' . $link . '</div>' . $taxonomy_list;
+  }
+}
 
 /**
  * Generates & returns a nested array of taxonomy terms for the specified vocabulary id.
@@ -417,7 +442,7 @@ function sources_views_nest_taxonomy_terms_child(&$terms, $parent_tid, $child) {
 }
 
 /**
- * Generates a nested HTML list from hierarchy items.
+ * Generates a main parent HTML list from hierarchy items.
  */
 function sources_views_generate_list($hierarchy) {
   $items = array();
@@ -425,7 +450,23 @@ function sources_views_generate_list($hierarchy) {
     $item = sources_views_get_collection_link($term);
 
     if (!empty($term->children)) {
-      $item .= sources_views_generate_list($term->children);
+      $item .= sources_views_generate_child_list($term->children);
+    }
+    $items[] = $item;
+  }
+  return theme('sources_item_list', array('items' => $items));
+}
+
+/**
+ * Generates a child HTML list from hierarchy items.
+ */
+function sources_views_generate_child_list($hierarchy) {
+  $items = array();
+  foreach ($hierarchy as $term) {
+    $item = sources_views_get_collection_link($term);
+
+    if (!empty($term->children)) {
+      $item .= sources_views_generate_child_list($term->children);
     }
     $items[] = $item;
   }
@@ -493,8 +534,8 @@ function sources_views_get_page_arguments($keys) {
  *  based on currently set sort, order URL params, and collection term
  */
 function sources_views_get_sources_link_query_values($term) {
-  $sort_by    = isset($_GET['sort_by'])    ? $_GET['sort_by']    : null;
-  $sort_order = isset($_GET['sort_order']) ? $_GET['sort_order'] : null;
+  $sort_by = isset($_GET['sort_by']) ? $_GET['sort_by'] : NULL;
+  $sort_order = isset($_GET['sort_order']) ? $_GET['sort_order'] : NULL;
 
   $query_values = array('field_zotero_collections' => $term->tid, 'view_mode' => 'collection');
   
@@ -810,10 +851,10 @@ function sources_views_set_page_title() {
     $current_node = node_load($current_nid);
     $title = $current_node->title;
   }
-  else if (sources_views_is_search()) {
+  elseif (sources_views_is_search()) {
     $title = sources_views_get_search_page_title();
   }
-  else if ($field_zotero_tags) {
+  elseif ($field_zotero_tags) {
     $term = taxonomy_term_load($field_zotero_tags);
     $title = $term->name;
   }
@@ -822,41 +863,39 @@ function sources_views_set_page_title() {
 }
 
 function sources_views_get_search_page_title() {
-  $criteria      = sources_views_search_criteria();
-  $search_args   = $criteria['search'] + $criteria['filter'];
+  $criteria = sources_views_search_criteria();
+  $search_args = $criteria['search'] + $criteria['filter'];
   $search_values = sources_views_get_page_arguments(array_keys($search_args));
   $title = 'Search Results: ';
   if (isset($search_values['search_api_views_fulltext'])) {
-    $title .= $search_values['search_api_views_fulltext'] .', '; 
+    $title .= $search_values['search_api_views_fulltext'] . ', ';
   }
   if (isset($search_values['title'])) {
-    $title .= "title: ". $search_values['title'] .', '; 
+    $title .= 'title: ' . $search_values['title'] . ', ';
   }
   if (isset($search_values['search_text_zotero_tags'])) {
-    $title .= "tagged with ". $search_values['search_text_zotero_tags'] .', '; 
+    $title .= 'tagged with ' . $search_values['search_text_zotero_tags'] . ', ';
   }
   if (isset($search_values['advanced_biblio_publication_type'])) {
     $publication_type = sources_views_get_publication_type($search_values['advanced_biblio_publication_type']);
-    $title .= $publication_type .', '; 
+    $title .= $publication_type . ', ';
   }
   if (isset($search_values['search_text_biblio_abstract'])) {
-    $title .= "abstract: ". $search_values['search_text_biblio_abstract'] .', '; 
+    $title .= 'abstract: ' . $search_values['search_text_biblio_abstract'] . ', ';
   }
   if (isset($search_values['biblio_authors'])) {
-    $title .= "author: ". $search_values['biblio_authors'] .', '; 
+    $title .= 'author: ' . $search_values['biblio_authors'] . ', ';
   }
   if (isset($search_values['biblio_publisher'])) {
-    $title .= "publisher: ". $search_values['biblio_publisher'] .', '; 
+    $title .= 'publisher: ' . $search_values['biblio_publisher'] . ', ';
   }
   if (isset($search_values['biblio_place_published'])) {
-    $title .= $search_values['biblio_place_published'] .', '; 
+    $title .= $search_values['biblio_place_published'] . ', ';
   }
   if (isset($search_values['biblio_year'])) {
-    $title .= $search_values['biblio_year'] .' - '. $search_values['biblio_year_1'].', '; 
+    $title .= $search_values['biblio_year'] . ' - ' . $search_values['biblio_year_1'] . ', ';
   }
-
   $title = substr($title, 0, -2);
-
   return $title;
 }
 
@@ -1092,13 +1131,15 @@ function sources_views_views_pre_build(&$view) {
  */
 function sources_views_theme($existing, $type, $theme, $path) {
   return array(
-    'sources_views_custom_sort_field' => array('template' => 'sources_views_custom_sort_field'),
-    'sources_views_custom_pager_top' => array('template' => 'sources_views_custom_pager_top'),
-    'sources_views_custom_pager_bottom' => array('template' => 'sources_views_custom_pager_bottom'),
-    'sources_views_breadcrumb' => array('template' => 'sources_views_breadcrumb'),
+    'sources_views_custom_sort_field' => array('template' => 'sources_views_custom_sort_field', 'path' => drupal_get_path('module', 'sources_views') . '/templates'),
+    'sources_views_custom_pager_top' => array('template' => 'sources_views_custom_pager_top', 'path' => drupal_get_path('module', 'sources_views') . '/templates'),
+    'sources_views_custom_pager_bottom' => array('template' => 'sources_views_custom_pager_bottom', 'path' => drupal_get_path('module', 'sources_views') . '/templates'),
+    'sources_views_breadcrumb' => array('template' => 'sources_views_breadcrumb', 'path' => 'templates'),
     'sources_views_breadcrumbs' => array('function' => 'sources_views_theme_breadcrumbs'),
-    'sources_views_all_sources_dropdown' => array('template' => 'sources_views_all_sources_dropdown'),
-    'sources_views_breadcrumb_dropdown' => array('template' => 'sources_views_breadcrumb_dropdown'),
+    'sources_views_all_sources_dropdown' => array('template' => 'sources_views_all_sources_dropdown', 'path' => drupal_get_path('module', 'sources_views') . '/templates'),
+    'sources_views_breadcrumb_dropdown' => array('template' => 'sources_views_breadcrumb_dropdown', 'path' => drupal_get_path('module', 'sources_views') . '/templates'),
+    'sources_item_list' => array('template' => 'sources_item_list', 'path' => drupal_get_path('module', 'sources_views') . '/templates'),
+    'sources_custom_option_list' => array('template' => 'sources_custom_option_list', 'path' => drupal_get_path('module', 'sources_views') . '/templates'),
   );
 }
 
