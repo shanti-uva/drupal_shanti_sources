@@ -1,6 +1,6 @@
 <div class="custom-pager">
   <div class="custom-pager-left">
-    <span class="label">SOURCES </span><span class="count">(Displaying <?php print $value['current_row_list']; ?> of <?php print $value['total_items']; ?>)</span>
+    <span class="count">Displaying <?php print $value['current_row_list']; ?> of <?php print $value['total_items']; ?> sources</span>
   </div>
   <div class="custom-pager-right">
     <ul class="pager">
