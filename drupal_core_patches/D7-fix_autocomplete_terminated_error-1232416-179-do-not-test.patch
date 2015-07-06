@@ -1,0 +1,32 @@
+diff --git a/misc/ajax.js b/misc/ajax.js
+index 90c3bb8..20f1e47 100644
+--- a/misc/ajax.js
++++ b/misc/ajax.js
+@@ -448,7 +448,10 @@ Drupal.ajax.prototype.getEffect = function (response) {
+  * Handler for the form redirection error.
+  */
+ Drupal.ajax.prototype.error = function (response, uri) {
+-  alert(Drupal.ajaxError(response, uri));
++  // Fix for autocomplete terminated error.
++  if (response.status != 0) {
++    alert(Drupal.ajaxError(response, uri));
++  }
+   // Remove the progress element.
+   if (this.progress.element) {
+     $(this.progress.element).remove();
+diff --git a/misc/autocomplete.js b/misc/autocomplete.js
+index 8f7ac60..980c1ca 100644
+--- a/misc/autocomplete.js
++++ b/misc/autocomplete.js
+@@ -306,7 +306,10 @@ Drupal.ACDB.prototype.search = function (searchString) {
+         }
+       },
+       error: function (xmlhttp) {
+-        alert(Drupal.ajaxError(xmlhttp, db.uri));
++        // Fix for autocomplete terminated error.
++        if (xmlhttp.status != 0) {
++          alert(Drupal.ajaxError(xmlhttp, db.uri));
++        }
+       }
+     });
+   }, this.delay);

@@ -307,7 +307,10 @@ Drupal.ACDB.prototype.search = function (searchString) {
         }
       },
       error: function (xmlhttp) {
-        alert(Drupal.ajaxError(xmlhttp, db.uri));
+        // Fix for autocomplete terminated error.
+        if (xmlhttp.status != 0) {
+          alert(Drupal.ajaxError(xmlhttp, db.uri));
+        }
       }
     });
   }, this.delay);
