@@ -18,7 +18,7 @@ function biblio_title_list_callback($string = '') {
       $biblio_full_results = sources_views_get_views_results('biblio_search_api', 'biblio_full');
       foreach ($titles as $title_key => $node) {
         $title_authors = biblio_title_authors($node->nid);
-        $current_page = biblio_title_current_page($biblio_full_results);
+        $current_page = biblio_title_current_page($biblio_full_results, $node->nid);
         $publication_year = ($node->value != 0) ? '(' . $node->value . ')' : '';
         $matches['node=' . $node->nid . '=' . $current_page] = biblio_title_list_callback_option_output('titles', $title_key, $node->title, $publication_year, $title_authors);
       }
@@ -40,7 +40,7 @@ function biblio_title_list_callback($string = '') {
     }
     if ($tags->rowCount() != 0) {
       foreach ($tags as $tag_key => $tag) {
-        $matches['tag=' . $tag->tid] = biblio_title_list_callback_option_output('tags', $tag_key, $tag->tid);
+        $matches['tag=' . $tag->tid] = biblio_title_list_callback_option_output('tags', $tag_key, $tag->name);
       }
     }
   }
@@ -113,9 +113,9 @@ function biblio_title_authors($nid) {
  *
  * @return Current page value.
  */
-function biblio_title_current_page($result) {
+function biblio_title_current_page($result, $nid) {
   foreach ($result as $biblio_full_result_key => $value) {
-    if ($value->entity == $node->nid) {
+    if ($value->entity == $nid) {
       $current_page = $biblio_full_result_key;
       return $current_page;
     }
@@ -162,11 +162,16 @@ function biblio_title_list_callback_option_output($option_type, $key, $value, $y
   }
   $option_values = array(
     'type' => $option_type,
+    'key' => $key,
     'value' => $value,
-    'year' => $year,
-    'author' => $author,
     'header_label' => $header_label,
   );
+  if (!empty($year)) {
+    $option_values = $option_values + array('year' => $year);
+  }
+  if (!empty($author)) {
+    $option_values = $option_values + array('author' => $author);
+  }
   return theme('sources_custom_option_list', array('option' => $option_values));
 }
 
