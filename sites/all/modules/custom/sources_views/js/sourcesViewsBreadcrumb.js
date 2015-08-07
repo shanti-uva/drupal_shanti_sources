@@ -9,10 +9,9 @@ var globalElement;
 
         var term_id = $(this).attr('term_id');
         var clicked_dropdown_is_visible = sourcesDropDownIsVisible(term_id);
-
         sourcesHideAllDropDowns();
+
         if (!clicked_dropdown_is_visible) {
-          console.log(term_id);
           sourcesDisplayBreadCrumbDropDown(term_id);
         }
       });
@@ -88,7 +87,6 @@ $ = jQuery;
     element = $(element);
     var width = $(element).width();
     var position = $(element).offset();
-    console.log(position);
     var center = (width / 2) + position.left;
     return center;
   }

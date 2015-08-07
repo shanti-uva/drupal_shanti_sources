@@ -1,4 +1,4 @@
-<div class="library-dropdown" style="display: none;">
+<div class="library-dropdown">
   <div class="inner-library">
     <div class="view-all-library-container">
       <?php print $value['all_source_link']; ?>

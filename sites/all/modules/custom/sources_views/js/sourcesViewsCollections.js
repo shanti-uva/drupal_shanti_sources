@@ -7,7 +7,6 @@
     attach: function (context, settings) {
       // Collections block
       $('#block-sources-views-custom-taxonomy-block .content .item-list a, #block-sources-views-custom-taxonomy-flyout-block .content .item-list a, #block-sources-views-custom-taxonomy-breadcrumb .content .item-list a').removeClass('active');
-      $('#block-sources-views-custom-taxonomy-block ul li ul, #block-sources-views-custom-taxonomy-flyout-block ul li ul, #block-sources-views-custom-taxonomy-breadcrumb ul li ul').hide();
       $('#block-sources-views-custom-taxonomy-block ul li a.has-children, #block-sources-views-custom-taxonomy-flyout-block ul li a.has-children, #block-sources-views-custom-taxonomy-breadcrumb ul li a.has-children').after('<a href="#" class="expand-btn glyphicon-plus-sign"></a>');
       $('#block-sources-views-custom-taxonomy-block .expand-btn, #block-sources-views-custom-taxonomy-flyout-block .expand-btn, #block-sources-views-custom-taxonomy-breadcrumb .expand-btn').click(function(e) {
         e.stopPropagation();

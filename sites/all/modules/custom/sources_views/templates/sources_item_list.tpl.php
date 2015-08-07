@@ -1,9 +1,5 @@
-<div id="tree" class="view-wrap">
-  <ul class="ui-fancytree fancytree-container fancytree-ext-glyph">
-    <?php foreach ($items as $link): ?>
-      <li class="fancytree-lastsib">
-        <?php print $link; ?>
-      </li>
-    <?php endforeach;?>
-  </ul>
-</div>
+<ul class="ui-fancytree fancytree-container fancytree-ext-glyph" tabindex="0">
+  <?php foreach ($items as $item_link): ?>
+    <li><?php print $item_link; ?></li>
+  <?php endforeach; ?>
+</ul>

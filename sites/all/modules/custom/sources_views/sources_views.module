@@ -6,6 +6,10 @@
 function sources_views_init() {
   module_load_include('inc', 'sources_views', 'breadcrumbs');
   module_load_include('inc', 'sources_views', 'biblio');
+  module_load_include('inc', 'sources_views', 'sources_views_fancytree_taxonomy');  
+  libraries_load('fancytree');
+  drupal_add_js(drupal_get_path('module', 'fancytree') . '/fancytree.js');
+  drupal_add_js(drupal_get_path('module', 'sources_views') . '/js/sourcesViewsFancyTreeTaxonomy.js');
 }
 
 /**
@@ -42,6 +46,11 @@ function sources_views_menu() {
     'page callback' => 'biblio_tags_list_callback',
     'type' => MENU_CALLBACK,
     'access arguments' => array('access content'),
+  );
+  $items['json/collection-list'] = array(
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('access content'),
+    'page callback' => 'sources_views_build_json_taxonomy_list',
   );
   return $items;
 }
@@ -312,11 +321,11 @@ function sources_views_block_info() {
   $blocks['custom_sort_filter'] = array(
     'info' => t('Custom views filter'),
   );
-  $blocks['custom_taxonomy_block'] = array(
-    'info' => t('Custom taxonomy block'),
+  $blocks['fancytree_taxonomy_block'] = array(
+    'info' => t('FancyTree Taxonomy Block'),
   );
-  $blocks['custom_taxonomy_flyout_block'] = array(
-    'info' => t('Custom taxonomy flyout block'),
+  $blocks['fancytree_taxonomy_flyout_block'] = array(
+    'info' => t('FancyTree Taxonomy Search Flyout Block'),
   );
   $blocks['custom_taxonomy_breadcrumb'] = array(
     'info' => t('Custom taxonomy breadcrumb'),
@@ -341,13 +350,13 @@ function sources_views_block_view($delta = '') {
       $block['subject'] = '';
       $block['content'] = (!search_landing_page()) ? theme('sources_views_custom_sort_field', array('value' => sources_views_custom_sort_block_content())) : '';
       break;
-    case 'custom_taxonomy_block':
+    case 'fancytree_taxonomy_block':
       $block['subject'] = '';
-      $block['content'] = sources_custom_taxonomy_block_content($vid);
+      $block['content'] = sources_views_fancytree_taxonomy_list();
       break;
-    case 'custom_taxonomy_flyout_block':
+    case 'fancytree_taxonomy_flyout_block':
       $block['subject'] = '';
-      $block['content'] = sources_views_generate_list(sources_views_build_taxonomy_tree($vid, 0));
+      $block['content'] = sources_views_search_flyout_fancytree_taxonomy_list();
       break;
     case 'custom_taxonomy_breadcrumb':
       $block['subject'] = '';
@@ -499,8 +508,6 @@ function sources_views_get_collection_link($term) {
 
 }
 
-
-
 function sources_views_get_selected_collection() {
   $selected_collection = sources_views_get_page_argument('field_zotero_collections');
   return $selected_collection;
@@ -559,8 +566,6 @@ function sources_views_get_all_sources_sub_top_link($taxonomy_term) {
   return l(t($taxonomy_term->name), 'sources-search', array('query' => $query_values));
 }
 
-
-
 /*
  * We designate certain filters as 'searching' although they are all technically views filters
  * This allows us to display 'search results' in the UI if user enters text for
@@ -605,7 +610,6 @@ function sources_views_search_criteria() {
 
 }
 
-
 function sources_views_arg_type_is_set($type) {
   $criteria = sources_views_search_criteria();
   $filter_keys = array_keys($criteria[$type]);
@@ -626,8 +630,6 @@ function sources_views_is_search() {
 function sources_views_is_filtered() {
   return sources_views_arg_type_is_set('filter');
 }
-
-
 
 /**
  * Advanced biblio search form().
@@ -1130,16 +1132,18 @@ function sources_views_views_pre_build(&$view) {
  *  Implements hook_theme().
  */
 function sources_views_theme($existing, $type, $theme, $path) {
+  $tempalte_path = drupal_get_path('module', 'sources_views') . '/templates';
   return array(
-    'sources_views_custom_sort_field' => array('template' => 'sources_views_custom_sort_field', 'path' => drupal_get_path('module', 'sources_views') . '/templates'),
-    'sources_views_custom_pager_top' => array('template' => 'sources_views_custom_pager_top', 'path' => drupal_get_path('module', 'sources_views') . '/templates'),
-    'sources_views_custom_pager_bottom' => array('template' => 'sources_views_custom_pager_bottom', 'path' => drupal_get_path('module', 'sources_views') . '/templates'),
-    'sources_views_breadcrumb' => array('template' => 'sources_views_breadcrumb', 'path' => 'templates'),
+    'sources_views_custom_sort_field' => array('template' => 'sources_views_custom_sort_field', 'path' => $tempalte_path),
+    'sources_views_custom_pager_top' => array('template' => 'sources_views_custom_pager_top', 'path' => $tempalte_path),
+    'sources_views_custom_pager_bottom' => array('template' => 'sources_views_custom_pager_bottom', 'path' => $tempalte_path),
+    'sources_views_breadcrumb' => array('template' => 'sources_views_breadcrumb', 'path' => $tempalte_path),
     'sources_views_breadcrumbs' => array('function' => 'sources_views_theme_breadcrumbs'),
-    'sources_views_all_sources_dropdown' => array('template' => 'sources_views_all_sources_dropdown', 'path' => drupal_get_path('module', 'sources_views') . '/templates'),
-    'sources_views_breadcrumb_dropdown' => array('template' => 'sources_views_breadcrumb_dropdown', 'path' => drupal_get_path('module', 'sources_views') . '/templates'),
-    'sources_item_list' => array('template' => 'sources_item_list', 'path' => drupal_get_path('module', 'sources_views') . '/templates'),
-    'sources_custom_option_list' => array('template' => 'sources_custom_option_list', 'path' => drupal_get_path('module', 'sources_views') . '/templates'),
+    'sources_views_all_sources_dropdown' => array('template' => 'sources_views_all_sources_dropdown', 'path' => $tempalte_path),
+    'sources_views_breadcrumb_dropdown' => array('template' => 'sources_views_breadcrumb_dropdown', 'path' => $tempalte_path),
+    'sources_item_list' => array('template' => 'sources_item_list', 'path' => $tempalte_path),
+    'sources_custom_option_list' => array('template' => 'sources_custom_option_list', 'path' => $tempalte_path),
+    'sources_fancytree_taxonomy' => array('template' => 'sources_fancytree_taxonomy', 'path' => $tempalte_path),    
   );
 }
 
@@ -1150,3 +1154,4 @@ function sources_views_sort_criteria_set() {
   $status = (!empty($_GET['sort_by']) && !empty($_GET['sort_order'])) ? TRUE : FALSE;
   return $status;
 }
+

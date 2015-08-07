@@ -612,6 +612,14 @@ function sources_biblio_search_views_default_views() {
   $handler->display->display_options['relationships']['field_zotero_collections']['table'] = 'search_api_index_database_node_index';
   $handler->display->display_options['relationships']['field_zotero_collections']['field'] = 'field_zotero_collections';
   $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: Indexed Node: Publication Type */
+  $handler->display->display_options['fields']['biblio_publication_type']['id'] = 'biblio_publication_type';
+  $handler->display->display_options['fields']['biblio_publication_type']['table'] = 'search_api_index_database_node_index';
+  $handler->display->display_options['fields']['biblio_publication_type']['field'] = 'biblio_publication_type';
+  $handler->display->display_options['fields']['biblio_publication_type']['label'] = '';
+  $handler->display->display_options['fields']['biblio_publication_type']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['biblio_publication_type']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['biblio_publication_type']['link_to_entity'] = 0;
   /* Field: Indexed Node: biblio_year */
   $handler->display->display_options['fields']['biblio_year']['id'] = 'biblio_year';
   $handler->display->display_options['fields']['biblio_year']['table'] = 'search_api_index_database_node_index';

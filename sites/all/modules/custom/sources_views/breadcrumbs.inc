@@ -16,8 +16,8 @@ function sources_views_custom_breadcrumbs() {
 }
 
 /*
- *  If not viewing sources as a collection, breadcrumbs are based of filters
- *  Set on our sources view
+ *  If not viewing sources as a collection, breadcrumbs are based on filters
+ *  set on our sources view
  */
 function sources_views_get_contextual_breadcrumbs() {
   $field_zotero_tags = isset($_GET['field_zotero_tags']) ? $_GET['field_zotero_tags'] : FALSE;
