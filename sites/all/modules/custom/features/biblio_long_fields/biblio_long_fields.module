@@ -1,8 +1,10 @@
 <?php
 /**
  * @file
- * Drupal needs this blank file.
+ * Code for the Biblio Custom Fields feature.
  */
+
+include_once 'biblio_long_fields.features.inc';
 
 /**
  * Implements hook_node_presave().

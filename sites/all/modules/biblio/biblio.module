@@ -1248,6 +1248,7 @@ function biblio_form($node, &$form_state) {
 
     foreach ($fields as $key => $fld) {
       $options = '';
+
       if ($key == 'biblio_keywords' ) {
         $sep = check_plain(variable_get('biblio_keyword_sep', ','));
         // is the kewords are in array form, then implode them into a string.
@@ -1266,17 +1267,16 @@ function biblio_form($node, &$form_state) {
       }
 
       $element = array(
-            '#default_value' => (isset($form_state['values'][$key]) ? $form_state['values'][$key] : (isset($node->$key)?$node->$key:'')),
-            '#type' => $fld['type'],
-            '#title' => check_plain($fld['title']),
-            '#size' => $fld['size'],
-            '#rows' => 10,
-//            '#required' => $fld['required'],
-            '#maxlength' => $fld['maxsize'],
-            '#weight' => $fld['weight'] / 10,
-            '#autocomplete_path' => ($fld['autocomplete']) ? 'biblio/autocomplete/' . $fld['name'] : '',
-            '#description' => check_plain($fld['hint']),
-            '#format' => isset($node->biblio_formats[$key]) ? $node->biblio_formats[$key] :  filter_default_format(),
+        '#default_value' => (isset($form_state['values'][$key]) ? $form_state['values'][$key] : (isset($node->$key)?$node->$key:'')),
+        '#type' => $fld['type'],
+        '#title' => check_plain($fld['title']),
+        '#size' => $fld['size'],
+        '#rows' => 10,
+        '#maxlength' => $fld['maxsize'],
+        '#weight' => $fld['weight'] / 10,
+        '#autocomplete_path' => ($fld['autocomplete']) ? 'biblio/autocomplete/' . $fld['name'] : '',
+        '#description' => check_plain($fld['hint']),
+        '#format' => isset($node->biblio_formats[$key]) ? $node->biblio_formats[$key] :  filter_default_format(),
       );
 
       if ($key == 'biblio_refereed' ) {

@@ -10,6 +10,51 @@
 function biblio_long_fields_field_default_field_instances() {
   $field_instances = array();
 
+  // Exported field_instance: 'node-biblio-field_biblio_language'
+  $field_instances['node-biblio-field_biblio_language'] = array(
+    'bundle' => 'biblio',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'list',
+        'settings' => array(),
+        'type' => 'list_default',
+        'weight' => 7,
+      ),
+      'featured' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_biblio_language',
+    'label' => 'Biblio Language',
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'options',
+      'settings' => array(
+        'apply_chosen' => '',
+      ),
+      'type' => 'options_select',
+      'weight' => 62,
+    ),
+  );
+
   // Exported field_instance: 'node-biblio-field_biblio_long_language'
   $field_instances['node-biblio-field_biblio_long_language'] = array(
     'bundle' => 'biblio',
@@ -55,7 +100,7 @@ function biblio_long_fields_field_default_field_instances() {
         'rows' => 5,
       ),
       'type' => 'text_textarea',
-      'weight' => 34,
+      'weight' => 61,
     ),
   );
 
@@ -104,12 +149,13 @@ function biblio_long_fields_field_default_field_instances() {
         'rows' => 5,
       ),
       'type' => 'text_textarea',
-      'weight' => 33,
+      'weight' => 60,
     ),
   );
 
   // Translatables
   // Included for use with string extractors like potx.
+  t('Biblio Language');
   t('Biblio Long Language');
   t('Biblio Long Title');
 

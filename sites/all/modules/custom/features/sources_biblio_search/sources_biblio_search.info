@@ -34,7 +34,6 @@ features[fe_block_settings][] = views--exp-biblio_search_api-page
 features[fe_block_settings][] = views-zotero_tags-block
 features[features_api][] = api:2
 features[page_manager_pages][] = home
-features[search_api_index][] = solr_database_node_index
 features[user_permission][] = access biblio content
 features[user_permission][] = access content
 features[user_permission][] = view files

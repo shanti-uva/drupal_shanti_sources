@@ -1,0 +1,17 @@
+.titlearea.banner {
+  background: #008a96 !important;
+}
+
+.input-section .selectpicker .caret::before {
+  color: #008a96 !important;
+}
+
+a,
+.main-content .selectpicker .caret::before,
+.view-id-biblio_search_api li a {
+  color: #008a96;
+}
+
+.view-id-biblio_search_api .views-field-title a {
+  color: #404040 !important;
+}

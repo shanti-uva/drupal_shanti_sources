@@ -37,6 +37,11 @@ Drupal.behaviors.sourcesViewsQuickSearchAutocomplete = {
     $(selector, context).bind('autocompleteSelect', function() {
       quick_search_autocomplete_select_handler($(this));
     });
+
+    //Simulate a form submit event when clicking custom autocomplete field submit button
+    $('#searchbutton').click(function() {
+      $("#sources-views-advanced-search-form").submit();
+    });
   }
 };
 

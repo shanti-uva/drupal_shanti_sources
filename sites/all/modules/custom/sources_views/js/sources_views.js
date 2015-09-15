@@ -19,6 +19,14 @@
       $('#block-sources-views-custom-sort-filter').show();
     }
   };
+
+  Drupal.behaviors.sourcesViewsAlterNodeBiblioFieldLabel = {
+    attach: function (context, settings) {
+      // Override secondary title field label text on node biblio edit form.
+      $('.form-item-biblio-secondary-title label').text('Published In');
+    }
+  };
+
   // Returns query string value.
   $.get_query_string_val = function (variable) {
     var query = window.location.search.substring(1);

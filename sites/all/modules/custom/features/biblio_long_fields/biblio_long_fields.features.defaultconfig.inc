@@ -92,7 +92,7 @@ function biblio_long_fields_defaultconfig_field_default_fields() {
           'rows' => 5,
         ),
         'type' => 'text_textarea',
-        'weight' => 34,
+        'weight' => 61,
       ),
     ),
   );
@@ -168,7 +168,7 @@ function biblio_long_fields_defaultconfig_field_default_fields() {
           'rows' => 5,
         ),
         'type' => 'text_textarea',
-        'weight' => 33,
+        'weight' => 60,
       ),
     ),
   );

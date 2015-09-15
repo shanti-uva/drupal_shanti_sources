@@ -29,8 +29,31 @@ var globalElement;
       });
     }
   }
+  // Toggle breadcrumb dropdown collection children when a user clicks the expander button 
+  // on a top parent collection item within the breadcrumb dropdown
+  Drupal.behaviors.sourcesViewsToggleBreadcumbDropdownCollectionChildren = {
+    attach: function (context, settings) {
+      $('.breadcrumb-child-sub-top .fancytree-expander').click(function(e) {
+        e.stopPropagation();
+        e.preventDefault();
 
-
+        var breadcrumb_children_container = $(this).parent().parent().parent().parent().next('div.breadcrumb-child');
+        breadcrumb_children_container.slideToggle('fast');
+        $(this).toggleClass('glyphicon-minus-sign');
+        $(this).toggleClass('glyphicon-plus-sign');
+      });
+    }
+  }
+  // Close shown breadcrumb dropdown if a user clicks anywhere on the page
+  Drupal.behaviors.sourcesViewsHideBreadcumbDropdown = {
+    attach: function (context, settings) {
+      $('body').click(function(e) {
+        $('#collection-library, a.breadcrumb-dropdown-cta').removeClass('active');
+        if ($('div.breadcrumb-child-container').is(':visible')) $('div.breadcrumb-child-container').hide();
+        if ($('div.library-dropdown').is(':visible')) $('div.library-dropdown').hide();
+      });
+    }
+  }
 })(jQuery);
 
 $ = jQuery;

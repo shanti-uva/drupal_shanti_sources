@@ -612,32 +612,11 @@ function sources_biblio_search_views_default_views() {
   $handler->display->display_options['relationships']['field_zotero_collections']['table'] = 'search_api_index_database_node_index';
   $handler->display->display_options['relationships']['field_zotero_collections']['field'] = 'field_zotero_collections';
   $handler->display->display_options['defaults']['fields'] = FALSE;
-  /* Field: Indexed Node: Publication Type */
-  $handler->display->display_options['fields']['biblio_publication_type']['id'] = 'biblio_publication_type';
-  $handler->display->display_options['fields']['biblio_publication_type']['table'] = 'search_api_index_database_node_index';
-  $handler->display->display_options['fields']['biblio_publication_type']['field'] = 'biblio_publication_type';
-  $handler->display->display_options['fields']['biblio_publication_type']['label'] = '';
-  $handler->display->display_options['fields']['biblio_publication_type']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['biblio_publication_type']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['biblio_publication_type']['link_to_entity'] = 0;
-  /* Field: Indexed Node: biblio_year */
-  $handler->display->display_options['fields']['biblio_year']['id'] = 'biblio_year';
-  $handler->display->display_options['fields']['biblio_year']['table'] = 'search_api_index_database_node_index';
-  $handler->display->display_options['fields']['biblio_year']['field'] = 'biblio_year';
-  $handler->display->display_options['fields']['biblio_year']['label'] = '';
-  $handler->display->display_options['fields']['biblio_year']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['biblio_year']['alter']['alter_text'] = TRUE;
-  $handler->display->display_options['fields']['biblio_year']['alter']['text'] = '([biblio_year])';
-  $handler->display->display_options['fields']['biblio_year']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['biblio_year']['hide_empty'] = TRUE;
-  $handler->display->display_options['fields']['biblio_year']['empty_zero'] = TRUE;
-  $handler->display->display_options['fields']['biblio_year']['link_to_entity'] = 0;
   /* Field: Indexed Node: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'search_api_index_database_node_index';
   $handler->display->display_options['fields']['title']['field'] = 'title';
   $handler->display->display_options['fields']['title']['label'] = '';
-  $handler->display->display_options['fields']['title']['alter']['alter_text'] = TRUE;
   $handler->display->display_options['fields']['title']['alter']['text'] = '[title] [biblio_year]';
   $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['title']['link_to_entity'] = 0;
@@ -661,6 +640,22 @@ function sources_biblio_search_views_default_views() {
   $handler->display->display_options['fields']['biblio_authors']['hide_empty'] = TRUE;
   $handler->display->display_options['fields']['biblio_authors']['empty_zero'] = TRUE;
   $handler->display->display_options['fields']['biblio_authors']['link_to_entity'] = 0;
+  /* Field: Indexed Node: biblio_year */
+  $handler->display->display_options['fields']['biblio_year_1']['id'] = 'biblio_year_1';
+  $handler->display->display_options['fields']['biblio_year_1']['table'] = 'search_api_index_database_node_index';
+  $handler->display->display_options['fields']['biblio_year_1']['field'] = 'biblio_year';
+  $handler->display->display_options['fields']['biblio_year_1']['label'] = 'Publication Year';
+  $handler->display->display_options['fields']['biblio_year_1']['hide_empty'] = TRUE;
+  $handler->display->display_options['fields']['biblio_year_1']['empty_zero'] = TRUE;
+  $handler->display->display_options['fields']['biblio_year_1']['link_to_entity'] = 0;
+  /* Field: Indexed Node: Publication Type */
+  $handler->display->display_options['fields']['biblio_publication_type_1']['id'] = 'biblio_publication_type_1';
+  $handler->display->display_options['fields']['biblio_publication_type_1']['table'] = 'search_api_index_database_node_index';
+  $handler->display->display_options['fields']['biblio_publication_type_1']['field'] = 'biblio_publication_type';
+  $handler->display->display_options['fields']['biblio_publication_type_1']['label'] = 'Format';
+  $handler->display->display_options['fields']['biblio_publication_type_1']['hide_empty'] = TRUE;
+  $handler->display->display_options['fields']['biblio_publication_type_1']['empty_zero'] = TRUE;
+  $handler->display->display_options['fields']['biblio_publication_type_1']['link_to_entity'] = 0;
   /* Field: Indexed Node: biblio_publisher */
   $handler->display->display_options['fields']['biblio_publisher']['id'] = 'biblio_publisher';
   $handler->display->display_options['fields']['biblio_publisher']['table'] = 'search_api_index_database_node_index';
@@ -718,7 +713,7 @@ function sources_biblio_search_views_default_views() {
   $handler->display->display_options['fields']['biblio_secondary_title']['id'] = 'biblio_secondary_title';
   $handler->display->display_options['fields']['biblio_secondary_title']['table'] = 'search_api_index_database_node_index';
   $handler->display->display_options['fields']['biblio_secondary_title']['field'] = 'biblio_secondary_title';
-  $handler->display->display_options['fields']['biblio_secondary_title']['label'] = 'Secondary Title';
+  $handler->display->display_options['fields']['biblio_secondary_title']['label'] = 'Published In';
   $handler->display->display_options['fields']['biblio_secondary_title']['hide_empty'] = TRUE;
   $handler->display->display_options['fields']['biblio_secondary_title']['empty_zero'] = TRUE;
   $handler->display->display_options['fields']['biblio_secondary_title']['link_to_entity'] = 0;
@@ -978,13 +973,14 @@ function sources_biblio_search_views_default_views() {
   $handler->display->display_options['fields']['field_biblio_long_title']['label'] = 'Title';
   $handler->display->display_options['fields']['field_biblio_long_title']['hide_empty'] = TRUE;
   $handler->display->display_options['fields']['field_biblio_long_title']['empty_zero'] = TRUE;
-  /* Field: Indexed Node: Biblio Long Language */
-  $handler->display->display_options['fields']['field_biblio_long_language']['id'] = 'field_biblio_long_language';
-  $handler->display->display_options['fields']['field_biblio_long_language']['table'] = 'search_api_index_database_node_index';
-  $handler->display->display_options['fields']['field_biblio_long_language']['field'] = 'field_biblio_long_language';
-  $handler->display->display_options['fields']['field_biblio_long_language']['label'] = 'Language(s)';
-  $handler->display->display_options['fields']['field_biblio_long_language']['hide_empty'] = TRUE;
-  $handler->display->display_options['fields']['field_biblio_long_language']['empty_zero'] = TRUE;
+  /* Field: Indexed Node: Biblio Language */
+  $handler->display->display_options['fields']['field_biblio_language']['id'] = 'field_biblio_language';
+  $handler->display->display_options['fields']['field_biblio_language']['table'] = 'search_api_index_database_node_index';
+  $handler->display->display_options['fields']['field_biblio_language']['field'] = 'field_biblio_language';
+  $handler->display->display_options['fields']['field_biblio_language']['label'] = 'Language(s)';
+  $handler->display->display_options['fields']['field_biblio_language']['hide_empty'] = TRUE;
+  $handler->display->display_options['fields']['field_biblio_language']['empty_zero'] = TRUE;
+  $handler->display->display_options['fields']['field_biblio_language']['delta_offset'] = '0';
   /* Field: Content: Edit link */
   $handler->display->display_options['fields']['edit_node']['id'] = 'edit_node';
   $handler->display->display_options['fields']['edit_node']['table'] = 'views_entity_node';

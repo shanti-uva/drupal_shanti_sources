@@ -1,0 +1,55 @@
+.ui-fancytree li a,
+.fancytree-node .fancytree-expander,
+.view-section .fancytree-container .fancytree-node:hover > .glyphicon,
+.view-section .fancytree-container .glyphicon,
+.view-section .fancytree-container .fancytree-node.on-hover .fancytree-expander,
+.view-section .fancytree-container .fancytree-node.fancytree-active .glyphicon {
+  color: #008a96;
+}
+
+.taxonomy-list-tree .ui-fancytree {
+  border: none;
+  background: none;
+}
+
+.fancytree-exp-n .fancytree-expander,
+.fancytree-exp-nl .fancytree-expander {
+  background: #fff;
+  color: transparent;
+  font-family: 'shanticon';
+  content: '\e625';
+  font-size: 1em;
+  float: left;
+  position: relative;
+  top: 2px;
+  border-radius: 50%;
+  background-clip: padding-box;
+  width: 9px;
+  height: 9px;
+  display: block;
+  margin-right: 7px;
+  margin-left: 2px;
+  box-shadow: 0 0 2px 1px #aaa;
+  border-collapse: separate;
+}
+
+span.fancytree-expander {
+  margin-top: 2px;
+  background-image: none;
+}
+
+.fancytree-exp-n.on-hover .fancytree-expander,
+.fancytree-exp-nl.on-hover .fancytree-expander,
+.fancytree-active.fancytree-exp-n .fancytree-expander,
+.fancytree-active.fancytree-exp-nl .fancytree-expander {
+  background: #777;
+  box-shadow: none;
+}
+
+.treeview .fancytree-exp-n .fancytree-expander,
+.treeview .fancytree-exp-nl .fancytree-expander {
+  background: none;
+  box-shadow: none;
+  content: none;
+  margin-left: -1px;
+}
