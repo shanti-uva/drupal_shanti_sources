@@ -1,6 +1,0 @@
-name = Sources custom views module
-description = Custom views module for Sources site.
-package = Sources
-core = 7.x
-stylesheets[all][] = sources_views.css
-
