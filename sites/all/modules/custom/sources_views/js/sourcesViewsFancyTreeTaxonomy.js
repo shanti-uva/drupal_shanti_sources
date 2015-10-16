@@ -15,14 +15,17 @@ Drupal.behaviors.sourcesViewsInitializeCollectionListFancyTree = {
       icons: false,
       init: function (event, data) {
         // Set a collection item as active if there is collection filter applied.
-        var taxonomy_term_id = 'collection-item-' + $.get_query_string_val('field_zotero_collections');
-        $('.taxonomy-list-tree').fancytree('getTree').getNodeByKey(taxonomy_term_id).setActive();
+        var collection_id = $.get_query_string_val('field_zotero_collections');
+        if (collection_id) {
+          var collection_item_id = 'collection-item-' + collection_id;
+          $('.taxonomy-list-tree').fancytree('getTree').getNodeByKey(collection_item_id).setActive();
+        }
       },
       renderNode: function (event, data) {
         sources_views_set_custom_class_names();
       },
       click: function (event, data) {
-        // Prevent breadcrumb list container from closing if one of the fancytree items is being expanded/closed.
+        // Prevent breadcrumb list container from closing if one of the fancytree item is being expanded/closed.
         event.stopPropagation();
         // Redirect to sources search result page filtered by the selected collection.
         collection_id_string = 'collection-item-';
@@ -40,7 +43,7 @@ Drupal.behaviors.sourcesViewsInitializeBreadcrumbCollectionListFancyTree = {
       sources_views_build_fancytree_breadcrumb_taxonomy(fancytree_breadcrumb_container_id, collection_data_url)
     });
 
-    // Build each breadcrumb child collection item using fancytree
+    // Build each breadcrumb child collection items into fancytree
     function sources_views_build_fancytree_breadcrumb_taxonomy(fancytree_breadcrumb_container_id, collection_data_url) {
       $(fancytree_breadcrumb_container_id).fancytree({
         source: {
@@ -54,7 +57,7 @@ Drupal.behaviors.sourcesViewsInitializeBreadcrumbCollectionListFancyTree = {
           sources_views_set_custom_class_names();
         },
         click: function (event, data) {
-          // Prevent breadcrumb list container from closing if one of the fancytree items is being expanded/closed.
+          // Prevent breadcrumb list container from closing if one of the fancytree item is being expanded/closed.
           event.stopPropagation();
           // Redirect to sources search result page filtered by the selected collection.
           collection_id_string = 'breadcrumb-collection-item-';
@@ -88,7 +91,7 @@ function sources_views_get_glyphicon_class() {
 }
 
 function sources_views_set_custom_class_names() {
-  // Set class name on a collection item on mouse hover.
+  // Set class name to a collection item on mouse hover.
   $('.fancytree-node').hover(function() {
     $(this).addClass('on-hover');
   }, function() {

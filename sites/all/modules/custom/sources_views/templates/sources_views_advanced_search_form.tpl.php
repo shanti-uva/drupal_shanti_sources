@@ -17,16 +17,16 @@
   </section>
   <section class="view-section">
     <ul class="nav nav-tabs">
-      <li class="treeview active"><a href=".treeview" data-toggle="tab" aria-expanded="true"><span class="icon shanticon-tree"></span>Browse</a></li>
-      <li class="listview"><a href=".listview" data-toggle="tab" aria-expanded="false"><span class="icon shanticon-list"></span>Preferences</a></li>
+      <li class="treeview"><a href=".treeview" data-toggle="tab" aria-expanded="true"><span class="icon shanticon-tree"></span>Browse</a></li>
+      <li class="listview active"><a href=".listview" data-toggle="tab" aria-expanded="false"><span class="icon shanticon-list"></span>Preferences</a></li>
     </ul>
     <div class="tab-content">
       <!-- TAB - tree view -->
-      <div class="treeview tab-pane active">
+      <div class="treeview tab-pane">
         <div class="taxonomy-list-tree"></div>
       </div>
       <!-- TAB - list view -->
-      <div class="listview tab-pane">
+      <div class="listview tab-pane active">
         <?php print drupal_render_children($form); ?>
       </div>
     </div>

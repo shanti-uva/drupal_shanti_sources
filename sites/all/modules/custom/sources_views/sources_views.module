@@ -488,9 +488,11 @@ function sources_views_search_criteria() {
       'search_text_biblio_abstract' => t("Words in Abstract"),
       'search_api_views_fulltext' => t(""),
       'search_text_biblio_author' => t("Author"),
+      'search_text_biblio_publisher' => t(""),
+      'search_text_biblio_publish_place' => t(""),
+      'search_text_zotero_tags' => t("Tags"),
     ),
     'filter' => array(
-      'search_text_zotero_tags' => t("Tags"),
       'advanced_search_start_year' => t(""),
       'advanced_search_end_year' => t(""),
       'biblio_year' => t(""),
@@ -501,8 +503,7 @@ function sources_views_search_criteria() {
       'field_zotero_tags' => t(""),
       'condition_option' => t(""),
       'advanced_biblio_publication_type' => t(""),
-      'search_text_biblio_publisher' => t(""),
-      'search_text_biblio_publish_place' => t("")
+
     ),
     'sort' => array(
       'sort_by' => t("Sort By"),
@@ -547,15 +548,6 @@ function sources_views_advanced_search_form($form, &$form_state) {
   $default_condition_option = (!empty($_GET['condition_option'])) ? $_GET['condition_option'] : 'All';
   $default_publication_type = (!empty($_GET['advanced_biblio_publication_type'])) ? $_GET['advanced_biblio_publication_type'] : '';
   $default_title = (!empty($_GET['title'])) ? $_GET['title'] : '';
-  $default_author = (!empty($_GET['search_text_biblio_author'])) ? $_GET['search_text_biblio_author'] : '';
-  $default_publisher = (!empty($_GET['biblio_publisher'])) ? $_GET['biblio_publisher'] : '';
-  $default_place_published = (!empty($_GET['biblio_place_published'])) ? $_GET['biblio_place_published'] : '';
-  $default_abstract = (!empty($_GET['search_text_biblio_abstract'])) ? $_GET['search_text_biblio_abstract'] : '';
-  $default_tag = '';
-  if (!empty($_GET['field_zotero_tags'])) {
-    $term = taxonomy_term_load($_GET['field_zotero_tags']);
-    $default_tag = $term->name;
-  }
   $default_publication_option = (!empty($_GET['advanced_search_publication_year'])) ? $_GET['advanced_search_publication_year'] : 'range';
   $default_publication_year_start = (!empty($_GET['advanced_search_start_year'])) ? $_GET['advanced_search_start_year'] : '';
   $default_publication_year_end = (!empty($_GET['advanced_search_end_year'])) ? $_GET['advanced_search_end_year'] : '';
@@ -616,34 +608,34 @@ function sources_views_advanced_search_form($form, &$form_state) {
     '#autocomplete_path' => 'biblio/authors/list_callback',
     '#title' => t('Author'),
     '#attributes' => array('class' => array('form-control')),
-    '#default_value' => $default_author,
+    '#default_value' => $_GET['search_text_biblio_author'],
   );
   $form['advanced_option']['search_text_biblio_publisher'] = array(
     '#type' => 'textfield',
     '#autocomplete_path' => 'biblio/publishers/list_callback',
     '#title' => t('Publisher'),
     '#attributes' => array('class' => array('form-control')),
-    '#default_value' => $default_publisher,
+    '#default_value' => $_GET['search_text_biblio_publisher'],
   );
   $form['advanced_option']['search_text_biblio_publish_place'] = array(
     '#type' => 'textfield',
     '#autocomplete_path' => 'biblio/place_published/list_callback',
     '#title' => t('Place of Publication'),
     '#attributes' => array('class' => array('form-control')),
-    '#default_value' => $default_place_published,
+    '#default_value' => $_GET['search_text_biblio_publish_place'],
   );
   $form['advanced_option']['search_text_biblio_abstract'] = array(
     '#type' => 'textfield',
     '#title' => t('Words in Abstract'),
     '#attributes' => array('class' => array('form-control')),
-    '#default_value' => $default_abstract,
+    '#default_value' => $_GET['search_text_biblio_abstract'],
   );
   $form['advanced_option']['search_text_zotero_tags'] = array(
     '#type' => 'textfield',
     '#autocomplete_path' => 'biblio/tags/list_callback',
     '#title' => t('Tags'),
     '#attributes' => array('class' => array('form-control')),
-    '#default_value' => $default_tag,
+    '#default_value' => $_GET['search_text_zotero_tags'],
   );
   $form['advanced_option']['submit'] = array(
     '#type' => 'submit',
@@ -667,7 +659,6 @@ function sources_views_advanced_search_form_submit($form, &$form_state) {
   $biblio_authors = (!empty($_GET['biblio_authors'])) ? $_GET['biblio_authors'] : '';
   $biblio_publisher = (!empty($_GET['biblio_publisher'])) ? $_GET['biblio_publisher'] : '';
   $biblio_place_published = (!empty($_GET['biblio_place_published'])) ? $_GET['biblio_place_published'] : '';
-  $field_zotero_tags = !empty($_GET['field_zotero_tags']) ? $_GET['field_zotero_tags'] : '';
 
   $query_params = array(
     'field_zotero_collections' => 'All',
@@ -677,7 +668,6 @@ function sources_views_advanced_search_form_submit($form, &$form_state) {
     'biblio_authors' => $biblio_authors,
     'biblio_publisher' => $biblio_publisher,
     'biblio_place_published' => $biblio_place_published,
-    'field_zotero_tags' => $field_zotero_tags,
     'biblio_year' => $form_state['values']['advanced_search_start_year'],
     'biblio_year_1' => $form_state['values']['advanced_search_end_year'],
     'search_api_views_fulltext' => $form_state['values']['advanced_search_api_views_fulltext'],
@@ -790,14 +780,14 @@ function sources_views_get_search_page_title() {
   if (isset($search_values['search_text_biblio_abstract'])) {
     $title .= 'abstract: ' . $search_values['search_text_biblio_abstract'] . ', ';
   }
-  if (isset($search_values['biblio_authors'])) {
-    $title .= 'author: ' . $search_values['biblio_authors'] . ', ';
+  if (isset($search_values['search_text_biblio_author'])) {
+    $title .= 'author: ' . $search_values['search_text_biblio_author'] . ', ';
   }
-  if (isset($search_values['biblio_publisher'])) {
-    $title .= 'publisher: ' . $search_values['biblio_publisher'] . ', ';
+  if (isset($search_values['search_text_biblio_publisher'])) {
+    $title .= 'publisher: ' . $search_values['search_text_biblio_publisher'] . ', ';
   }
-  if (isset($search_values['biblio_place_published'])) {
-    $title .= $search_values['biblio_place_published'] . ', ';
+  if (isset($search_values['search_text_biblio_publish_place'])) {
+    $title .= $search_values['search_text_biblio_publish_place'] . ', ';
   }
   if (isset($search_values['biblio_year'])) {
     $title .= $search_values['biblio_year'] . ' - ' . $search_values['biblio_year_1'] . ', ';
@@ -1037,59 +1027,59 @@ function sources_views_views_pre_build(&$view) {
  *  Implements hook_theme().
  */
 function sources_views_theme($existing, $type, $theme, $path) {
-  $template_path = drupal_get_path('module', 'sources_views') . '/templates';
+  $tempalte_path = drupal_get_path('module', 'sources_views') . '/templates';
   return array(
     'sources_views_custom_sort_field' => array(
       'template' => 'sources_views_custom_sort_field',
-      'path' => $template_path
+      'path' => $tempalte_path
     ),
     'sources_views_custom_pager_top' => array(
       'template' => 'sources_views_custom_pager_top',
-      'path' => $template_path
+      'path' => $tempalte_path
     ),
     'sources_views_custom_pager_bottom' => array(
       'template' => 'sources_views_custom_pager_bottom',
-      'path' => $template_path
+      'path' => $tempalte_path
     ),
     'sources_views_breadcrumb' => array(
       'template' => 'sources_views_breadcrumb',
-      'path' => $template_path
+      'path' => $tempalte_path
     ),
     'sources_views_breadcrumbs' => array(
       'function' => 'sources_views_theme_breadcrumbs'
     ),
     'sources_views_all_sources_dropdown' => array(
       'template' => 'sources_views_all_sources_dropdown',
-      'path' => $template_path
+      'path' => $tempalte_path
     ),
     'sources_views_breadcrumb_dropdown' => array(
       'template' => 'sources_views_breadcrumb_dropdown',
-      'path' => $template_path
+      'path' => $tempalte_path
     ),
     'sources_item_list' => array(
       'template' => 'sources_item_list',
-      'path' => $template_path
+      'path' => $tempalte_path
     ),
     'sources_custom_option_list' => array(
       'template' => 'sources_custom_option_list',
-      'path' => $template_path
+      'path' => $tempalte_path
     ),
     'sources_fancytree_taxonomy' => array(
       'template' => 'sources_fancytree_taxonomy',
-      'path' => $template_path
+      'path' => $tempalte_path
     ),
       'field_advanced_search_api_prefix_wrapper' => array(
       'template' => 'field_advanced_search_api_prefix_wrapper',
-      'path' => $template_path
+      'path' => $tempalte_path
     ),
     'field_advanced_search_api_suffix_wrapper' => array(
       'template' => 'field_advanced_search_api_suffix_wrapper',
-      'path' => $template_path
+      'path' => $tempalte_path
     ),
     'sources_views_advanced_search_form' => array(
       'render element' => 'form',
       'template' => 'sources_views_advanced_search_form',
-      'path' => $template_path
+      'path' => $tempalte_path
     ),
   );
 }
@@ -1107,3 +1097,12 @@ function sources_views_get_collection_vocabulary_id() {
   $vocabulary_id = $collection_vocabulary->vid;
   return $vocabulary_id;
 }
+
+/**
+ * Implements hook_js_alter().
+ */
+function sources_views_js_alter(&$javascript) {
+  $javascript['profiles/panopoly/modules/panopoly/panopoly_widgets/panopoly-widgets.js']['scope'] = 'header';
+  $javascript['profiles/panopoly/modules/panopoly/panopoly_widgets/jquery-ui-tabs-rotate.js']['scope'] = 'header';
+}
+

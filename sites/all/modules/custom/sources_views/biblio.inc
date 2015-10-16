@@ -249,7 +249,7 @@ function biblio_plain_title_list_callback($string = '') {
       $biblio_full_page = sources_views_get_views_results('biblio_search_api', 'biblio_full');
       foreach ($titles as $title_key => $node) {
         $current_page = biblio_current_page($biblio_full_page, $node->nid);
-        $matches['node=' . $node->nid . '=' . $current_page] = '<span class="title-group">' . $node->title . '</span>';
+        $matches[$node->title] = '<span class="title-group">' . $node->title . '</span>';
       }
     }
   }
@@ -266,7 +266,7 @@ function biblio_author_list_callback($string = '') {
     $authors = biblio_list_query('authors', $string);
     if ($authors->rowCount() != 0) {
       foreach ($authors as $author_key => $author) {
-        $matches['author=' . $author->value] = '<span class="authors-group">' . $author->value . '</span>';
+        $matches[$author->value] = '<span class="authors-group">' . $author->value . '</span>';
       }
     }
   }
@@ -283,7 +283,7 @@ function biblio_publisher_list_callback($string = '') {
     $publishers = biblio_list_query('publishers', $string);
     if ($publishers->rowCount() != 0) {
       foreach ($publishers as $publisher_key => $publisher) {
-        $matches['publisher=' . $publisher->value] = '<span class="publishers-group">' . $publisher->value . '</span>';
+        $matches[$publisher->value] = '<span class="publishers-group">' . $publisher->value . '</span>';
       }
     }
   }
@@ -300,7 +300,7 @@ function biblio_place_published_list_callback($string = '') {
     $placed_published = biblio_list_query('placed_published', $string);
     if ($placed_published->rowCount() != 0) {
       foreach ($placed_published as $placed_published_key => $place) {
-        $matches['publishplace=' . $place->value] = '<span class="place-published-group">' . $place->value . '</span>';
+        $matches[$place->value] = '<span class="place-published-group">' . $place->value . '</span>';
       }
     }
   }
@@ -319,7 +319,8 @@ function biblio_tags_list_callback($string = '') {
     $tags = biblio_list_query('tags', $string, $vid);
     if ($tags->rowCount() != 0) {
       foreach ($tags as $tag_key => $tag) {
-        $matches['tag=' . $tag->tid] = '<span class="tags-group">' . $tag->name . '</span>';
+        //$matches['tag=' . $tag->tid] = '<span class="tags-group">' . $tag->name . '</span>';
+        $matches[$tag->name] = '<span class="tags-group">' . $tag->name . '</span>';
       }
     }
   }

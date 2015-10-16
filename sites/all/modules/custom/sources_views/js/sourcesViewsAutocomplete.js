@@ -18,16 +18,7 @@ var redirect_in_progress = false;
  */
 Drupal.behaviors.sourcesViewsQuickSearchAutocomplete = {
   attach: function (context, settings) {
-    var widget_elements = [
-      'input#edit-advanced-search-api-views-fulltext',
-      'input#edit-title',
-      'input#edit-search-text-biblio-author',
-      '#edit-search-text-biblio-publisher',
-      '#edit-search-text-biblio-publish-place',
-      '#edit-search-text-zotero-tags',
-    ];
-
-    var selector = widget_elements.join(', ');
+    var selector = 'input#edit-advanced-search-api-views-fulltext';
 
     preventSubmitOnEnter(selector);
 
@@ -40,6 +31,9 @@ Drupal.behaviors.sourcesViewsQuickSearchAutocomplete = {
 
     //Simulate a form submit event when clicking custom autocomplete field submit button
     $('#searchbutton').click(function() {
+      if ($('#autocomplete').length) {
+        $('#autocomplete').remove();
+      }
       $("#sources-views-advanced-search-form").submit();
     });
   }
