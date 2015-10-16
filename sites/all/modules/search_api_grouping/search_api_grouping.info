@@ -1,0 +1,17 @@
+name = Search API Grouping
+description = "Provides a grouping and denormalizing functionality."
+dependencies[] = entity
+dependencies[] = search_api
+core = 7.x
+package = Search
+
+files[] = includes/datasource_denormalized_entity.inc
+files[] = includes/processor_denormalize_field.inc
+files[] = includes/processor_grouping.inc
+
+; Information added by Drupal.org packaging script on 2014-02-14
+version = "7.x-2.0-beta2"
+core = "7.x"
+project = "search_api_grouping"
+datestamp = "1392419906"
+
