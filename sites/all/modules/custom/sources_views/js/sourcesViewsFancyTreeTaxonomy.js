@@ -28,8 +28,7 @@ Drupal.behaviors.sourcesViewsInitializeCollectionListFancyTree = {
         // Prevent breadcrumb list container from closing if one of the fancytree item is being expanded/closed.
         event.stopPropagation();
         // Redirect to sources search result page filtered by the selected collection.
-        collection_id_string = 'collection-item-';
-        sources_views_redirect_to_filtered_collection_page(event, data, collection_id_string);
+        sources_views_redirect_to_filtered_collection_page(event, data);
       }
     });
   }
@@ -60,8 +59,7 @@ Drupal.behaviors.sourcesViewsInitializeBreadcrumbCollectionListFancyTree = {
           // Prevent breadcrumb list container from closing if one of the fancytree item is being expanded/closed.
           event.stopPropagation();
           // Redirect to sources search result page filtered by the selected collection.
-          collection_id_string = 'breadcrumb-collection-item-';
-          sources_views_redirect_to_filtered_collection_page(event, data, collection_id_string);
+          sources_views_redirect_to_filtered_collection_page(event, data);
         }
       });
     }
@@ -99,14 +97,15 @@ function sources_views_set_custom_class_names() {
   });
 }
 
-function sources_views_redirect_to_filtered_collection_page(event, data, collection_id_string) {
+function sources_views_redirect_to_filtered_collection_page(event, data) {
   var node = data.node;
   var click_item = $.ui.fancytree.getEventTargetType(event.originalEvent);
   if (click_item == 'title') {
     var term_id = node.key;
-    var collection_id = term_id.replace(collection_id_string,'');
+    var collection_id = term_id.replace(/\D/g,'');
     var url = '/sources-search?field_zotero_collections=' + collection_id + '&view_mode=collection';
     window.location = url;
   }
 }
+
 })(jQuery);
