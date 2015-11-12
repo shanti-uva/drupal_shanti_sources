@@ -1,0 +1,23 @@
+
+
+
+.input-section .search-group{
+  height: 4rem;
+}
+
+.input-section .input-group{
+  margin-top: 0.4rem;
+}
+
+.input-section .selected-filter{
+  margin-bottom:0.5rem;
+}
+
+
+
+#search-flyout .view-section .nav-tabs > li.listview{
+  width: 52%;
+  max-width: 16rem;
+}
+
+
